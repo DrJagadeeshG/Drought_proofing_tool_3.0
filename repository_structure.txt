@@ -1,0 +1,206 @@
+DROUGHT PROOFING TOOL - REPOSITORY STRUCTURE
+=====================================================
+
+This document outlines the complete folder structure of the drought proofing tool repository,
+showing both the original monolithic architecture (backed up in Original/) and the new
+restructured modular bucket architecture.
+
+OVERVIEW
+--------
+- Original: Monolithic Python files (218 functions total)
+- Restructured: Bucket architecture based on water flow and storage
+- Purpose: Water balance model for drought proofing intervention analysis
+- Scenarios: Baseline + 3 intervention scenarios
+
+ROOT DIRECTORY
+--------------
+drought_proofing_tool/
+├── run.py                          # Main entry point - supports scenario 0-3
+├── Original/                       # Backup of original monolithic code
+├── Datasets/                       # Input and output data management
+├── orchestrator/                   # Main coordination and control
+├── aquifer_storage_bucket/         # Groundwater management
+├── soil_storage_bucket/            # Soil moisture and crop management
+├── surface_water_bucket/           # Surface water and runoff management
+├── outputs/                        # Results processing and metrics
+├── shared/                         # Common utilities and functions
+├── __pycache__/                    # Python cache files
+└── repository_structure.txt        # This file
+
+DETAILED FOLDER STRUCTURE
+========================
+
+1. ORIGINAL DIRECTORY (Monolithic Backup)
+-----------------------------------------
+Original/
+├── Economic.py                     # Economic analysis functions
+├── crop_pattern.py                 # Crop pattern management
+├── drought_proofing_tool.py        # Main drought tool logic
+├── drpf_functions.py               # Core drought proofing functions
+├── kc_et.py                        # Crop coefficient and ET calculations
+├── manual_input.py                 # Manual input handling
+├── smd.py                          # Soil moisture deficit calculations
+├── user_input.py                   # User input processing
+├── wa.py                           # Water availability functions
+├── function_mapping_files/         # Documentation of function distribution
+└── modular_folder_structure.txt    # Complete restructuring documentation
+
+2. ORCHESTRATOR MODULE (7 functions)
+------------------------------------
+orchestrator/
+├── main_controller.py              # Main workflow coordination
+├── input_collector.py              # Input and intervention collection
+└── water_balance_coordinator.py    # Water balance calculation coordination
+
+3. AQUIFER STORAGE BUCKET (23 functions)
+----------------------------------------
+aquifer_storage_bucket/
+├── input_data/
+│   └── aquifer_parameters.py       # Aquifer parameter management
+├── influx/
+│   ├── recharge_calculations.py    # Groundwater recharge calculations
+│   └── recharge_capacity.py        # Recharge capacity management
+├── outflux/
+│   └── domestic_demand.py          # Domestic water demand calculations
+└── processing/
+    ├── aquifer_calculations.py     # Core aquifer calculations
+    └── storage_tracking.py         # Aquifer storage tracking
+
+4. SOIL STORAGE BUCKET (59 functions - Largest)
+-----------------------------------------------
+soil_storage_bucket/
+├── input_data/
+│   ├── soil_properties.py          # Soil property management
+│   └── awc_calculations.py         # Available water capacity calculations
+├── influx/
+│   └── water_input.py              # Water input to soil
+├── outflux/
+│   ├── et_calculations.py          # Evapotranspiration calculations
+│   ├── evaporation.py              # Soil evaporation
+│   └── irrigation_demand.py        # Irrigation demand calculations
+└── processing/
+    ├── crop_coefficients.py        # Crop coefficient management
+    ├── root_depth.py               # Root depth calculations
+    ├── water_stress.py             # Water stress analysis
+    ├── conservation_practices.py   # Conservation practice effects
+    └── smd_calculations.py         # Soil moisture deficit calculations
+
+5. SURFACE WATER BUCKET (37 functions)
+--------------------------------------
+surface_water_bucket/
+├── input_data/
+│   └── curve_number_data.py        # Curve number data management
+├── influx/
+│   ├── precipitation_processing.py # Precipitation data processing
+│   └── water_supply.py             # Water supply management
+├── outflux/
+│   ├── evaporation.py              # Surface water evaporation
+│   ├── water_demand.py             # Water demand calculations
+│   ├── abstraction.py              # Water abstraction
+│   └── runoff_disposal.py          # Runoff disposal management
+└── processing/
+    ├── curve_numbers.py            # Curve number calculations
+    ├── runoff_calculations.py      # Surface runoff calculations
+    └── moisture_conditions.py      # Antecedent moisture conditions
+
+6. OUTPUTS MODULE (21 functions)
+--------------------------------
+outputs/
+├── output_aggregator.py            # Data aggregation and yearly processing
+├── yield_calculations.py           # Crop yield calculations
+├── water_metrics.py                # Water requirement metrics
+└── drought_metrics.py              # Drought proofing metrics
+
+7. SHARED MODULE (71 functions)
+-------------------------------
+shared/
+├── config_constants.py             # Configuration constants and defaults
+├── data_readers.py                 # Data reading and caching functions (22 functions)
+├── crop_processing.py              # Crop data processing functions (24 functions)
+├── utilities.py                    # General utility functions
+├── economics.py                    # Economic calculations
+└── irrigation_efficiency.py        # Irrigation efficiency calculations
+
+8. DATASETS DIRECTORY
+---------------------
+Datasets/
+├── Inputs/
+│   ├── csv_inputs/
+│   │   ├── input.csv                   # Main parameters
+│   │   ├── interventions.csv           # Active interventions
+│   │   ├── interventions_baseline.csv  # Baseline scenario
+│   │   ├── interventions_scenario_1.csv # Scenario 1
+│   │   ├── interventions_scenario_2.csv # Scenario 2
+│   │   └── interventions_scenario_3.csv # Scenario 3
+│   ├── mandatory_inputs/
+│   │   ├── pcp.csv                     # Precipitation data
+│   │   ├── pcp_backup.csv              # Precipitation backup
+│   │   ├── temp.csv                    # Temperature data
+│   │   ├── temp_backup.csv             # Temperature backup
+│   │   └── irrigation.csv              # Irrigation data
+│   ├── static_inputs/
+│   │   ├── crop_db.csv                 # Crop database
+│   │   └── radiation_db.csv            # Solar radiation database
+│   ├── pcp_raw.csv                     # Raw precipitation data
+│   └── temp_raw.csv                    # Raw temperature data
+└── Outputs/
+    ├── Baseline_Scenario/              # Baseline results (12+ CSV files)
+    ├── Scenario_1/                     # Scenario 1 results
+    ├── Scenario_2/                     # Scenario 2 results
+    └── Scenario_3/                     # Scenario 3 results
+
+OUTPUT FILES (per scenario)
+--------------------------
+Each scenario folder contains:
+├── Input_variables_[scenario]_baseline.csv
+├── Input_variables_[scenario]_intervention.csv
+├── df_cc_[scenario].csv                # Climate change data
+├── df_crop_[scenario].csv              # Crop data
+├── df_cwr_met_output_[scenario].csv    # Crop water requirements met
+├── df_cwr_output_[scenario].csv        # Crop water requirements
+├── df_dd_[scenario].csv                # Daily data
+├── df_drought_output_[scenario].csv    # Drought analysis
+├── df_int_[scenario].csv               # Intervention data
+├── df_mm_[scenario].csv                # Monthly data
+├── df_wb_mm_output_[scenario].csv      # Monthly water balance
+├── df_wb_yr_output_[scenario].csv      # Yearly water balance
+├── df_yield_output_[scenario].csv      # Yield outputs
+├── df_yr_[scenario].csv                # Yearly data
+├── rainfall_category_analysis_all_variables.csv
+└── rainfall_category_key_variables_summary.csv
+
+ARCHITECTURE DESIGN PRINCIPLES
+==============================
+1. Flow-based organization: influx → processing → outflux
+2. Modular independence: Each bucket can be developed/tested independently
+3. Clear dependencies: orchestrator → buckets → shared
+4. Separation of concerns: Each module has specific responsibility
+
+WATER BALANCE MODEL COMPONENTS
+=============================
+- Crop water requirements and evapotranspiration
+- Soil moisture deficit calculations
+- Groundwater recharge and storage
+- Surface runoff and curve number methods
+- Irrigation efficiency and water management
+- Economic analysis of interventions
+
+FUNCTION DISTRIBUTION
+====================
+Total Functions: 218
+- Shared: 71 functions (utilities, data processing, economics)
+- Soil Storage: 59 functions (largest - crop and soil management)
+- Surface Water: 37 functions (runoff and surface water)
+- Aquifer Storage: 23 functions (groundwater)
+- Outputs: 21 functions (results and metrics)
+- Orchestrator: 7 functions (workflow coordination)
+
+USAGE
+=====
+Main entry point: python run.py [scenario_number]
+- Scenario 0: Baseline
+- Scenario 1-3: Intervention scenarios
+- Supports parallel execution of multiple scenarios
+
+Created by: Dr. Jagadeesh (IWMI consultant)
+Purpose: Drought proofing intervention analysis and water balance modeling

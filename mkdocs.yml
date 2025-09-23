@@ -1,0 +1,68 @@
+site_name: Drought Proofing Tool Documentation
+site_description: 'Comprehensive documentation for the Drought Proofing Tool - Python modules and functionality'
+site_author: 'Drought Proofing Tool Team'
+
+theme:
+  name: material
+  logo: iwmi.webp
+  favicon: iwmi.webp
+  palette:
+    - scheme: default
+      primary: blue
+      accent: light blue
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - scheme: slate
+      primary: blue
+      accent: light blue
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  features:
+    - navigation.tabs
+    - navigation.tabs.sticky
+    - navigation.sections
+    - navigation.path
+    - navigation.top
+    - navigation.indexes
+    - toc.integrate
+    - search.highlight
+    - search.share
+    - content.code.copy
+
+extra:
+  generator: false
+
+extra_javascript:
+  - https://unpkg.com/mermaid@10.6.1/dist/mermaid.min.js
+
+copyright: Copyright &copy; 2025 IWMI (International Water Management Institute)
+
+markdown_extensions:
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - admonition
+  - pymdownx.details
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+
+nav:
+  - Home: index.md
+  - How to Run: how_to_run.md
+  - Modules:
+    - Aquifer Storage Bucket: aquifer_storage_bucket.md
+    - Orchestrator: orchestrator.md
+    - Outputs: outputs.md
+    - Shared: shared.md
+    - Soil Storage Bucket: soil_storage_bucket.md
+    - Surface Water Bucket: surface_water_bucket.md
+  - Contact: contact.md
