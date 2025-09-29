@@ -419,9 +419,75 @@ def get_crops_variable_values(inp_source,master_path,var_name, index):
 
 
 # input_utilities.py - Function 007: Retrieves supply-side intervention parameters and converts to float
-# Interactions: shared.utilities.to_float, handle_value_retrieval
-def get_supply_side_int_values(inp_source,master_path,var_name, index):
-    # Define a dictionary to map variable names to actual supply-side intervention variables
+# Interactions: shared.utilities.to_float, handle_value_retrieval, shared.data_readers.get_supply_intervention_value
+def get_supply_side_int_values(inp_source,master_path,var_name, index, scenario_num=0):
+    # DISABLED: New CSV reading logic - use original approach instead
+    if False and inp_source.strip().lower() == "csv":
+        # Map variable names to intervention names and parameters
+        supply_intervention_mapping = {
+            "Time_Period": ("General", "Time Period"),
+            "Interest_Rate": ("General", "Interest Rate"),
+            "Farm_Pond_Vol": ("Farm Pond", "Volume"),
+            "Farm_Pond_Depth": ("Farm Pond", "Depth"),
+            "Farm_Pond_Inf_Rate": ("Farm Pond", "Infiltration_Rate"),
+            "Farm_Pond_Cost": ("Farm Pond", "Cost"),
+            "Farm_Pond_Life_Span": ("Farm Pond", "Life_Span"),
+            "Farm_Pond_Maintenance": ("Farm Pond", "Maintenance"),
+            "Farm_Pond_Lined_Vol": ("Farm Pond - Lined", "Volume"),
+            "Farm_Pond_Lined_Depth": ("Farm Pond - Lined", "Depth"),
+            "Farm_Pond_Lined_Inf_Rate": ("Farm Pond - Lined", "Infiltration_Rate"),
+            "Farm_Pond_Lined_Cost": ("Farm Pond - Lined", "Cost"),
+            "Farm_Pond_Lined_Life_Span": ("Farm Pond - Lined", "Life_Span"),
+            "Farm_Pond_Lined_Maintenance": ("Farm Pond - Lined", "Maintenance"),
+            "Check_Dam_Vol": ("Check dam", "Volume"),
+            "Check_Dam_Depth": ("Check dam", "Depth"),
+            "Check_Dam_Inf_Rate": ("Check dam", "Infiltration_Rate"),
+            "Check_Dam_Cost": ("Check dam", "Cost"),
+            "Check_Dam_Life_Span": ("Check dam", "Life_Span"),
+            "Check_Dam_Maintenance": ("Check dam", "Maintenance"),
+            "Infiltration_Pond_Vol": ("Infiltration Pond", "Volume"),
+            "Infiltration_Pond_Depth": ("Infiltration Pond", "Depth"),
+            "Infiltration_Pond_Inf_Rate": ("Infiltration Pond", "Infiltration_Rate"),
+            "Infiltration_Pond_Cost": ("Infiltration Pond", "Cost"),
+            "Infiltration_Pond_Life_Span": ("Infiltration Pond", "Life_Span"),
+            "Infiltration_Pond_Maintenance": ("Infiltration Pond", "Maintenance"),
+            "Injection_Wells_Vol": ("Injection wells", "Volume"),
+            "Injection_Wells_Nos": ("Injection wells", "Numbers"),
+            "Injection_Wells_Cost": ("Injection wells", "Cost"),
+            "Injection_Wells_Life_Span": ("Injection wells", "Life_Span"),
+            "Injection_Wells_Maintenance": ("Injection wells", "Maintenance")
+        }
+        
+        if var_name in supply_intervention_mapping:
+            intervention_name, parameter = supply_intervention_mapping[var_name]
+            
+            # Handle general settings separately (Time_Period, Interest_Rate)
+            if intervention_name == "General":
+                from shared.data_readers import get_file_paths
+                import pandas as pd
+                
+                file_paths = get_file_paths(inp_source, master_path)
+                if file_paths.get("supply_interventions"):
+                    df = pd.read_csv(file_paths["supply_interventions"])
+                    # Look for the parameter in the first few rows - check both column 0 and 1
+                    for idx, row in df.iterrows():
+                        # Check if parameter matches in first column
+                        if parameter in str(row.iloc[0]):
+                            return to_float(row.iloc[1], 0)
+                        # Also check if parameter matches in second column (in case it's swapped)
+                        if len(row) > 1 and parameter in str(row.iloc[1]):
+                            return to_float(row.iloc[0], 0)
+                return 0
+            else:
+                # Use the new CSV reading function with the actual scenario number
+                from shared.data_readers import get_supply_intervention_value
+                # Convert scenario_num: 0=baseline has no interventions, 1+ uses that scenario
+                if scenario_num == 0:
+                    return 0  # Baseline has no supply-side interventions
+                else:
+                    return get_supply_intervention_value(intervention_name, parameter, scenario_num, master_path)
+    
+    # Fallback to original method for manual input or if CSV reading fails
     variables = {
         "Time_Period": Time_Period,
         "Interest_Rate": Interest_Rate,
@@ -460,9 +526,97 @@ def get_supply_side_int_values(inp_source,master_path,var_name, index):
 
 
 # input_utilities.py - Function 008: Retrieves demand-side intervention area values from crop calendar
-# Interactions: handle_value_retrieval
-def get_demand_side_interv_area_values(inp_source,master_path,var_name, index):
-    # Dictionary containing the area variables
+# Interactions: handle_value_retrieval, shared.data_readers.get_demand_intervention_value
+def get_demand_side_interv_area_values(inp_source,master_path,var_name, index, scenario_num=0):
+    # Special handling for plot-based aggregation
+    if inp_source.strip().lower() == "csv":
+        # For unified area variables, sum up the plot-based areas
+        plot_aggregation_mapping = {
+            "Drip_Area": ["Crop_Area_1_Drip_Area", "Crop_Area_2_Drip_Area", "Crop_Area_3_Drip_Area"],
+            "Sprinkler_Area": ["Crop_Area_1_Sprinkler_Area", "Crop_Area_2_Sprinkler_Area", "Crop_Area_3_Sprinkler_Area"],
+            "Land_Levelling_Area": ["Crop_Area_1_Land_Levelling_Area", "Crop_Area_2_Land_Levelling_Area", "Crop_Area_3_Land_Levelling_Area"],
+            "DSR_Area": ["Crop_Area_1_DSR_Area", "Crop_Area_2_DSR_Area", "Crop_Area_3_DSR_Area"],
+            "AWD_Area": ["Crop_Area_1_AWD_Area", "Crop_Area_2_AWD_Area", "Crop_Area_3_AWD_Area"],
+            "SRI_Area": ["Crop_Area_1_SRI_Area", "Crop_Area_2_SRI_Area", "Crop_Area_3_SRI_Area"],
+            "Ridge_Furrow_Area": ["Crop_Area_1_Ridge_Furrow_Area", "Crop_Area_2_Ridge_Furrow_Area", "Crop_Area_3_Ridge_Furrow_Area"],
+            "Deficit_Area": ["Crop_Area_1_Deficit_Area", "Crop_Area_2_Deficit_Area", "Crop_Area_3_Deficit_Area"],
+        }
+        
+        if var_name in plot_aggregation_mapping:
+            # Sum up all plot-based areas for this intervention type
+            total_area = 0
+            plot_vars = plot_aggregation_mapping[var_name]
+            for plot_var in plot_vars:
+                area_value = handle_value_retrieval(inp_source, {plot_var: None}, master_path, plot_var, index)
+                total_area += to_float(area_value, 0)
+            return total_area
+    
+    # DISABLED: New CSV reading logic - use original approach instead  
+    if False and inp_source.strip().lower() == "csv":
+        # Map variable names to intervention names and parameters (plot-based, not seasonal)
+        demand_intervention_mapping = {
+            # Drip irrigation - unified area (not split by season)
+            "Kharif_Crop_Drip_Area": ("Drip Irrigation", "Area"),
+            "Rabi_Crop_Drip_Area": ("Drip Irrigation", "Area"), 
+            "Summer_Crop_Drip_Area": ("Drip Irrigation", "Area"),
+            "Drip_Area": ("Drip Irrigation", "Area"),  # Direct plot-based mapping
+            "Eff_Drip_irrigation": ("Drip Irrigation", "Efficiency"),
+            # Sprinkler irrigation
+            "Kharif_Crop_Sprinkler_Area": ("Sprinkler irrigation", "Area"),
+            "Rabi_Crop_Sprinkler_Area": ("Sprinkler irrigation", "Area"),
+            "Summer_Crop_Sprinkler_Area": ("Sprinkler irrigation", "Area"),
+            "Sprinkler_Area": ("Sprinkler irrigation", "Area"),  # Direct plot-based mapping
+            "Eff_Sprinkler_irrigation": ("Sprinkler irrigation", "Efficiency"),
+            # Land levelling
+            "Kharif_Crop_Land_Levelling_Area": ("Land levelling", "Area"),
+            "Rabi_Crop_Land_Levelling_Area": ("Land levelling", "Area"),
+            "Summer_Crop_Land_Levelling_Area": ("Land levelling", "Area"),
+            "Land_Levelling_Area": ("Land levelling", "Area"),  # Direct plot-based mapping
+            "Eff_Land_Levelling": ("Land levelling", "Efficiency"),
+            # Direct Seeded Rice
+            "Kharif_Crop_DSR_Area": ("Direct Seeded Rice", "Area"),
+            "Rabi_Crop_DSR_Area": ("Direct Seeded Rice", "Area"),
+            "Summer_Crop_DSR_Area": ("Direct Seeded Rice", "Area"),
+            "DSR_Area": ("Direct Seeded Rice", "Area"),  # Direct plot-based mapping
+            "Eff_Direct_Seeded_Rice": ("Direct Seeded Rice", "Efficiency"),
+            # AWD
+            "Kharif_Crop_AWD_Area": ("Alternate Wetting & Drying", "Area"),
+            "Rabi_Crop_AWD_Area": ("Alternate Wetting & Drying", "Area"),
+            "Summer_Crop_AWD_Area": ("Alternate Wetting & Drying", "Area"),
+            "AWD_Area": ("Alternate Wetting & Drying", "Area"),  # Direct plot-based mapping
+            "Eff_Alternate_Wetting_And_Dry": ("Alternate Wetting & Drying", "Efficiency"),
+            # SRI
+            "Kharif_Crop_SRI_Area": ("System of Rice Intensification (SRI)", "Area"),
+            "Rabi_Crop_SRI_Area": ("System of Rice Intensification (SRI)", "Area"),
+            "Summer_Crop_SRI_Area": ("System of Rice Intensification (SRI)", "Area"),
+            "SRI_Area": ("System of Rice Intensification (SRI)", "Area"),  # Direct plot-based mapping
+            "Eff_SRI": ("System of Rice Intensification (SRI)", "Efficiency"),
+            # Ridge Furrow
+            "Kharif_Crop_Ridge_Furrow_Area": ("Ridge & Furrow Irrigation", "Area"),
+            "Rabi_Crop_Ridge_Furrow_Area": ("Ridge & Furrow Irrigation", "Area"),
+            "Summer_Crop_Ridge_Furrow_Area": ("Ridge & Furrow Irrigation", "Area"),
+            "Ridge_Furrow_Area": ("Ridge & Furrow Irrigation", "Area"),  # Direct plot-based mapping
+            "Eff_Ridge_Furrow_Irrigation": ("Ridge & Furrow Irrigation", "Efficiency"),
+            # Deficit Irrigation
+            "Kharif_Crop_Deficit_Area": ("Deficit Irrigation", "Area"),
+            "Rabi_Crop_Deficit_Area": ("Deficit Irrigation", "Area"),
+            "Summer_Crop_Deficit_Area": ("Deficit Irrigation", "Area"),
+            "Deficit_Area": ("Deficit Irrigation", "Area"),  # Direct plot-based mapping
+            "Eff_Deficit_Irrigation": ("Deficit Irrigation", "Efficiency")
+        }
+        
+        if var_name in demand_intervention_mapping:
+            intervention_name, parameter = demand_intervention_mapping[var_name]
+            
+            # Use the new CSV reading function with the actual scenario number
+            from shared.data_readers import get_demand_intervention_value
+            # Convert scenario_num: 0=baseline has no interventions, 1+ uses that scenario
+            if scenario_num == 0:
+                return 0  # Baseline has no demand-side interventions
+            else:
+                return get_demand_intervention_value(intervention_name, parameter, scenario_num, master_path)
+    
+    # Fallback to original method for manual input or if CSV reading fails
     variables = {
         "Kharif_Crop_Drip_Area": Kharif_Crop_Drip_Area,
         "Rabi_Crop_Drip_Area": Rabi_Crop_Drip_Area,
@@ -503,8 +657,44 @@ def get_demand_side_interv_area_values(inp_source,master_path,var_name, index):
 
 # input_utilities.py - Function 009: Retrieves demand-side intervention cost and lifespan parameters
 # Interactions: shared.utilities.to_float, handle_value_retrieval
-def get_demand_side_interv_values(inp_source,master_path,var_name, index):
-    # Define a dictionary to map variable names to actual variables
+def get_demand_side_interv_values(inp_source,master_path,var_name, index, scenario_num=0):
+    # DISABLED: New CSV reading logic - use original approach instead
+    if False and inp_source.strip().lower() == "csv":
+        # Map variable names to intervention names and parameters  
+        demand_cost_mapping = {
+            "Drip_Irr_Cost": ("Drip Irrigation", "Cost"),
+            "Drip_Irr_Life_Span": ("Drip Irrigation", "Life_Span"),
+            "Drip_Irr_Maintenance": ("Drip Irrigation", "Maintenance"),
+            "Sprinkler_Irr_Cost": ("Sprinkler irrigation", "Cost"),
+            "Sprinkler_Irr_Life_Span": ("Sprinkler irrigation", "Life_Span"),
+            "Sprinkler_Irr_Maintenance": ("Sprinkler irrigation", "Maintenance"),
+            "Land_Levelling_Cost": ("Land levelling", "Cost"),
+            "Land_Levelling_Life_Span": ("Land levelling", "Life_Span"),
+            "Land_Levelling_Maintenance": ("Land levelling", "Maintenance"),
+            "Direct_Seeded_Rice_Cost": ("Direct Seeded Rice", "Cost"),
+            "Direct_Seeded_Rice_Life_Span": ("Direct Seeded Rice", "Life_Span"),
+            "Alternate_Wetting_And_Dry_Cost": ("Alternate Wetting & Drying", "Cost"),
+            "Alternate_Wetting_And_Dry_Life_Span": ("Alternate Wetting & Drying", "Life_Span"),
+            "SRI_Cost": ("System of Rice Intensification (SRI)", "Cost"),
+            "SRI_Life_Span": ("System of Rice Intensification (SRI)", "Life_Span"),
+            "Ridge_Furrow_Irrigation_Cost": ("Ridge & Furrow Irrigation", "Cost"),
+            "Ridge_Furrow_Irrigation_Life_Span": ("Ridge & Furrow Irrigation", "Life_Span"),
+            "Deficit_Irrigation_Cost": ("Deficit Irrigation", "Cost"),
+            "Deficit_Irrigation_Life_Span": ("Deficit Irrigation", "Life_Span")
+        }
+        
+        if var_name in demand_cost_mapping:
+            intervention_name, parameter = demand_cost_mapping[var_name]
+            
+            # Use the new CSV reading function with the actual scenario number
+            from shared.data_readers import get_demand_intervention_value
+            # Convert scenario_num: 0=baseline has no interventions, 1+ uses that scenario
+            if scenario_num == 0:
+                return 0  # Baseline has no demand-side interventions
+            else:
+                return get_demand_intervention_value(intervention_name, parameter, scenario_num, master_path)
+    
+    # Fallback to original method for manual input or if CSV reading fails
     variables = {
         "Drip_Irr_Cost": Drip_Irr_Cost,
         "Drip_Irr_Life_Span": Drip_Irr_Life_Span,
@@ -532,8 +722,77 @@ def get_demand_side_interv_values(inp_source,master_path,var_name, index):
 
 
 # input_utilities.py - Function 010: Retrieves soil moisture intervention area values from crop calendar
-# Interactions: handle_value_retrieval
-def get_soil_moisture_interv_area_values(inp_source,master_path,var_name, index):
+# Interactions: handle_value_retrieval, shared.data_readers.get_soil_intervention_value
+def get_soil_moisture_interv_area_values(inp_source,master_path,var_name, index, scenario_num=0):
+    # Special handling for plot-based aggregation
+    if inp_source.strip().lower() == "csv":
+        # For unified area variables, sum up the plot-based areas
+        soil_plot_aggregation_mapping = {
+            "Cover_Area": ["Crop_Area_1_Cover_Crops_Area", "Crop_Area_2_Cover_Crops_Area", "Crop_Area_3_Cover_Crops_Area"],
+            "Mulching_Area": ["Crop_Area_1_Mulching_Area", "Crop_Area_2_Mulching_Area", "Crop_Area_3_Mulching_Area"],
+            "BBF_Area": ["Crop_Area_1_BBF_Area", "Crop_Area_2_BBF_Area", "Crop_Area_3_BBF_Area"],
+            "Bunds_Area": ["Crop_Area_1_Bunds_Area", "Crop_Area_2_Bunds_Area", "Crop_Area_3_Bunds_Area"],
+            "Tillage_Area": ["Crop_Area_1_Tillage_Area", "Crop_Area_2_Tillage_Area", "Crop_Area_3_Tillage_Area"],
+            "Tank_Area": ["Crop_Area_1_Tank_Area", "Crop_Area_2_Tank_Area", "Crop_Area_3_Tank_Area"],
+        }
+        
+        if var_name in soil_plot_aggregation_mapping:
+            # Sum up all plot-based areas for this intervention type
+            total_area = 0
+            plot_vars = soil_plot_aggregation_mapping[var_name]
+            for plot_var in plot_vars:
+                area_value = handle_value_retrieval(inp_source, {plot_var: None}, master_path, plot_var, index)
+                total_area += to_float(area_value, 0)
+            return total_area
+    
+    # DISABLED: New CSV reading logic - use original approach instead
+    if False and inp_source.strip().lower() == "csv":
+        # Map variable names to intervention names and parameters (plot-based, not seasonal)
+        soil_intervention_mapping = {
+            # Cover Crops - unified area (not split by season)
+            "Kharif_Crop_Cover_Crops_Area": ("Cover Crops", "Area"),
+            "Rabi_Crop_Cover_Crops_Area": ("Cover Crops", "Area"),
+            "Summer_Crop_Cover_Crops_Area": ("Cover Crops", "Area"),
+            "Cover_Area": ("Cover Crops", "Area"),  # Direct plot-based mapping
+            # Mulching
+            "Kharif_Crop_Mulching_Area": ("Mulching", "Area"),
+            "Rabi_Crop_Mulching_Area": ("Mulching", "Area"),
+            "Summer_Crop_Mulching_Area": ("Mulching", "Area"),
+            "Mulching_Area": ("Mulching", "Area"),  # Direct plot-based mapping
+            # Broad Bed Furrow
+            "Kharif_Crop_BBF_Area": ("Broad Bed Furrow", "Area"),
+            "Rabi_Crop_BBF_Area": ("Broad Bed Furrow", "Area"),
+            "Summer_Crop_BBF_Area": ("Broad Bed Furrow", "Area"),
+            "BBF_Area": ("Broad Bed Furrow", "Area"),  # Direct plot-based mapping
+            # Bunds
+            "Kharif_Crop_Bunds_Area": ("Contour / Vegetative bunds", "Area"),
+            "Rabi_Crop_Bunds_Area": ("Contour / Vegetative bunds", "Area"),
+            "Summer_Crop_Bunds_Area": ("Contour / Vegetative bunds", "Area"),
+            "Bunds_Area": ("Contour / Vegetative bunds", "Area"),  # Direct plot-based mapping
+            # Tillage
+            "Kharif_Crop_Tillage_Area": ("Conservation Tillage", "Area"),
+            "Rabi_Crop_Tillage_Area": ("Conservation Tillage", "Area"),
+            "Summer_Crop_Tillage_Area": ("Conservation Tillage", "Area"),
+            "Tillage_Area": ("Conservation Tillage", "Area"),  # Direct plot-based mapping
+            # Tank
+            "Kharif_Crop_Tank_Area": ("Silt application (tank)", "Area"),
+            "Rabi_Crop_Tank_Area": ("Silt application (tank)", "Area"),
+            "Summer_Crop_Tank_Area": ("Silt application (tank)", "Area"),
+            "Tank_Area": ("Silt application (tank)", "Area"),  # Direct plot-based mapping
+        }
+        
+        if var_name in soil_intervention_mapping:
+            intervention_name, parameter = soil_intervention_mapping[var_name]
+            
+            # Use the new CSV reading function with the actual scenario number
+            from shared.data_readers import get_soil_intervention_value
+            # Convert scenario_num: 0=baseline has no interventions, 1+ uses that scenario
+            if scenario_num == 0:
+                return 0  # Baseline has no soil interventions
+            else:
+                return get_soil_intervention_value(intervention_name, parameter, scenario_num, master_path)
+    
+    # Fallback to original method for manual input or if CSV reading fails
     variables = {
         "Kharif_Crop_Cover_Crops_Area": Kharif_Crop_Cover_Crops_Area,
         "Rabi_Crop_Cover_Crops_Area": Rabi_Crop_Cover_Crops_Area,
@@ -559,9 +818,59 @@ def get_soil_moisture_interv_area_values(inp_source,master_path,var_name, index)
 
 
 # input_utilities.py - Function 011: Retrieves soil moisture intervention parameters including CN reduction values
-# Interactions: shared.utilities.to_float, handle_value_retrieval
-def get_soil_moisture_interv_values(inp_source,master_path,var_name, index):
-    # Dictionary containing the soil moisture intervention values
+# Interactions: shared.utilities.to_float, handle_value_retrieval, shared.data_readers.get_soil_intervention_value
+def get_soil_moisture_interv_values(inp_source,master_path,var_name, index, scenario_num=0):
+    # DISABLED: New CSV reading logic - use original approach instead
+    if False and inp_source.strip().lower() == "csv":
+        # Map variable names to intervention names and parameters
+        soil_cost_mapping = {
+            # Cover Crops
+            "Red_CN_Cover_Crops": ("Cover Crops", "CN_Reduction"),
+            "Cover_Crops_Cost": ("Cover Crops", "Cost"),
+            "Cover_Crops_Life_Span": ("Cover Crops", "Life_Span"),
+            "Cover_Crops_Eva_Red": ("Cover Crops", "Evaporation_Reduction"),
+            # Mulching
+            "Red_CN_Mulching": ("Mulching", "CN_Reduction"),
+            "Mulching_Cost": ("Mulching", "Cost"),
+            "Mulching_Life_Span": ("Mulching", "Life_Span"),
+            "Mulching_Eva_Red": ("Mulching", "Evaporation_Reduction"),
+            # Broad Bed Furrow
+            "Red_CN_BBF": ("Broad Bed Furrow", "CN_Reduction"),
+            "BBF_Cost": ("Broad Bed Furrow", "Cost"),
+            "BBF_Life_Span": ("Broad Bed Furrow", "Life_Span"),
+            "BBF_Maintenance": ("Broad Bed Furrow", "Maintenance"),
+            "Eff_BBF": ("Broad Bed Furrow", "Evaporation_Reduction"),  # Using Evaporation_Reduction for efficiency
+            # Bunds
+            "Red_CN_Bund": ("Contour / Vegetative bunds", "CN_Reduction"),
+            "Bund_Cost": ("Contour / Vegetative bunds", "Cost"),
+            "Bund_Life_Span": ("Contour / Vegetative bunds", "Life_Span"),
+            "Bund_Maintenance": ("Contour / Vegetative bunds", "Maintenance"),
+            # Tillage
+            "Red_CN_Tillage": ("Conservation Tillage", "CN_Reduction"),
+            "Tillage_Cost": ("Conservation Tillage", "Cost"),
+            "Tillage_Life_Span": ("Conservation Tillage", "Life_Span"),
+            "Tillage_Eva_Red": ("Conservation Tillage", "Evaporation_Reduction"),
+            # Tank
+            "Red_CN_Tank": ("Silt application (tank)", "CN_Reduction"),
+            "Tank_Desilting_Life_Span": ("Silt application (tank)", "Life_Span"),
+            "Tank_Eva_Red": ("Silt application (tank)", "Evaporation_Reduction"),
+            "Tank_Desilting_Vol": ("Silt application (tank)", "Area"),  # Using Area for volume
+            "Tank_Desilting_Depth": ("Silt application (tank)", "CN_Reduction"),  # Placeholder mapping
+            "Tank_Desilting_Cost": ("Silt application (tank)", "Cost"),
+        }
+        
+        if var_name in soil_cost_mapping:
+            intervention_name, parameter = soil_cost_mapping[var_name]
+            
+            # Use the new CSV reading function with the actual scenario number
+            from shared.data_readers import get_soil_intervention_value
+            # Convert scenario_num: 0=baseline has no interventions, 1+ uses that scenario
+            if scenario_num == 0:
+                return 0  # Baseline has no soil interventions
+            else:
+                return get_soil_intervention_value(intervention_name, parameter, scenario_num, master_path)
+    
+    # Fallback to original method for manual input or if CSV reading fails
     variables = {
         "Red_CN_Cover_Crops": Red_CN_Cover_Crops,
         "Cover_Crops_Cost": Cover_Crops_Cost,

@@ -18,11 +18,15 @@ The project is organized into several key modules:
 ### Core Modules
 
 - **[:material-water: Aquifer Storage Bucket](aquifer_storage_bucket.md)** - Groundwater storage and management
-- **[:material-cog: Orchestrator](orchestrator.md)** - Main coordination and workflow management
+- **[:material-cog: Orchestrator](orchestrator.md)** - Main coordination and workflow management with auto-conversion
 - **[:material-chart-bar: Outputs](outputs.md)** - Data processing and visualization
-- **[:material-wrench: Shared](shared.md)** - Common utilities and shared functionality
+- **[:material-wrench: Shared](shared.md)** - Common utilities with plot-based processing functions
 - **[:material-sprout: Soil Storage Bucket](soil_storage_bucket.md)** - Soil moisture and agricultural analysis
 - **[:material-waves: Surface Water Bucket](surface_water_bucket.md)** - Surface water flow and runoff management
+
+### NEW: User Interface Module
+
+- **[:material-file-code: Converter](converter.md)** - Tabular to key-value file conversion for user-friendly data entry
 
 ### Data & Legacy
 
@@ -132,10 +136,26 @@ The tool is built around a conceptual framework that partitions water resources 
 
 ## Getting Started
 
-1. **Main Entry Point**: `run.py` - Primary execution script
-2. **Configuration**: Modify input parameters in `Datasets/Inputs/`
-3. **Execution**: Run analysis through the orchestrator module
-4. **Results**: View outputs in `Datasets/Outputs/`
+1. **Main Entry Point**: `run.py` - Primary execution script with auto-conversion
+2. **User Configuration**: Edit `interventions_scenario_X_correct.csv` files directly in tabular format
+3. **Automatic Processing**: System converts and runs scenarios automatically
+4. **Advanced Configuration**: Modify other input parameters in `Datasets/Inputs/`
+5. **Execution**: Run analysis through the orchestrator module with plot-based processing
+6. **Results**: View outputs in `Datasets/Outputs/[Scenario_Name]/`
+
+## Enhanced Workflow (NEW!)
+
+### User-Friendly Data Entry
+```
+1. Edit tabular CSV files → interventions_scenario_X_correct.csv
+2. Run python run.py X → Auto-conversion + Processing
+3. View results → Datasets/Outputs/Scenario_X/
+```
+
+### Plot-Based System
+- **Dynamic crop-plot mapping** - automatically detects crop assignments
+- **No hardcoded seasons** - flexible plot configuration
+- **Backward compatible** - works with existing seasonal data
 
 ## Quick Navigation
 

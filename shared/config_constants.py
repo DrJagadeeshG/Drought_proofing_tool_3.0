@@ -30,6 +30,8 @@ Eff_Default_Irrigation = 50                 # Default irrigation efficiency (50%
 
 # Initial conditions
 SMDi_1 = 0                                  # Initial soil moisture deficit for the first time step
+Previous_Month_storage = 0                  # Initial storage from the previous month (in cubic meters)
+Previous_Month_Rejected_Recharge = 0        # Initial rejected recharge from the previous month (in cubic meters)
 
 # Curve Number (CN2) values for different land uses
 Builtup_cn2 = 90                           # Curve number for built-up areas

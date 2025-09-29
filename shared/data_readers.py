@@ -189,9 +189,16 @@ def get_file_paths(inp_source,master_path):
     if inp_source == "csv":
         paths["input_baseline"] = os.path.join(master_path, csv_subdir, "input.csv")
         paths["input_interventions"] = os.path.join(master_path, csv_subdir, "interventions.csv")
+        # Add new intervention CSV files
+        paths["supply_interventions"] = os.path.join(master_path, csv_subdir, "supply_interventions_correct.csv")
+        paths["demand_interventions"] = os.path.join(master_path, csv_subdir, "demand_interventions_correct.csv")
+        paths["soil_interventions"] = os.path.join(master_path, csv_subdir, "soil_interventions_correct.csv")
     else:
         paths["input_baseline"] = None
         paths["input_interventions"] = None
+        paths["supply_interventions"] = None
+        paths["demand_interventions"] = None
+        paths["soil_interventions"] = None
     # Cache the result before returning
     _file_paths_cache[cache_key] = paths
     
@@ -206,6 +213,246 @@ def _read_cached_csv(file_path):
     if file_path and os.path.exists(file_path):
         return pd.read_csv(file_path, header=None)
     return pd.DataFrame()
+
+
+# data_readers.py - Function 012A: Reads supply intervention data from new tabular CSV format
+# Interactions: pandas, os, shared.utilities.to_float
+def read_supply_interventions_csv(file_path, scenario_num=1):
+    """
+    Reads supply interventions from new tabular CSV format
+    Returns: dict with intervention data for specified scenario
+    """
+    if not os.path.exists(file_path):
+        return {}
+    
+    # Read CSV with headers
+    df = pd.read_csv(file_path)
+    
+    # Find the data section (starts after "SUPPLY SIDE INTERVENTIONS")
+    data_start_row = None
+    for idx, row in df.iterrows():
+        if 'S.no' in str(row.iloc[0]):
+            data_start_row = idx
+            break
+    
+    if data_start_row is None:
+        return {}
+    
+    # Get the header row and data rows
+    header_row = df.iloc[data_start_row]
+    data_rows = df.iloc[data_start_row + 1:]
+    
+    # Find scenario columns based on scenario number
+    scenario_col_start = None
+    if scenario_num == 1:
+        scenario_col_start = 2  # Scenario 1 starts at column 2
+    elif scenario_num == 2:
+        scenario_col_start = 11  # Scenario 2 starts at column 11  
+    elif scenario_num == 3:
+        scenario_col_start = 20  # Scenario 3 starts at column 20
+    
+    if scenario_col_start is None:
+        return {}
+    
+    interventions_data = {}
+    
+    # Process each intervention row
+    for idx, row in data_rows.iterrows():
+        if pd.isna(row.iloc[0]) or row.iloc[0] == '':
+            continue
+            
+        intervention_name = str(row.iloc[1]).replace('1_', '').replace('2_', '').replace('3_', '')
+        
+        # Extract parameters for the specified scenario
+        interventions_data[intervention_name] = {
+            'Volume': to_float(row.iloc[scenario_col_start], 0),
+            'Depth': to_float(row.iloc[scenario_col_start + 1], 0),
+            'Infiltration_Rate': to_float(row.iloc[scenario_col_start + 2], 0),
+            'Cost': to_float(row.iloc[scenario_col_start + 3], 0),
+            'Life_Span': to_float(row.iloc[scenario_col_start + 4], 0),
+            'Maintenance': to_float(row.iloc[scenario_col_start + 5], 0),
+            'Numbers': to_float(row.iloc[scenario_col_start + 6], 0) if scenario_col_start + 6 < len(row) else 0
+        }
+    
+    return interventions_data
+
+
+# data_readers.py - Function 012B: Gets specific supply intervention parameter value
+# Interactions: read_supply_interventions_csv, get_file_paths, shared.utilities.to_float
+def get_supply_intervention_value(intervention_name, parameter, scenario_num, master_path):
+    """
+    Gets specific parameter value for a supply intervention from CSV
+    """
+    file_paths = get_file_paths("csv", master_path)
+    if not file_paths.get("supply_interventions"):
+        return 0
+    
+    interventions_data = read_supply_interventions_csv(file_paths["supply_interventions"], scenario_num)
+    
+    if intervention_name in interventions_data:
+        return interventions_data[intervention_name].get(parameter, 0)
+    
+    return 0
+
+
+# data_readers.py - Function 012C: Reads demand intervention data from new tabular CSV format
+# Interactions: pandas, os, shared.utilities.to_float
+def read_demand_interventions_csv(file_path, scenario_num=1):
+    """
+    Reads demand interventions from new tabular CSV format
+    Returns: dict with intervention data for specified scenario
+    """
+    if not os.path.exists(file_path):
+        return {}
+    
+    # Read CSV with headers
+    df = pd.read_csv(file_path)
+    
+    # Find the data section (starts after "DEMAND SIDE INTERVENTIONS")
+    data_start_row = None
+    for idx, row in df.iterrows():
+        if 'S.no' in str(row.iloc[0]):
+            data_start_row = idx
+            break
+    
+    if data_start_row is None:
+        return {}
+    
+    # Get the header row and data rows
+    header_row = df.iloc[data_start_row]
+    data_rows = df.iloc[data_start_row + 1:]
+    
+    # Find scenario columns based on scenario number
+    scenario_col_start = None
+    if scenario_num == 1:
+        scenario_col_start = 2  # Scenario 1 starts at column 2
+    elif scenario_num == 2:
+        scenario_col_start = 11  # Scenario 2 starts at column 11  
+    elif scenario_num == 3:
+        scenario_col_start = 20  # Scenario 3 starts at column 20
+    
+    if scenario_col_start is None:
+        return {}
+    
+    interventions_data = {}
+    
+    # Process each intervention row
+    for idx, row in data_rows.iterrows():
+        if pd.isna(row.iloc[0]) or row.iloc[0] == '':
+            continue
+            
+        intervention_name = str(row.iloc[1]).replace('1_', '').replace('2_', '').replace('3_', '')
+        
+        # Extract parameters for the specified scenario - handle empty/nan values
+        interventions_data[intervention_name] = {
+            'Crop_Name': str(row.iloc[scenario_col_start]) if not pd.isna(row.iloc[scenario_col_start]) else '',
+            'Area': to_float(row.iloc[scenario_col_start + 1], 0) if not pd.isna(row.iloc[scenario_col_start + 1]) else 0,
+            'Efficiency': to_float(row.iloc[scenario_col_start + 2], 0) if not pd.isna(row.iloc[scenario_col_start + 2]) else 0,
+            'Water_Saved': to_float(row.iloc[scenario_col_start + 3], 0) if not pd.isna(row.iloc[scenario_col_start + 3]) else 0,
+            'Cost': to_float(row.iloc[scenario_col_start + 4], 0) if not pd.isna(row.iloc[scenario_col_start + 4]) else 0,
+            'Life_Span': to_float(row.iloc[scenario_col_start + 5], 0) if not pd.isna(row.iloc[scenario_col_start + 5]) else 0,
+            'Maintenance': to_float(row.iloc[scenario_col_start + 6], 0) if not pd.isna(row.iloc[scenario_col_start + 6]) else 0
+        }
+    
+    return interventions_data
+
+
+# data_readers.py - Function 012D: Gets specific demand intervention parameter value
+# Interactions: read_demand_interventions_csv, get_file_paths, shared.utilities.to_float
+def get_demand_intervention_value(intervention_name, parameter, scenario_num, master_path):
+    """
+    Gets specific parameter value for a demand intervention from CSV
+    """
+    file_paths = get_file_paths("csv", master_path)
+    if not file_paths.get("demand_interventions"):
+        return 0
+    
+    interventions_data = read_demand_interventions_csv(file_paths["demand_interventions"], scenario_num)
+    
+    if intervention_name in interventions_data:
+        return interventions_data[intervention_name].get(parameter, 0)
+    
+    return 0
+
+
+# data_readers.py - Function 012E: Reads soil intervention data from new tabular CSV format
+# Interactions: pandas, os, shared.utilities.to_float
+def read_soil_interventions_csv(file_path, scenario_num=1):
+    """
+    Reads soil interventions from new tabular CSV format
+    Returns: dict with intervention data for specified scenario
+    """
+    if not os.path.exists(file_path):
+        return {}
+    
+    # Read CSV with headers
+    df = pd.read_csv(file_path)
+    
+    # Find the data section (starts after "SOIL MANAGEMENT INTERVENTIONS")
+    data_start_row = None
+    for idx, row in df.iterrows():
+        if 'S.no' in str(row.iloc[0]):
+            data_start_row = idx
+            break
+    
+    if data_start_row is None:
+        return {}
+    
+    # Get the header row and data rows
+    header_row = df.iloc[data_start_row]
+    data_rows = df.iloc[data_start_row + 1:]
+    
+    # Find scenario columns based on scenario number
+    scenario_col_start = None
+    if scenario_num == 1:
+        scenario_col_start = 2  # Scenario 1 starts at column 2
+    elif scenario_num == 2:
+        scenario_col_start = 11  # Scenario 2 starts at column 11  
+    elif scenario_num == 3:
+        scenario_col_start = 20  # Scenario 3 starts at column 20
+    
+    if scenario_col_start is None:
+        return {}
+    
+    interventions_data = {}
+    
+    # Process each intervention row
+    for idx, row in data_rows.iterrows():
+        if pd.isna(row.iloc[0]) or row.iloc[0] == '':
+            continue
+            
+        intervention_name = str(row.iloc[1]).replace('1_', '').replace('2_', '').replace('3_', '')
+        
+        # Extract parameters for the specified scenario - handle empty/nan values
+        interventions_data[intervention_name] = {
+            'Crop_Name': str(row.iloc[scenario_col_start]) if not pd.isna(row.iloc[scenario_col_start]) else '',
+            'Area': to_float(row.iloc[scenario_col_start + 1], 0) if not pd.isna(row.iloc[scenario_col_start + 1]) else 0,
+            'CN_Reduction': to_float(row.iloc[scenario_col_start + 2], 0) if not pd.isna(row.iloc[scenario_col_start + 2]) else 0,
+            'Evaporation_Reduction': to_float(row.iloc[scenario_col_start + 3], 0) if not pd.isna(row.iloc[scenario_col_start + 3]) else 0,
+            'Cost': to_float(row.iloc[scenario_col_start + 4], 0) if not pd.isna(row.iloc[scenario_col_start + 4]) else 0,
+            'Life_Span': to_float(row.iloc[scenario_col_start + 5], 0) if not pd.isna(row.iloc[scenario_col_start + 5]) else 0,
+            'Maintenance': to_float(row.iloc[scenario_col_start + 6], 0) if not pd.isna(row.iloc[scenario_col_start + 6]) else 0
+        }
+    
+    return interventions_data
+
+
+# data_readers.py - Function 012F: Gets specific soil intervention parameter value
+# Interactions: read_soil_interventions_csv, get_file_paths, shared.utilities.to_float
+def get_soil_intervention_value(intervention_name, parameter, scenario_num, master_path):
+    """
+    Gets specific parameter value for a soil intervention from CSV
+    """
+    file_paths = get_file_paths("csv", master_path)
+    if not file_paths.get("soil_interventions"):
+        return 0
+    
+    interventions_data = read_soil_interventions_csv(file_paths["soil_interventions"], scenario_num)
+    
+    if intervention_name in interventions_data:
+        return interventions_data[intervention_name].get(parameter, 0)
+    
+    return 0
 
 
 # data_readers.py - Function 013: Handles value retrieval from CSV or manual sources for variables

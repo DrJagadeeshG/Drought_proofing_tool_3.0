@@ -31,6 +31,12 @@ def calculate_monthly_iwr(df_dd, df_mm, df_crop, crops):
         ae_crop = df_crop[["Date", f"AE_crop_{crop}"]].set_index("Date").resample("M").sum().reset_index()
         df_mm = df_mm.merge(ae_soil, how="left", on="Date", suffixes=("", f"_soil_{crop}"))
         df_mm = df_mm.merge(ae_crop, how="left", on="Date", suffixes=("", f"_crop_{crop}"))
+
+    # Add fallow area evapotranspiration aggregation if available (only if not already present)
+    if "AE_soil_Fallow" in df_dd.columns and "AE_soil_Fallow" not in df_mm.columns:
+        ae_soil_fallow = df_dd[["Date", "AE_soil_Fallow"]].set_index("Date").resample("M").sum().reset_index()
+        df_mm = df_mm.merge(ae_soil_fallow, how="left", on="Date")
+
     return df_mm
 
 

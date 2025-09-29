@@ -25,7 +25,8 @@ graph TD
     %% Input Collection Phase
     SC --> IC[Input Collection Phase]
     IC --> IC1[Collect Input Variables<br/>52+ Climate, Soil, Crop Parameters]
-    IC --> IC2[Collect Intervention Variables<br/>126+ Supply/Demand/Soil Interventions]
+    IC --> IC2[Collect Intervention Variables<br/>131+ Supply/Demand/Soil Interventions]
+    IC --> IC3[NEW: Auto-Convert User Files<br/>converter.py Integration]
 
     %% Data Initialization
     IC1 --> DI[Data Initialization]
@@ -137,15 +138,15 @@ def collect_inp_variables(inp_source, master_path):
         (4, "HSC1", lambda: get_variable_value(inp_source, master_path, "HSC1", 4)),
         (5, "HSC2", lambda: get_variable_value(inp_source, master_path, "HSC2", 5)),
 
-        # Multi-season crop management
-        # Kharif season (16-23)
+        # Multi-season crop management (supports both seasonal and plot-based)
+        # Kharif season (16-23) - backward compatibility
         (16, "Kharif_Crops", lambda: get_crops_variable_values(inp_source, master_path, "Kharif_Crops", 16)),
         (17, "Kharif_Sowing_Month", lambda: get_crops_variable_values(inp_source, master_path, "Kharif_Sowing_Month", 17)),
 
-        # Rabi season (24-31)
+        # Rabi season (24-31) - backward compatibility
         (24, "Rabi_Crops", lambda: get_crops_variable_values(inp_source, master_path, "Rabi_Crops", 24)),
 
-        # Summer season (32-39)
+        # Summer season (32-39) - backward compatibility
         (32, "Summer_Crops", lambda: get_crops_variable_values(inp_source, master_path, "Summer_Crops", 32)),
 
         # Infrastructure parameters
@@ -161,9 +162,60 @@ def collect_inp_variables(inp_source, master_path):
     return variables_dict
 ```
 
+### NEW: Plot-Based Processing System
+
+The orchestrator now implements dynamic plot-to-crop mapping and intervention processing:
+
+```python
+# shared/crop_processing.py - NEW: Dynamic plot-to-crop mapping
+def get_dynamic_crop_plot_mapping(inp_source, master_path):
+    """
+    Dynamically creates mapping between plot numbers and crop names
+    Returns: {1: 'Chilli', 2: 'Tobacco', 3: 'Pulses'} (example)
+    Supports both plot-based and seasonal backward compatibility
+    """
+    plot_to_crop = {}
+    
+    for plot_num in [1, 2, 3]:
+        # Try plot-based naming first
+        possible_keys = [
+            f"Plot_{plot_num}_Crop",
+            f"Plot{plot_num}_Crop",
+        ]
+        # Fallback to seasonal mapping for backward compatibility
+        season_mapping = {1: 'Kharif', 2: 'Rabi', 3: 'Summer'}
+        if plot_num in season_mapping:
+            possible_keys.append(f"{season_mapping[plot_num]}_Crops")
+    
+    return plot_to_crop
+
+# shared/crop_processing.py - NEW: Plot-based intervention mapping
+def map_plot_interventions_to_crops(attribute_name, int_var, plot_to_crop_mapping, inp_source, master_path, scenario_num):
+    """
+    Maps plot-based intervention areas to specific crops dynamically.
+    Handles all 14 intervention types without hardcoding.
+    """
+    # Determine appropriate utility function based on intervention type
+    if intervention_type in ["Drip_Area", "Sprinkler_Area", "Land_Levelling_Area", "DSR_Area", "AWD_Area", "SRI_Area", "Ridge_Furrow_Area", "Deficit_Area"]:
+        from shared.input_utilities import get_demand_side_interv_area_values
+        utility_function = get_demand_side_interv_area_values
+    else:  # Soil moisture interventions
+        from shared.input_utilities import get_soil_moisture_interv_area_values
+        utility_function = get_soil_moisture_interv_area_values
+    
+    # Process each crop using plot-based keys like "Crop_Area_1_Drip_Area"
+    crop_interventions = []
+    for plot_num in sorted(plot_to_crop_mapping.keys()):
+        plot_key = f"Crop_Area_{plot_num}_{intervention_type}"
+        intervention_area = utility_function(inp_source, master_path, plot_key, 0, scenario_num)
+        crop_interventions.append(intervention_area)
+    
+    return crop_interventions
+```
+
 ### Intervention Parameter Management
 
-Handles complex intervention scenarios with 126+ parameters:
+Handles complex intervention scenarios with **131+ parameters** (updated from 126):
 
 ```python
 # input_collector.py - Function 002: Collects all intervention variables
@@ -180,13 +232,16 @@ def collect_int_variables(inp_source, master_path):
         (14, "Check_Dam_Vol", lambda: get_supply_side_int_values(inp_source, master_path, "Check_Dam_Vol", 14)),
         (20, "Infiltration_Pond_Vol", lambda: get_supply_side_int_values(inp_source, master_path, "Infiltration_Pond_Vol", 20)),
 
-        # Demand-side interventions (31-81)
-        (31, "Kharif_Crop_Drip_Area", lambda: get_demand_side_interv_area_values(inp_source, master_path, "Kharif_Crop_Drip_Area", 31)),
-        (58, "Kharif_Crop_AWD_Area", lambda: get_demand_side_interv_area_values(inp_source, master_path, "Kharif_Crop_AWD_Area", 58)),
+        # Demand-side interventions (31-81) - NOW SUPPORTS PLOT-BASED
+        (31, "Crop_Area_1_Drip_Area", lambda: get_demand_side_interv_area_values(inp_source, master_path, "Crop_Area_1_Drip_Area", 31)),
+        (58, "Crop_Area_1_AWD_Area", lambda: get_demand_side_interv_area_values(inp_source, master_path, "Crop_Area_1_AWD_Area", 58)),
 
-        # Soil moisture interventions (82-126)
-        (82, "Kharif_Crop_Cover_Crops_Area", lambda: get_soil_moisture_interv_area_values(inp_source, master_path, "Kharif_Crop_Cover_Crops_Area", 82)),
+        # Soil moisture interventions (82-131) - NOW SUPPORTS PLOT-BASED  
+        (82, "Crop_Area_1_Cover_Crops_Area", lambda: get_soil_moisture_interv_area_values(inp_source, master_path, "Crop_Area_1_Cover_Crops_Area", 82)),
         (121, "Red_CN_Tank", lambda: get_soil_moisture_interv_values(inp_source, master_path, "Red_CN_Tank", 121)),
+        
+        # NEW: Check_Dam_Units parameter (parameter 131)
+        (130, "Check_Dam_Units", lambda: get_supply_side_int_values(inp_source, master_path, "Check_Dam_Units", 130)),
     ]
 
     return variables_dict
@@ -349,9 +404,14 @@ def save_dataframes_scenario(val_scenario, master_path, output_dictionary, inp_s
 - **Infrastructure** - Aquifer depth, specific yield, population, water demands
 
 ### Intervention Categories
-- **Supply-Side (30 parameters)** - Farm ponds, check dams, infiltration ponds, injection wells
-- **Demand-Side (50 parameters)** - Drip/sprinkler irrigation, land leveling, deficit irrigation
-- **Soil Moisture (46 parameters)** - Cover crops, mulching, conservation tillage, contour bunds
+- **Supply-Side (31 parameters)** - Farm ponds, check dams, infiltration ponds, injection wells (NEW: Check_Dam_Units added)
+- **Demand-Side (50 parameters)** - Drip/sprinkler irrigation, land leveling, deficit irrigation (NOW: Plot-based processing)
+- **Soil Moisture (50 parameters)** - Cover crops, mulching, conservation tillage, contour bunds (NOW: Plot-based processing)
+
+### NEW: Dynamic Intervention Detection
+All 14 intervention types now processed dynamically without hardcoding:
+- **Demand-side (8 types)**: Drip, Sprinkler, Land_Levelling, DSR, AWD, SRI, Ridge_Furrow, Deficit
+- **Soil moisture (6 types)**: BBF, Cover_Crops, Mulching, Bunds, Tillage, Tank
 
 ### Economic Parameters
 - **Investment Analysis** - Time period (20 years), interest rates (6-10%)

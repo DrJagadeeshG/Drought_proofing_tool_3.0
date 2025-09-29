@@ -13,6 +13,7 @@ from shared.utilities import to_float, mm_to_m3, m3_to_mm, safe_subtract, conver
 from shared.data_readers import irrigation_data_input
 from aquifer_storage_bucket.processing.storage_tracking import calc_storage_residualgw
 from surface_water_bucket.outflux.evaporation import calc_potential_et
+from shared import config_constants
 from surface_water_bucket.influx.water_supply import calc_canal_supply
 from soil_storage_bucket.outflux.irrigation_demand import get_iwr_after_canal
 from aquifer_storage_bucket.influx.recharge_calculations import calc_potential_recharge
@@ -68,15 +69,15 @@ def process_water_management(df_mm, all_crops, surface_areas, added_recharges, w
 
 # water_balance_coordinator.py - Function 002: Processes final water balance calculations
 # Interactions: aquifer_storage_bucket.influx.recharge_calculations.add_runoff_to_recharge, surface_water_bucket.outflux.runoff_disposal.calc_final_ro, surface_water_bucket.processing.water_balance.calc_final_runoff, aquifer_storage_bucket.influx.recharge_calculations.calc_final_recharge, soil_storage_bucket.outflux.evapotranspiration.calc_final_et_biological, soil_storage_bucket.outflux.evapotranspiration.calc_final_et, shared.utilities.convert_dtypes
-def process_final_wb(df, all_crops=None):
+def process_final_wb(df, all_crops=None, df_cc=None, df_crop=None):
     df = add_runoff_to_recharge(df)
     df = calc_final_ro(df)
     df = calc_final_runoff(df)
     df = calc_final_recharge(df)
-    
+
     # Use biological ET calculation if crops are provided, otherwise use water balance
-    if all_crops is not None:
-        df = calc_final_et_biological(df, all_crops)
+    if all_crops is not None and df_cc is not None and df_crop is not None:
+        df = calc_final_et_biological(df, all_crops, df_cc, df_crop)
     else:
         df = calc_final_et(df)
     
@@ -89,11 +90,11 @@ def process_final_wb(df, all_crops=None):
 def calc_storage(df_mm, sw_storage_capacity_created, added_recharge_capacity, storage_limit):
     denominator = df_mm["Potential_recharge"] + df_mm["Potential_ET"] + df_mm["IWR_after_canal"]
     denominator[denominator == 0] = np.inf
-    df_mm.loc[0, "Value after Rejected Recharge"] = to_float(0, 0) + df_mm.loc[
+    df_mm.loc[0, "Value after Rejected Recharge"] = to_float(config_constants.Previous_Month_Rejected_Recharge, 0) + df_mm.loc[
         0, "Qom(m^3)"]
     df_mm.loc[0, "Storage"] = min(sw_storage_capacity_created,
                                   df_mm.loc[0, "Value after Rejected Recharge"] +
-                                  to_float(0, 0) -
+                                  to_float(config_constants.Previous_Month_storage, 0) -
                                   df_mm.loc[0, "SW_abstracted"])
     df_mm.loc[0, "all_req_met"] = np.where(
         df_mm.loc[0, "Potential_recharge"] + df_mm.loc[0, "Potential_ET"] +
@@ -116,7 +117,7 @@ def calc_storage(df_mm, sw_storage_capacity_created, added_recharge_capacity, st
         df_mm.loc[0, "Actual_Recharge"] = df_mm.loc[0, "Potential_recharge"]
         df_mm.loc[0, "Actual_ET"] = df_mm.loc[0, "Potential_ET"]
         df_mm.loc[0, "Actual_IWR"] = df_mm.loc[0, "IWR_after_canal"]
-    df_mm.loc[0, "Runoff_captured"] = df_mm.loc[0, "Storage"] - to_float(0, 0)
+    df_mm.loc[0, "Runoff_captured"] = df_mm.loc[0, "Storage"] - to_float(config_constants.Previous_Month_storage, 0)
     df_mm.loc[0, "Runoff_left_after_storage"] = df_mm.loc[0, "value_after_subtracting_domestic_SW_use"] - df_mm.loc[
         0, "Runoff_captured"]
     df_mm.loc[0, "Runoff in GW recharge str"] = added_recharge_capacity if (df_mm.loc[

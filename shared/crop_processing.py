@@ -74,7 +74,8 @@ other_columns = {
     "Irrigated_CWR_Avg": "Irr_CWR_{crop}(cu.m/ha)",
     "Irrigated_CWA_Avg": "Irr_CWA_{crop}(cu.m/ha)",
     "Combined_CWR_Avg": "Combined CWR_{crop}(cu.m/ha)",
-    "Combined_CWA_Avg": "Combined CWA_{crop}(cu.m/ha)"
+    "Combined_CWA_Avg": "Combined CWA_{crop}(cu.m/ha)",
+    "ET_Biological_Avg": "ET_Biological"
 }
 
 
@@ -118,24 +119,207 @@ def select_valid_crops(df_cp):
 
 # crop_processing.py - Function 003: Combines seasonal attributes from input and intervention variables
 # Interactions: orchestrator.input_collector.collect_inp_variables, orchestrator.input_collector.collect_int_variables
-def combine_attributes(attribute_name,inp_source,master_path):
+def get_dynamic_crop_plot_mapping(inp_source, master_path):
+    """
+    Dynamically creates a mapping between plot numbers and crop names
+    based on the actual crop pattern data.
+    Returns: {1: 'Chilli', 2: 'Tobacco', 3: 'Pulses'} (example)
+    """
+    from orchestrator.input_collector import collect_inp_variables
+    
+    inp_var = collect_inp_variables(inp_source, master_path)
+    
+    plot_to_crop = {}
+    
+    # Process each plot directly (Plot 1, 2, 3) instead of using seasons
+    for plot_num in [1, 2, 3]:
+        # Try multiple possible naming conventions for backward compatibility
+        possible_keys = [
+            f"Plot_{plot_num}_Crop",  # Future: Direct plot-based naming
+            f"Plot{plot_num}_Crop",   # Alternative format
+        ]
+        
+        # Fallback: Map to seasonal data for backward compatibility
+        season_mapping = {1: 'Kharif', 2: 'Rabi', 3: 'Summer'}
+        if plot_num in season_mapping:
+            possible_keys.append(f"{season_mapping[plot_num]}_Crops")
+        
+        crop_name = None
+        for key in possible_keys:
+            crop_name = inp_var.get(key, None)
+            if crop_name:
+                break
+        
+        # Handle single crop (string) or multiple crops (list)
+        if isinstance(crop_name, str) and crop_name.strip():
+            plot_to_crop[plot_num] = crop_name.strip()
+        elif isinstance(crop_name, list) and len(crop_name) > 0 and crop_name[0]:
+            plot_to_crop[plot_num] = crop_name[0].strip()
+    
+    return plot_to_crop
+
+def map_plot_interventions_to_crops(attribute_name, int_var, plot_to_crop_mapping, inp_source, master_path, scenario_num):
+    """
+    Maps plot-based intervention areas to specific crops dynamically.
+    
+    Args:
+        attribute_name: e.g., "Crop_Drip_Area"
+        int_var: intervention variables dictionary
+        plot_to_crop_mapping: {1: 'Chilli', 2: 'Tobacco', 3: 'Pulses'}
+        inp_source: input source
+        master_path: master path
+        scenario_num: scenario number
+    
+    Returns:
+        List of intervention areas for each crop in order
+    """
+    # Map attribute names to intervention types
+    intervention_mapping = {
+        # Demand-side interventions
+        "Crop_Drip_Area": "Drip_Area",
+        "Crop_Sprinkler_Area": "Sprinkler_Area", 
+        "Crop_Land_Levelling_Area": "Land_Levelling_Area",
+        "Crop_DSR_Area": "DSR_Area",
+        "Crop_AWD_Area": "AWD_Area",
+        "Crop_SRI_Area": "SRI_Area",
+        "Crop_Ridge_Furrow_Area": "Ridge_Furrow_Area",
+        "Crop_Deficit_Area": "Deficit_Area",
+        # Soil moisture interventions
+        "Crop_BBF_Area": "BBF_Area",
+        "Crop_Cover_Crops_Area": "Cover_Crops_Area",
+        "Crop_Mulching_Area": "Mulching_Area", 
+        "Crop_Bunds_Area": "Bunds_Area",
+        "Crop_Tillage_Area": "Tillage_Area",
+        "Crop_Tank_Area": "Tank_Area"
+    }
+    
+    intervention_type = intervention_mapping.get(attribute_name)
+    if not intervention_type:
+        return []
+    
+    # Determine which utility function to use based on intervention type
+    if intervention_type in ["Drip_Area", "Sprinkler_Area", "Land_Levelling_Area", "DSR_Area", "AWD_Area", "SRI_Area", "Ridge_Furrow_Area", "Deficit_Area"]:
+        from shared.input_utilities import get_demand_side_interv_area_values
+        utility_function = get_demand_side_interv_area_values
+    else:  # Soil moisture interventions
+        from shared.input_utilities import get_soil_moisture_interv_area_values
+        utility_function = get_soil_moisture_interv_area_values
+    
+    crop_interventions = []
+    
+    # Process each crop in the order they appear in the system
+    for plot_num in sorted(plot_to_crop_mapping.keys()):
+        crop_name = plot_to_crop_mapping[plot_num]
+        plot_key = f"Crop_Area_{plot_num}_{intervention_type}"
+        
+        # Read the plot-based value directly from the intervention system
+        # Use the appropriate utility function based on intervention type
+        intervention_area = utility_function(inp_source, master_path, plot_key, 0, scenario_num)
+        
+        # Flatten the result if it's a list
+        if isinstance(intervention_area, list) and len(intervention_area) > 0:
+            intervention_area = intervention_area[0]
+        elif isinstance(intervention_area, list):
+            intervention_area = 0
+            
+        crop_interventions.append(intervention_area)
+    
+    return crop_interventions
+
+def combine_attributes(attribute_name,inp_source,master_path, scenario_num=0):
     inp_var = collect_inp_variables(inp_source,master_path)  # Dictionary from your collect_inp_variables function
-    int_var = collect_int_variables(inp_source,master_path)   # Dictionary from your collect_int_variables function
-    # Access the lists from inp_var and int_var dictionaries
-    kharif = inp_var.get(f"Kharif_{attribute_name}", []) + int_var.get(f"Kharif_{attribute_name}", [])
-    rabi = inp_var.get(f"Rabi_{attribute_name}", []) + int_var.get(f"Rabi_{attribute_name}", [])
-    summer = inp_var.get(f"Summer_{attribute_name}", []) + int_var.get(f"Summer_{attribute_name}", [])
+    int_var = collect_int_variables(inp_source,master_path, scenario_num)   # Dictionary from your collect_int_variables function
+    
+    # NEW: Dynamic plot-based intervention mapping for ALL intervention types
+    intervention_types = [
+        # Demand-side interventions
+        "Crop_Drip_Area", "Crop_Sprinkler_Area", "Crop_Land_Levelling_Area",
+        "Crop_DSR_Area", "Crop_AWD_Area", "Crop_SRI_Area", 
+        "Crop_Ridge_Furrow_Area", "Crop_Deficit_Area",
+        # Soil moisture interventions
+        "Crop_BBF_Area", "Crop_Cover_Crops_Area", "Crop_Mulching_Area",
+        "Crop_Bunds_Area", "Crop_Tillage_Area", "Crop_Tank_Area"
+    ]
+    
+    if attribute_name in intervention_types:
+        # Get dynamic crop-plot mapping
+        plot_to_crop = get_dynamic_crop_plot_mapping(inp_source, master_path)
+        # Map plot-based interventions to crops
+        crop_interventions = map_plot_interventions_to_crops(attribute_name, int_var, plot_to_crop, inp_source, master_path, scenario_num)
+        
+        # Return the interventions in the correct order for each crop
+        return crop_interventions
+    
+    # Try plot-based format first (Plot_1_, Plot_2_, Plot_3_)
+    plot_values = []
+    found_plot_data = False
+    
+    for plot_num in [1, 2, 3]:
+        plot_key = f"Plot_{plot_num}_{attribute_name}"
+        
+        plot_inp = inp_var.get(plot_key, [])
+        plot_int = int_var.get(plot_key, [])
+        
+        if plot_inp or plot_int:
+            found_plot_data = True
+            
+        # Convert single values to lists if necessary
+        if not isinstance(plot_inp, list):
+            plot_inp = [plot_inp] if plot_inp is not None else []
+        if not isinstance(plot_int, list):
+            plot_int = [plot_int] if plot_int is not None else []
+            
+        plot_combined = plot_inp + plot_int
+        plot_values.extend(plot_combined)
+    
+    # If plot-based data found, return it
+    if found_plot_data:
+        return plot_values
+    
+    # Fallback to seasonal format for backward compatibility
+    kharif_key = f"Kharif_{attribute_name}"
+    rabi_key = f"Rabi_{attribute_name}"
+    summer_key = f"Summer_{attribute_name}"
+    
+    # Get values, ensuring they are lists
+    kharif_inp = inp_var.get(kharif_key, [])
+    rabi_inp = inp_var.get(rabi_key, [])
+    summer_inp = inp_var.get(summer_key, [])
+    
+    kharif_int = int_var.get(kharif_key, [])
+    rabi_int = int_var.get(rabi_key, [])
+    summer_int = int_var.get(summer_key, [])
+    
+    # Convert single values to lists if necessary
+    if not isinstance(kharif_inp, list):
+        kharif_inp = [kharif_inp] if kharif_inp is not None else []
+    if not isinstance(rabi_inp, list):
+        rabi_inp = [rabi_inp] if rabi_inp is not None else []
+    if not isinstance(summer_inp, list):
+        summer_inp = [summer_inp] if summer_inp is not None else []
+        
+    if not isinstance(kharif_int, list):
+        kharif_int = [kharif_int] if kharif_int is not None else []
+    if not isinstance(rabi_int, list):
+        rabi_int = [rabi_int] if rabi_int is not None else []
+    if not isinstance(summer_int, list):
+        summer_int = [summer_int] if summer_int is not None else []
+    
+    # Combine the lists
+    kharif = kharif_inp + kharif_int
+    rabi = rabi_inp + rabi_int
+    summer = summer_inp + summer_int
     
     return kharif + rabi + summer
 
 
 # crop_processing.py - Function 004: Combines and normalizes all crop attributes to consistent lengths
 # Interactions: combine_attributes
-def combine_and_normalize_attributes(var_attribute_names,inp_source,master_path):
+def combine_and_normalize_attributes(var_attribute_names,inp_source,master_path, scenario_num=0):
     print("FUNCTION 31: combine_and_normalize_attributes() - Combining and normalizing attributes")
     all_attributes = {
         name.replace("Crops_", "").replace("Crop_", "").replace("Crops", "All Crops"):
-            combine_attributes(name,inp_source,master_path)
+            combine_attributes(name,inp_source,master_path, scenario_num)
         for name in var_attribute_names
     }
         
@@ -256,8 +440,8 @@ def apply_return_flow(row,inp_source,master_path):
 
 # crop_processing.py - Function 009: Processes crop details including efficiency and return flow values
 # Interactions: combine_and_normalize_attributes, soil_storage_bucket.outflux.evapotranspiration.apply_eva_red, apply_efficiency, soil_storage_bucket.outflux.evapotranspiration.calc_red_soil_evap, get_ky_value, apply_return_flow, shared.utilities.convert_columns_to_numeric, pandas
-def crop_details(attribute_names, all_crops, crop_df,inp_source,master_path):
-    all_attributes = combine_and_normalize_attributes(attribute_names,inp_source,master_path)
+def crop_details(attribute_names, all_crops, crop_df,inp_source,master_path, scenario_num=0):
+    all_attributes = combine_and_normalize_attributes(attribute_names,inp_source,master_path, scenario_num)
     df_cc = pd.DataFrame(all_attributes)
 
     if "All Crops" in df_cc.columns:
@@ -266,6 +450,19 @@ def crop_details(attribute_names, all_crops, crop_df,inp_source,master_path):
         df_cc = df_cc[df_cc.index != ""]  # Remove rows where the index is an empty string
         df_cc = df_cc[~df_cc.index.isna()]  # Remove rows where the index is NaN
     df_cc["Area"] = pd.to_numeric(df_cc["Irr_Area"]) + pd.to_numeric(df_cc["Rainfed_Area"])
+
+    # Initialize efficiency columns with default values before applying functions
+    for eff_key, eff_value in default_efficiency_values.items():
+        df_cc[eff_key] = eff_value / 100  # Convert percentage to decimal
+    
+    # Initialize eva reduction columns with default values
+    for eva_key, eva_value in default_eva_red_values.items():
+        df_cc[eva_key] = eva_value
+    
+    # Initialize return flow columns with default values
+    df_cc["GW_rf"] = 0.15  # Default non-paddy groundwater return flow
+    df_cc["SW_rf"] = 0.20  # Default non-paddy surface water return flow
+    df_cc["Over_all_rf"] = 0.17  # Default overall return flow
 
     df_cc = df_cc.apply(apply_eva_red, axis=1, 
                         args=(default_eva_red_values,inp_source, master_path))
@@ -330,16 +527,19 @@ def calc_rg_days_ini(df, crop_df, selected_crop, sowing_month, sowing_week):
 
     # Calculate start dates for all entries in the DataFrame
     df["start_date"] = df["Date"].dt.year.apply(find_start_date, args=(sowing_month_num, sowing_week))
+    
+    # Calculate end dates for crop growth period
+    df["end_date"] = df["start_date"] + pd.Timedelta(days=total_growth_days)
 
-    # Calculate remaining growth days for the initial year
+    # Calculate remaining growth days for the initial year - FIXED: Added end_date condition
     df[rg_days_col_name] = np.where(
-        df["Date"] >= df["start_date"],
-        np.maximum(0, total_growth_days - (df["Date"] - df["start_date"]).dt.days),
+        (df["Date"] >= df["start_date"]) & (df["Date"] < df["end_date"]),
+        np.maximum(0, total_growth_days - (df["Date"] - df["start_date"]).dt.days - 1),
         0
     )
 
-    # Drop the temporary start_date column
-    df.drop("start_date", axis=1, inplace=True)
+    # Drop the temporary columns
+    df.drop(["start_date", "end_date"], axis=1, inplace=True)
     return df
 
 
@@ -350,22 +550,16 @@ def calc_remaining_days(df, crop_df, selected_crop, sowing_month, sowing_week):
     total_growth_days = get_total_growth_days(crop_df, selected_crop)
     rg_days_col_name = f"RG_days_{selected_crop}"
 
-    # Get unique years from the DataFrame
-    years = df["Date"].dt.year.unique()
+    # Use the exact same logic as original - row by row calculation
+    def find_start_date_row(row):
+        start_date = pd.to_datetime(f"{row['Date'].year}-{sowing_month_num}-01") + pd.Timedelta(
+            days=(int(sowing_week) - 1) * 7)
+        return start_date if start_date <= row["Date"] else start_date - pd.DateOffset(years=1)
 
-    for year in years:
-        year_mask = df["Date"].dt.year == year
-        start_date = find_start_date(year, sowing_month_num, sowing_week)
-        end_date = start_date + pd.Timedelta(days=total_growth_days)
-
-        # Calculate remaining days for this year
-        year_df = df.loc[year_mask].copy()
-        days_passed = (year_df["Date"] - start_date).dt.days
-        remaining_days = (total_growth_days - days_passed - 1).clip(lower=0)
-
-        # Apply the mask for dates within the growing period
-        growing_mask = (year_df["Date"] >= start_date) & (year_df["Date"] < end_date)
-        df.loc[year_mask & growing_mask, rg_days_col_name] = remaining_days.loc[growing_mask]
+    df["start_date"] = df.apply(find_start_date_row, axis=1)
+    df[rg_days_col_name] = (df["start_date"] + pd.Timedelta(days=total_growth_days) - df["Date"] - pd.Timedelta(
+        days=1)).dt.days.clip(lower=0)
+    df.drop("start_date", axis=1, inplace=True)
 
     return df
 
@@ -377,6 +571,15 @@ def process_yearly_rg_days(df, crop_df, crops, months, weeks):
     first_year = df["Date"].dt.year.min()
     first_year_df = df[df["Date"].dt.year == first_year].copy()
     remaining_years_df = df[df["Date"].dt.year != first_year].copy()
+
+    # Initialize RG_days columns to 0 for all crops in remaining years
+    for crop in crops:
+        if crop:
+            rg_days_col_name = f"RG_days_{crop}"
+            if rg_days_col_name not in remaining_years_df.columns:
+                remaining_years_df[rg_days_col_name] = 0
+            else:
+                remaining_years_df[rg_days_col_name] = 0  # Reset to 0
 
     # Process first year crops
     for crop, month, week in zip(crops, months, weeks):

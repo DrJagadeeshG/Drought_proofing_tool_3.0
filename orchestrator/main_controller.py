@@ -45,7 +45,7 @@ def save_dataframes_scenario(val_scenario, master_path, output_dictionary, inp_s
     def save_dictionaries_to_csv(val_scenario, inp_source, scenario_folder):
         # Collect variables
         inp_var = collect_inp_variables(inp_source, master_path)
-        int_var = collect_int_variables(inp_source, master_path)
+        int_var = collect_int_variables(inp_source, master_path, val_scenario)
 
         # Convert values to string representation to handle multi-value entries
         inp_var_str = {}
@@ -224,10 +224,10 @@ def copy_scenario_intervention_file(scenario_no, base_path):
 
 # main_controller.py - Function 005: Main orchestrator running all drought proofing processes
 # Interactions: orchestrator.input_collector, shared.data_readers, shared.crop_processing, soil_storage_bucket.outflux.evapotranspiration, soil_storage_bucket.input_data.soil_properties, soil_storage_bucket.processing.conservation_practices, soil_storage_bucket.processing.water_storage, shared.land_use, shared.irrigation_efficiency, aquifer_storage_bucket.processing.storage_capacity, aquifer_storage_bucket.influx.recharge_capacity, surface_water_bucket.processing.curve_numbers, surface_water_bucket.processing.runoff_calculations, soil_storage_bucket.processing.soil_moisture_deficit, aquifer_storage_bucket.influx.recharge_calculations, orchestrator.water_balance_coordinator, shared.economics, outputs.output_aggregator, outputs.yield_calculations, pandas, shared.config_constants
-def dr_prf_all_processes(inp_source,master_path,file_paths,year_type, counter):
+def dr_prf_all_processes(inp_source,master_path,file_paths,year_type, counter, scenario_num=0):
     print("FUNCTION 30: dr_prf_all_processes() - Running all drought proofing processes")
     inp_var = collect_inp_variables(inp_source,master_path)
-    int_var = collect_int_variables(inp_source,master_path)
+    int_var = collect_int_variables(inp_source,master_path, scenario_num)
     crop_df = get_crop_data(file_paths["crop_db"])
     season_data = get_season_data(inp_source,master_path)
     df_cp, num_plots = assign_plots_to_crops(season_data)
@@ -238,7 +238,7 @@ def dr_prf_all_processes(inp_source,master_path,file_paths,year_type, counter):
     valid_crops_df = select_valid_crops(df_cp)
     all_crops = valid_crops_df["Crop"].tolist()
     all_plots = valid_crops_df["Plot"].unique().tolist()
-    df_cc = crop_details(attribute_names, all_crops, crop_df,inp_source,master_path)
+    df_cc = crop_details(attribute_names, all_crops, crop_df,inp_source,master_path, scenario_num)
     season = get_seasons_val(inp_source,master_path)
     df_crop = process_seasonal_crops(df_crop, crop_df, df_cp, season)
     df_dd, df_crop, df_mm = calc_etci_plot(df_crop, df_cc, df_cp, df_dd, df_mm, all_plots, all_crops,
@@ -307,11 +307,11 @@ def dr_prf_all_processes(inp_source,master_path,file_paths,year_type, counter):
         ]] + [sw_storage_capacity_created, added_recharge_capacity, storage_limit]
     df_mm = process_water_management(df_mm, all_crops, surface_areas, added_recharges, water_resource_list,
                                                     aquifer_para_list, file_paths["irrigation"])
-    df_mm = process_final_wb(df_mm, all_crops)
+    df_mm = process_final_wb(df_mm, all_crops, df_cc, df_crop)
     df_yr = process_yearly_df(df_mm, df_cc, all_crops, yield_columns,
                                              other_columns)
     economic_list = [float(int_var["Interest_Rate"]), float(int_var["Time_Period"])]
-    df_int = calculate_intervention_economics(economic_list, df_cc,inp_source,master_path)
+    df_int = calculate_intervention_economics(economic_list, df_cc,inp_source,master_path, scenario_num)
     df_crop_yr, df_wb_yr, df_wb_mm = process_water_year_data(df_mm, df_cp, all_crops, year_type)
     df_crop_yr = calculate_yield_wyr(df_cc, df_crop_yr, all_crops)
     df_crop_yr = calc_weighted_avg(df_cc, df_crop_yr, all_crops, yield_columns,
@@ -338,8 +338,8 @@ def dr_prf_all_processes(inp_source,master_path,file_paths,year_type, counter):
 
 # main_controller.py - Function 006: Entry point for drought proofing routines
 # Interactions: shared.data_readers.get_file_paths, dr_prf_all_processes
-def run_dr_pf_routines(inp_source, master_path, year_type, counter):
+def run_dr_pf_routines(inp_source, master_path, year_type, counter, scenario_num=0):
     print("FUNCTION 31: run_dr_pf_routines() - Starting main drought proofing routines")
     file_paths = get_file_paths(inp_source, master_path)
-    consolidated_dataframes = dr_prf_all_processes(inp_source, master_path, file_paths, year_type, counter)
+    consolidated_dataframes = dr_prf_all_processes(inp_source, master_path, file_paths, year_type, counter, scenario_num)
     return consolidated_dataframes

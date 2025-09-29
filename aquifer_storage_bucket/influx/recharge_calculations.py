@@ -13,6 +13,7 @@ import pandas as pd
 from shared.utilities import to_float, convert_dtypes
 from soil_storage_bucket.processing.water_stress import calc_ks_soil_cond, calc_ks_soil
 from soil_storage_bucket.outflux.evapotranspiration import calc_ke, calc_esi_fallow, calc_ae_soil_fallow
+from shared import config_constants
 # Removed circular import - moved calc_smd_fallow function to this file
 from soil_storage_bucket.outflux.irrigation_demand import calculate_iwr, calculate_monthly_iwr
 from orchestrator.input_collector import collect_inp_variables
@@ -26,7 +27,7 @@ def calc_gwnr_fallow_plot(df_crop, df_mm, df_dd, all_plots, all_crops, inp_lulc_
     df_dd["Kc_Fallow"] = np.float32(0)
     df_dd["Ke_Fallow"] = df_dd["Kc_Fallow"].apply(calc_ke)
     df_dd["ESi_Fallow"] = df_dd.apply(lambda row: calc_esi_fallow(row), axis=1)
-    df_dd.loc[0, "SMDi_shifted_Fallow"] = 0
+    df_dd.loc[0, "SMDi_shifted_Fallow"] = config_constants.SMDi_1
     
     # TEMPORARILY DISABLED: September 1st fallow reset (for testing)
     # fallow_reset_indices = []
@@ -75,14 +76,15 @@ def calc_gwnr_fallow_plot(df_crop, df_mm, df_dd, all_plots, all_crops, inp_lulc_
     df_dd = convert_dtypes(df_dd)
     df_crop = convert_dtypes(df_crop)
     
-    # Update AE_soil_crop with fallow values when crop is not sown
-    for crop in all_crops:
-        sown_area_col = f"{crop}_Sown_Area"
-        ae_soil_crop_col = f"AE_soil_{crop}"
-        if sown_area_col in df_crop.columns and ae_soil_crop_col in df_crop.columns:
-            # Where crop is not sown, use fallow evaporation value
-            not_sown_mask = df_crop[sown_area_col] == 0
-            df_crop.loc[not_sown_mask, ae_soil_crop_col] = df_dd.loc[not_sown_mask, "AE_soil_Fallow"]
+    # DISABLED: Update AE_soil_crop with fallow values when crop is not sown
+    # This redistribution is disabled to ensure crop AE values exactly match plot AE values
+    # for crop in all_crops:
+    #     sown_area_col = f"{crop}_Sown_Area"
+    #     ae_soil_crop_col = f"AE_soil_{crop}"
+    #     if sown_area_col in df_crop.columns and ae_soil_crop_col in df_crop.columns:
+    #         # Where crop is not sown, use fallow evaporation value
+    #         not_sown_mask = df_crop[sown_area_col] == 0
+    #         df_crop.loc[not_sown_mask, ae_soil_crop_col] = df_dd.loc[not_sown_mask, "AE_soil_Fallow"]
     
     # Recalculate monthly aggregation after AE_soil changes
     df_mm = calculate_monthly_iwr(df_dd, df_mm.copy(), df_crop.copy(), all_crops)
@@ -198,21 +200,15 @@ def get_recharge(pi, soil_gwrecharge_coefficient):
     return recharge
 
 
-# recharge_calculations.py - Function 011: Calculates groundwater recharge from precipitation (renamed to avoid conflict)
-# Interactions: None
-def calc_gw_rech(pi, soil_gwrecharge_coefficient):
-    recharge = pi * soil_gwrecharge_coefficient
-    return recharge
 
-
-# recharge_calculations.py - Function 012: Calculates added monthly recharge from infiltration
+# recharge_calculations.py - Function 011: Calculates added monthly recharge from infiltration
 # Interactions: shared.utilities.to_float
 def calc_added_monthly_recharge(surface_area, inf_rate):
     inf_rate = to_float(inf_rate, 0)
     return surface_area * inf_rate * 30 / 1000
 
 
-# recharge_calculations.py - Function 013: Calculates potential groundwater recharge from structures
+# recharge_calculations.py - Function 012: Calculates potential groundwater recharge from structures
 # Interactions: pandas
 def calc_potential_recharge(farm, farm_lined, check_dam, df_mm):
     added_surface_recharge_capacity = farm + farm_lined + check_dam
@@ -220,7 +216,7 @@ def calc_potential_recharge(farm, farm_lined, check_dam, df_mm):
     return df_mm
 
 
-# recharge_calculations.py - Function 014: Adds runoff to recharge calculations
+# recharge_calculations.py - Function 013: Adds runoff to recharge calculations
 # Interactions: pandas
 def add_runoff_to_recharge(df_mm):
     new_columns = pd.DataFrame({
@@ -229,7 +225,7 @@ def add_runoff_to_recharge(df_mm):
     return df_mm
 
 
-# recharge_calculations.py - Function 015: Calculates final groundwater recharge
+# recharge_calculations.py - Function 014: Calculates final groundwater recharge
 # Interactions: pandas
 def calc_final_recharge(df_mm):
     df_mm["Final_Recharge"] = (df_mm["Recharge"] - df_mm["Rejected_recharge_mm"] + df_mm["runoff to recharge"]).clip(
@@ -237,7 +233,7 @@ def calc_final_recharge(df_mm):
     return df_mm
 
 
-# recharge_calculations.py - Function 016: Calculates soil moisture deficit for fallow land areas
+# recharge_calculations.py - Function 015: Calculates soil moisture deficit for fallow land areas
 # Interactions: None
 def calc_smd_fallow(smdi, ae_soil, pei):
     if smdi + ae_soil - pei < 0:

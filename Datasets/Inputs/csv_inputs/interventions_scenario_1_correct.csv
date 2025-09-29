@@ -1,0 +1,14 @@
+General Settings,,,,,,,,,,,,,,,,,,,,,,,,,,
+Time_Period,20,,,,,,,,,,,,,,,,,,,,,,,,,
+Interest_Rate,7,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,
+SUPPLY SIDE INTERVENTIONS,DEMAND SIDE INTERVENTIONS,SOIL MANAGEMENT INTERVENTIONS,,,,,,,,,,,,,,,,,,,,,,,,
+Supply Intervention,Vol,Depth,Inf_Rate,Cost,Life_Span,Maintenance,Units,,Demand Intervention,Crop_Area_1,Crop_Area_2,Crop_Area_3,Eff,Cost,Life_Span,Maintenance,,Soil Intervention,Crop_Area_1,Crop_Area_2,Crop_Area_3,Red_CN,Eva_Red,Cost,Life_Span,Maintenance
+Farm_Pond,0,0,0,0,0,0,0,,Drip_irrigation,500,0,0,90,60000,8,6,,Cover_Crops,0,0,0,0,0,0,0,0
+Farm_Pond_Lined,0,2,3,120,10,6,0,,Sprinkler_irrigation,0,0,0,0,0,0,0,,Mulching,0,0,0,0,0,0,0,0
+Check_Dam,0,0,0,0,0,0,0,,Land_Levelling,0,0,0,0,0,0,0,,BBF,0,0,0,0,0,0,0,0
+Infiltration_Pond,0,0,0,0,0,0,0,,Direct_Seeded_Rice,0,0,0,0,0,0,0,,Bunds,0,0,0,0,0,0,0,0
+Injection_Wells,0,0,0,0,0,0,0,,Alternate_Wetting_And_Dry,0,0,0,0,0,0,0,,Tillage,0,0,0,0,0,0,0,0
+,,,,,,,,,SRI,0,0,0,0,0,0,0,,Tank,0,0,0,0,0,0,0,0
+,,,,,,,,,Ridge_Furrow_Irrigation,0,0,0,0,0,0,0,,,,,,,,,,
+,,,,,,,,,Deficit_Irrigation,0,0,0,0,0,0,0,,,,,,,,,,

@@ -45,6 +45,36 @@ counter = [0]
 base_path = os.getcwd()
 
 print(f"Running scenario {scenario}...")
-results = run_dr_pf_routines('csv', base_path, 'calendar', counter)
+
+# Auto-convert user-friendly "correct" files to system key-value files
+if scenario > 0:  # Only for intervention scenarios, not baseline
+    import subprocess
+    import os
+    correct_file = f"Datasets/Inputs/csv_inputs/interventions_scenario_{scenario}_correct.csv"
+    keyvalue_file = f"Datasets/Inputs/csv_inputs/interventions_scenario_{scenario}.csv"
+    
+    # Check if correct file exists
+    if os.path.exists(correct_file):
+        print(f"Auto-converting interventions_scenario_{scenario}_correct.csv...")
+        try:
+            # Run converter for this specific scenario
+            result = subprocess.run(['python', 'converter.py', str(scenario)], 
+                                  capture_output=True, text=True, cwd=base_path)
+            if result.returncode == 0:
+                print(f"✅ Successfully converted scenario {scenario}")
+            else:
+                print(f"⚠️  Converter warning: {result.stderr}")
+                print("Proceeding with existing key-value file...")
+        except Exception as e:
+            print(f"⚠️  Auto-conversion failed: {e}")
+            print("Proceeding with existing key-value file...")
+    else:
+        print(f"No correct file found, using existing key-value file")
+
+# Copy the appropriate scenario intervention file to interventions.csv
+from orchestrator.main_controller import copy_scenario_intervention_file
+copy_scenario_intervention_file(scenario, base_path)
+
+results = run_dr_pf_routines('csv', base_path, 'calendar', counter, scenario)
 saved_files = save_dataframes_scenario(scenario, base_path, results, 'csv')
 print(f"Completed! {len(saved_files)} files saved")

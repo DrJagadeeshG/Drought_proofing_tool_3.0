@@ -101,7 +101,7 @@ graph TD
 
 - **`data_readers.py`** - CSV file reading, caching, and climate data processing
 - **`input_utilities.py`** - Input variable retrieval from CSV or manual sources
-- **`crop_processing.py`** - Comprehensive crop data processing and growth calculations
+- **`crop_processing.py`** - Comprehensive crop data processing with NEW plot-based functions
 
 **Specialized calculations:**
 
@@ -180,7 +180,8 @@ def get_file_paths(inp_source,master_path):
 
 ### Comprehensive Crop Processing System
 
-Advanced crop processing with plot assignments, seasonal management, and growth calculations:
+Advanced crop processing with plot assignments, seasonal management, and growth calculations.
+**NEW: Plot-based processing functions added:**
 
 ```python
 # crop_processing.py - Function 001: Assigns plot numbers to crops and calculates plot statistics
@@ -206,6 +207,48 @@ def assign_plots_to_crops(var_season_data):
     # Calculate the number of unique plots
     num_plots = len(df_cp["Plot"].unique())
     return df_cp, num_plots
+
+# NEW: Dynamic plot-to-crop mapping function
+def get_dynamic_crop_plot_mapping(inp_source, master_path):
+    """
+    Dynamically creates mapping between plot numbers and crop names
+    Returns: {1: 'Chilli', 2: 'Tobacco', 3: 'Pulses'} (example)
+    """
+    plot_to_crop = {}
+    
+    for plot_num in [1, 2, 3]:
+        # Try plot-based naming first
+        possible_keys = [
+            f"Plot_{plot_num}_Crop",
+            f"Plot{plot_num}_Crop",
+        ]
+        # Fallback to seasonal mapping for backward compatibility
+        season_mapping = {1: 'Kharif', 2: 'Rabi', 3: 'Summer'}
+        if plot_num in season_mapping:
+            possible_keys.append(f"{season_mapping[plot_num]}_Crops")
+    
+    return plot_to_crop
+
+# NEW: Plot-based intervention mapping function  
+def map_plot_interventions_to_crops(attribute_name, int_var, plot_to_crop_mapping, inp_source, master_path, scenario_num):
+    """
+    Maps plot-based intervention areas to specific crops dynamically.
+    Handles all 14 intervention types without hardcoding.
+    """
+    # Determine appropriate utility function based on intervention type
+    if intervention_type in ["Drip_Area", "Sprinkler_Area", "Land_Levelling_Area", "DSR_Area", "AWD_Area", "SRI_Area", "Ridge_Furrow_Area", "Deficit_Area"]:
+        utility_function = get_demand_side_interv_area_values
+    else:  # Soil moisture interventions
+        utility_function = get_soil_moisture_interv_area_values
+    
+    # Process each crop using plot-based keys like "Crop_Area_1_Drip_Area"
+    crop_interventions = []
+    for plot_num in sorted(plot_to_crop_mapping.keys()):
+        plot_key = f"Crop_Area_{plot_num}_{intervention_type}"
+        intervention_area = utility_function(inp_source, master_path, plot_key, 0, scenario_num)
+        crop_interventions.append(intervention_area)
+    
+    return crop_interventions
 ```
 
 ### Growth Days and Crop Calendar Processing
@@ -453,6 +496,22 @@ Essential conversion functions for hydrological calculations:
 - **Area Calculations** - Land use and crop area processing
 
 ## Key Functionality Categories
+
+### NEW: Dynamic Intervention Processing
+All 14 intervention types now processed dynamically without hardcoding:
+
+```python
+# All intervention types handled dynamically in combine_attributes():
+intervention_types = [
+    # Demand-side interventions
+    "Crop_Drip_Area", "Crop_Sprinkler_Area", "Crop_Land_Levelling_Area",
+    "Crop_DSR_Area", "Crop_AWD_Area", "Crop_SRI_Area", 
+    "Crop_Ridge_Furrow_Area", "Crop_Deficit_Area",
+    # Soil moisture interventions
+    "Crop_BBF_Area", "Crop_Cover_Crops_Area", "Crop_Mulching_Area",
+    "Crop_Bunds_Area", "Crop_Tillage_Area", "Crop_Tank_Area"
+]
+```
 
 ### Configuration Management
 - **System Constants** - Default values for soil, irrigation, and climate parameters

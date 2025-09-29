@@ -8,16 +8,20 @@ Root depth calculations for drought proofing tool
 # FILE PURPOSE: Calculates crop root depths based on growth stages and aggregates by plot for soil moisture calculations
 # ========================================
 
+import pandas as pd
+
 
 # root_depth.py - Function 001: Calculates crop root depth based on growth stage and crop parameters
 # Interactions: None
 def root_dep(row, min_root_depth, max_root_depth, total_growth_days, selected_crop):
     try:
-        if row[f"RG_days_{selected_crop}"] == 0:
+        rg_days = row[f"RG_days_{selected_crop}"]
+        # Handle NaN values by treating them as 0 (no active crop)
+        if pd.isna(rg_days) or rg_days == 0:
             crop_rd = 0
         else:
             crop_rd = min_root_depth + (max_root_depth - min_root_depth) * \
-                      (total_growth_days - row[f"RG_days_{selected_crop}"]) / total_growth_days
+                      (total_growth_days - rg_days) / total_growth_days
         return crop_rd
     except ValueError:
         return None

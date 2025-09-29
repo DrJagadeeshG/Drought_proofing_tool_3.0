@@ -178,12 +178,8 @@ def calc_ae_per_crop(df_crop, valid_crops_df, ae_type):
                 ae_crop_col = ae_crop_col_template.format(crop=crop)
 
                 if sown_area_col in df_crop.columns:
-                    if df_crop.loc[i, sown_area_col] > 0:
-                        # Update AE_{crop/soil}_{crop} with the value from AE_{crop/soil}_{plot}
-                        df_crop.loc[i, ae_crop_col] = df_crop.loc[i, ae_plot_col]
-                    else:
-                        # Set AE_{crop/soil}_{crop} to 0 if sown area is 0
-                        df_crop.loc[i, ae_crop_col] = np.float32(0)
+                    # ALWAYS assign plot AE to crop regardless of sown area (1:1 mapping)
+                    df_crop.loc[i, ae_crop_col] = df_crop.loc[i, ae_plot_col]
 
     return df_crop
 
@@ -277,27 +273,37 @@ def calc_final_et(df_mm):
 
 # evapotranspiration.py - Function 016: Calculates biological evapotranspiration from crop and soil
 # Interactions: pandas
-def calc_final_et_biological(df_mm, crops):
+def calc_final_et_biological(df_mm, crops, df_cc, df_crop):
     """
-    Calculate Final_ET from actual biological evapotranspiration instead of water balance residual.
-    Sums AE_crop and AE_soil for all crops plus fallow evaporation.
+    Calculate ET_Biological using area-weighted average of all biological AE components.
+    This is a new column separate from Final_ET, using area-weighted averaging.
     """
-    # Initialize Final_ET with zeros
-    df_mm["Final_ET_Bio"] = 0.0
-    
-    # Sum actual evapotranspiration from all crops
+    # Initialize components for area-weighted calculation
+    total_weighted_ae = 0.0
+    total_area = 0.0
+
+    # Calculate area-weighted evapotranspiration from all crops
     for crop in crops:
         ae_crop_col = f"AE_crop_{crop}"
         ae_soil_col = f"AE_soil_{crop}"
-        
-        if ae_crop_col in df_mm.columns and ae_soil_col in df_mm.columns:
-            df_mm["Final_ET_Bio"] += df_mm[ae_crop_col] + df_mm[ae_soil_col]
-    
-    # Add fallow area evapotranspiration if available
-    if "AE_soil_Fallow" in df_mm.columns:
-        df_mm["Final_ET_Bio"] += df_mm["AE_soil_Fallow"]
-    
-    # Keep biological ET for analysis, but use water balance ET for final results
+
+        if ae_crop_col in df_mm.columns and ae_soil_col in df_mm.columns and crop in df_cc.index:
+            crop_area = df_cc.at[crop, "Area"]
+            crop_total_ae = df_mm[ae_crop_col] + df_mm[ae_soil_col]
+            total_weighted_ae += crop_total_ae * crop_area
+            total_area += crop_area
+
+    # Add fallow area evapotranspiration if available (use dynamic fallow area)
+    if "AE_soil_Fallow" in df_mm.columns and "Fallow Area Recharge" in df_crop.columns:
+        # Get fallow area from the first row (assuming it's constant)
+        fallow_area = df_crop["Fallow Area Recharge"].iloc[0]
+        total_weighted_ae += df_mm["AE_soil_Fallow"] * fallow_area
+        total_area += fallow_area
+
+    # Calculate area-weighted average
+    df_mm["ET_Biological"] = total_weighted_ae / total_area if total_area > 0 else 0.0
+
+    # Keep original water balance ET calculation unchanged
     df_mm["Final_ET"] = (df_mm["Rain"] - df_mm["Final_Runoff"] - df_mm["Final_Recharge"]).clip(lower=0)
-    
+
     return df_mm
