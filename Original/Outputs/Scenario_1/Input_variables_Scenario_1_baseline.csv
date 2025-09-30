@@ -1,0 +1,54 @@
+,Value
+latitude,15N
+kei,1.05
+Soil_type1,Clay
+Soil_type2,Clayey Loam
+HSC1,Good
+HSC2,Good
+dist1,70
+dist2,30
+Soil_type1_dep,1
+Soil_type2_dep,1
+Net_Crop_Sown_Area,4708
+Fallow,350
+Builtup,468
+Water_bodies,350
+Pasture,425
+Forest,426
+Kharif_Crops,Chilli
+Kharif_Sowing_Month,Aug
+Kharif_Sowing_Week,1
+Kharif_Crops_Irr_Area,712
+Kharif_Crops_Rainfed_Area,0
+Kharif_Crops_Area,712
+Kharif_Crops_Type,Small Grains
+Kharif_Crop_Sown_Type,Straight Row
+Rabi_Crops,Tobacco
+Rabi_Sowing_Month,Sep
+Rabi_Sowing_Week,1
+Rabi_Crops_Irr_Area,1600
+Rabi_Crops_Rainfed_Area,280
+Rabi_Crops_Area,1880
+Rabi_Crops_Type,Row Crops
+Rabi_Crop_Sown_Type,Straight Row
+Summer_Crops,Pulses
+Summer_Sowing_Month,Nov
+Summer_Sowing_Week,2
+Summer_Crops_Irr_Area,0
+Summer_Crops_Rainfed_Area,1150
+Summer_Crops_Area,1150
+Summer_Crops_Type,Closed Seed or Broadcast legumes
+Summer_Crop_Sown_Type,Contoured
+SW_Area,70
+SW_Area_Irr_Eff,50
+GW_Area,30
+GW_Area_Irr_Eff,50
+Aquifer_Depth,6
+Starting_Level,0
+Specific_Yield,2
+Population,11200
+Domestic_Water_Use,120
+Groundwater_Dependent,60
+Surface_Water_Dependent,40
+Other,500
+Other_Water_Use,30

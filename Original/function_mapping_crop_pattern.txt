@@ -1,0 +1,148 @@
+FUNCTION MAPPING: crop_pattern.py
+=================================
+
+1. resample() (lines 77-107)
+   Original: # crop_pattern.py - Function 1: Resamples time series data from one dataframe and merges with another from CSV
+   → /shared/utilities.py (lines 16-39)
+   Restructured: # crop_pattern.py - Function 1: Resamples time series data from one dataframe and merges with another from CSV
+
+2. mm_to_m3() (lines 108-116)
+   Original: # crop_pattern.py - Function 2: Converts water depth in millimeters to volume in cubic meters
+   → /shared/utilities.py (lines 40-48)
+   Restructured: # crop_pattern.py - Function 2: Converts water depth in millimeters to volume in cubic meters
+
+3. m3_to_mm() (lines 117-125)
+   Original: # crop_pattern.py - Function 3: Converts water volume in cubic meters to depth in millimeters
+   → /shared/utilities.py (lines 49-57)
+   Restructured: # crop_pattern.py - Function 3: Converts water volume in cubic meters to depth in millimeters
+
+4. get_percentage() (lines 126-132)
+   Original: # crop_pattern.py - Function 4: Calculates percentage value from fraction and total
+   → /shared/utilities.py (lines 58-65)
+   Restructured: # crop_pattern.py - Function 4: Calculates percentage value from fraction and total
+
+5. safe_divide() (lines 133-137)
+   Original: # crop_pattern.py - Function 5: Performs division with zero-denominator protection
+   → /shared/utilities.py (lines 194-195)
+   Restructured: # crop_pattern.py - Function 5: Performs safe division with zero handling
+
+6. safe_subtract() (lines 138-147)
+   Original: # crop_pattern.py - Function 6: Performs subtraction with error handling for invalid inputs
+   → /shared/utilities.py (lines 66-75)
+   Restructured: # crop_pattern.py - Function 6: Performs subtraction with error handling for invalid inputs
+
+7. convert_dtypes() (lines 148-158)
+   Original: # crop_pattern.py - Function 7: Optimizes dataframe memory by converting to smaller data types
+   → /shared/utilities.py (lines 76-86)
+   Restructured: # crop_pattern.py - Function 7: Optimizes dataframe memory by converting to smaller data types
+
+8. get_crop_data() (lines 159-167)
+   Original: # crop_pattern.py - Function 8: Reads and formats crop database from CSV file
+   → /shared/data_readers.py (lines 24-32)
+   Restructured: # crop_pattern.py - Function 8: Reads and formats crop database from CSV file
+
+9. get_radiation_db() (lines 168-184)
+   Original: # crop_pattern.py - Function 9: Retrieves solar radiation data for specific latitude
+   → /shared/data_readers.py (lines 33-48)
+   Restructured: # crop_pattern.py - Function 9: Retrieves solar radiation data for specific latitude
+
+10. safe_float_conversion() (lines 185-189)
+   Original: # crop_pattern.py - Function 10: Safely converts area list values to float with zero fallback
+   → /shared/utilities.py (lines 87-91)
+   Restructured: # crop_pattern.py - Function 10: Safely converts area list values to float with zero fallback
+
+11. safe_crop_conversion() (lines 190-194)
+   Original: # crop_pattern.py - Function 11: Safely converts crop list preserving None values
+   → /shared/utilities.py (lines 92-96)
+   Restructured: # crop_pattern.py - Function 11: Safely converts crop list preserving None values
+
+12. process_season_data() (lines 195-206)
+   Original: # crop_pattern.py - Function 12: Processes seasonal crop data into structured dictionary format
+   → /shared/crop_processing.py (lines 16-37)
+   Restructured: # crop_pattern.py - Function 12: Processes seasonal crop data into structured dictionary format
+
+13. assign_plots_to_crops() (lines 207-231)
+   Original: # crop_pattern.py - Function 13: Assigns plot numbers to crops and calculates plot statistics
+   → /shared/crop_processing.py (lines 38-62)
+   Restructured: # crop_pattern.py - Function 13: Assigns plot numbers to crops and calculates plot statistics
+
+14. get_pcp_value() (lines 232-240)
+   Original: # crop_pattern.py - Function 14: Reads precipitation data and calculates 5-day rolling rainfall
+   → /shared/data_readers.py (lines 49-57)
+   Restructured: # crop_pattern.py - Function 14: Reads precipitation data and calculates 5-day rolling rainfall
+
+15. calc_days_in_month() (lines 241-245)
+   Original: # crop_pattern.py - Function 15: Calculates number of days in a specific month and year
+   → /shared/utilities.py (lines 97-101)
+   Restructured: # crop_pattern.py - Function 15: Calculates number of days in a specific month and year
+
+16. calc_etom() (lines 246-264)
+   Original: # crop_pattern.py - Function 16: Calculates monthly reference evapotranspiration using Hargreaves method
+   → /soil_storage_bucket/outflux/evapotranspiration.py (lines 14-32)
+   Restructured: # crop_pattern.py - Function 16: Calculates monthly reference evapotranspiration using Hargreaves method
+
+17. calculate_daily_etoi() (lines 265-273)
+   Original: # crop_pattern.py - Function 17: Distributes monthly reference ET to daily values
+   → /soil_storage_bucket/outflux/evapotranspiration.py (lines 33-41)
+   Restructured: # crop_pattern.py - Function 17: Distributes monthly reference ET to daily values
+
+18. select_valid_crops() (lines 274-282)
+   Original: # crop_pattern.py - Function 18: Filters crop pattern data to include only valid non-empty crops
+   → /shared/crop_processing.py (lines 63-71)
+   Restructured: # crop_pattern.py - Function 18: Filters crop pattern data to include only valid non-empty crops
+
+19. combine_attributes() (lines 283-294)
+   Original: # crop_pattern.py - Function 19: Combines seasonal attributes from input and intervention variables
+   → /shared/crop_processing.py (lines 72-83)
+   Restructured: # crop_pattern.py - Function 19: Combines seasonal attributes from input and intervention variables
+
+20. calculate_total_area() (lines 295-337)
+   Original: # crop_pattern.py - Function 20: Calculates total area from land use and land cover components
+   → /shared/land_use.py (lines 13-38)
+   Restructured: # crop_pattern.py - Function 20: Calculates total area from all land use categories
+
+21. convert_season_data_to_df() (lines 338-361)
+   Original: # crop_pattern.py - Function 21: Converts seasonal data dictionary to list of dataframes with error handling
+   → /shared/utilities.py (lines 129-153)
+   Restructured: # crop_pattern.py - Function 21: Converts seasonal data dictionary to list of dataframes with error handling
+
+22. combine_and_normalize_attributes() (lines 362-388)
+   Original: # crop_pattern.py - Function 22: Combines and normalizes all crop attributes to consistent lengths
+   → /shared/crop_processing.py (lines 84-110)
+   Restructured: # crop_pattern.py - Function 22: Combines and normalizes all crop attributes to consistent lengths
+
+23. apply_eva_red() (lines 389-415)
+   Original: # crop_pattern.py - Function 23: Applies evaporation reduction factors based on conservation practices
+   → /soil_storage_bucket/outflux/evapotranspiration.py (lines 42-68)
+   Restructured: # crop_pattern.py - Function 23: Applies evaporation reduction factors based on conservation practices
+
+24. apply_efficiency() (lines 416-453)
+   Original: # crop_pattern.py - Function 24: Applies irrigation efficiency values based on intervention areas
+   → /shared/crop_processing.py (lines 111-147)
+   Restructured: # crop_pattern.py - Function 24: Applies irrigation efficiency values based on intervention areas
+
+25. calc_red_soil_evap() (lines 454-460)
+   Original: # Function to calculate the average evaporation reduction
+   → /soil_storage_bucket/outflux/evapotranspiration.py (lines 69-75)
+   Restructured: # crop_pattern.py - Function 25: Calculates average soil evaporation reduction from conservation practices
+
+26. get_ky_value() (lines 461-486)
+   Original: # crop_pattern.py - Function 26: Retrieves yield response factor and economic data for crops
+   → /shared/crop_processing.py (lines 148-173)
+   Restructured: # crop_pattern.py - Function 26: Retrieves yield response factor and economic data for crops
+
+27. get_return_flow() (lines 487-498)
+   Original: # crop_pattern.py - Function 27: Returns irrigation return flow coefficients based on crop type
+   → /shared/crop_processing.py (lines 174-185)
+   Restructured: # crop_pattern.py - Function 27: Returns irrigation return flow coefficients based on crop type
+
+28. apply_return_flow() (lines 499-516)
+   Original: # crop_pattern.py - Function 28: Calculates weighted return flow based on water source dependencies
+   → /shared/crop_processing.py (lines 186-203)
+   Restructured: # crop_pattern.py - Function 28: Calculates weighted return flow based on water source dependencies
+
+29. convert_columns_to_numeric() (lines 517-520)
+   Original: # crop_pattern.py - Function 29: Converts specified dataframe columns to numeric with error handling
+   → /shared/utilities.py (lines 154-160)
+   Restructured: # crop_pattern.py - Function 29: Converts specified dataframe columns to numeric with error handling
+

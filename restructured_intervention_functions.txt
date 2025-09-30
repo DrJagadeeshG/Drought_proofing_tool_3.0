@@ -1,0 +1,148 @@
+RESTRUCTURED INTERVENTION FUNCTIONS IN THE DROUGHT PROOFING TOOL
+====================================================================
+
+1. SHARED/DATA_READERS.PY (NEW CSV FORMAT READERS)
+---------------------------------------------------
+
+Supply Intervention CSV Readers:
+- read_supply_interventions_csv(file_path, scenario_num=1) - Line 220
+- get_supply_intervention_value(intervention_name, parameter, scenario_num, master_path) - Line 282
+
+Demand Intervention CSV Readers:
+- read_demand_interventions_csv(file_path, scenario_num=1) - Line 300
+- get_demand_intervention_value(intervention_name, parameter, scenario_num, master_path) - Line 362
+
+Soil Intervention CSV Readers:
+- read_soil_interventions_csv(file_path, scenario_num=1) - Line 380
+- get_soil_intervention_value(intervention_name, parameter, scenario_num, master_path) - Line 442
+
+Legacy Intervention Value Getters (OLD FORMAT):
+- get_supply_side_int_values(inp_source, master_path, var_name, index) - Line 616
+- get_demand_side_interv_area_values(inp_source, master_path, var_name, index) - Line 634
+- get_demand_side_interv_values(inp_source, master_path, var_name, index) - Line 646
+- get_soil_moisture_interv_area_values(inp_source, master_path, var_name, index) - Line 657
+- get_soil_moisture_interv_values(inp_source, master_path, var_name, index) - Line 672
+
+2. SHARED/INPUT_UTILITIES.PY (SCENARIO-AWARE FUNCTIONS)
+-------------------------------------------------------
+
+Supply Intervention Functions:
+- get_supply_side_int_values(inp_source, master_path, var_name, index, scenario_num=0) - Line 423
+
+Demand Intervention Functions:
+- get_demand_side_interv_area_values(inp_source, master_path, var_name, index, scenario_num=0) - Line 530
+- get_demand_side_interv_values(inp_source, master_path, var_name, index, scenario_num=0) - Line 637
+
+Soil Moisture Intervention Functions:
+- get_soil_moisture_interv_area_values(inp_source, master_path, var_name, index, scenario_num=0) - Line 703
+- get_soil_moisture_interv_values(inp_source, master_path, var_name, index, scenario_num=0) - Line 778
+
+3. ORCHESTRATOR/INPUT_COLLECTOR.PY
+-----------------------------------
+
+Data Collection Functions:
+- collect_inp_variables(inp_source, master_path) - Uses functions from input_utilities
+- collect_int_variables(inp_source, master_path, scenario_num=0) - Uses functions from input_utilities
+
+4. ORCHESTRATOR/MAIN_CONTROLLER.PY
+-----------------------------------
+
+File Management:
+- copy_scenario_intervention_file(scenario_no, base_path) - Line 206
+  * Maps scenario numbers to intervention files:
+    - 0 → interventions_baseline.csv
+    - 1 → interventions_scenario_1.csv
+    - 2 → interventions_scenario_2.csv
+    - 3 → interventions_scenario_3.csv
+  * Copies to → interventions.csv
+
+Processing Functions:
+- run_dr_pf_routines(inp_source, master_path, year_type, counter, scenario_num=0) - Line 341
+- dr_prf_all_processes(inp_source, master_path, file_paths, year_type, counter, scenario_num=0) - Line 227
+
+5. SHARED/ECONOMICS.PY (SCENARIO-AWARE)
+---------------------------------------
+
+Intervention Data Processing:
+- get_supplyside_int_data(economic_list, inp_source, master_path, scenario_num=0) - Line 39
+- get_demandside_int_data(df_cc, economic_list, inp_source, master_path, scenario_num=0) - Line 63
+- get_soil_moistureside_int_data(df_cc, economic_list, inp_source, master_path, scenario_num=0) - Line 98
+- create_intervention_data(supply_side_int, demand_side_int, soil_moisture_int) - Line 129
+
+Economic Calculations:
+- calc_int_economics(combined_intervention_data, economic_list) - Line 175
+- calculate_intervention_economics(economic_list, df_cc, inp_source, master_path, scenario_num=0) - Line 205
+- calculate_number_of_units(current_economic_life, inp_life_spans) - Line 25
+- calc_cost(v, c) - Line 138
+- calculate_eac(total_capital_cost, interest_rate, time_period) - Line 143
+- calculate_maintenance_cost(df, time_period) - Line 153
+- calc_npv(maintenance_cost, equalized_annual_cost, interest_rate, time_period) - Line 163
+
+6. SURFACE_WATER_BUCKET/INFLUX/WATER_SUPPLY.PY
+----------------------------------------------
+
+Supply Calculations:
+- calc_canal_supply(df_ir, df_mm) - Line 18
+- get_canal_supply(row) - Line 19 (nested function)
+
+7. SOIL_STORAGE_BUCKET/PROCESSING/CONSERVATION_PRACTICES.PY
+-----------------------------------------------------------
+
+Soil Processing:
+- calculate_soil_moisture_sums(df) - Line 23
+
+8. SOIL_STORAGE_BUCKET/PROCESSING/SOIL_MOISTURE_DEFICIT.PY
+-----------------------------------------------------------
+
+Deficit Calculations:
+- calc_smdi_plot() - Line 23 (soil moisture deficit index for each plot)
+- calc_smd() - Line 100 (soil moisture deficit using water balance)
+
+KEY DIFFERENCES FROM ORIGINAL:
+==============================
+
+1. DUAL SYSTEM APPROACH:
+   - OLD: Single interventions.csv with key-value pairs
+   - NEW: Three separate CSV files (*_interventions_correct.csv) with tabular format
+   - BRIDGE: input_utilities.py has scenario_num parameter to read from correct files
+
+2. SCENARIO MANAGEMENT:
+   - Original: Manual editing of variables or single CSV
+   - Restructured: Multiple CSV files for different scenarios
+   - Issue: copy_scenario_intervention_file() exists but NOT called in current workflow
+
+3. FILE READING PATTERNS:
+   - data_readers.py: Has both old format functions AND new CSV readers
+   - input_utilities.py: Bridges between old and new formats with scenario_num
+   - Problem: Mixed usage - some code uses old format, some uses new
+
+4. MISSING CONNECTION:
+   - copy_scenario_intervention_file() should copy scenario files to interventions.csv
+   - But it's never called in run_dr_pf_routines() or run.py
+   - Result: Always reads baseline values regardless of scenario number
+
+INTERVENTION FILES USED:
+=======================
+
+Old Format (Single Scenario):
+- interventions.csv (key-value pairs)
+
+New Format (Multi-Scenario):
+- interventions_baseline.csv (scenario 0)
+- interventions_scenario_1.csv (scenario 1)
+- interventions_scenario_2.csv (scenario 2)
+- interventions_scenario_3.csv (scenario 3)
+
+Correct CSV Files (Tabular Format):
+- supply_interventions_correct.csv
+- demand_interventions_correct.csv
+- soil_interventions_correct.csv
+
+TO REPLICATE ORIGINAL BEHAVIOR:
+================================
+
+The original system needs copy_scenario_intervention_file() to be called
+BEFORE processing begins to ensure the correct scenario file is active.
+
+Current flow: run.py → run_dr_pf_routines() → processing
+Needed flow: run.py → copy_scenario_intervention_file() → run_dr_pf_routines() → processing

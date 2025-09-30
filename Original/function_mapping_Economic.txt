@@ -1,0 +1,48 @@
+FUNCTION MAPPING: Economic.py
+=============================
+
+1. calculate_number_of_units() (lines 14-26)
+   Original: # Economic.py - Function 1: Calculates the number of intervention units needed based on economic life and lifespan
+   → /shared/economics.py (lines 17-30)
+   Restructured: # Economic.py - Function 1: Calculates the number of intervention units needed based on economic life and lifespan
+
+2. get_supplyside_int_data() (lines 27-50)
+   Original: # Economic.py - Function 2: Collects and structures supply-side intervention data including costs and specifications
+   → /shared/economics.py (lines 31-53)
+   Restructured: # Economic.py - Function 2: Collects and structures supply-side intervention data including costs and specifications
+
+3. get_demandside_int_data() (lines 51-84)
+   Original: # Economic.py - Function 3: Collects and structures demand-side intervention data from crop calendar areas
+   → /shared/economics.py (lines 54-87)
+   Restructured: # Economic.py - Function 3: Collects and structures demand-side intervention data from crop calendar areas
+
+4. get_soil_moistureside_int_data() (lines 85-114)
+   Original: # Economic.py - Function 4: Collects and structures soil moisture intervention data from crop calendar areas
+   → /shared/economics.py (lines 88-117)
+   Restructured: # Economic.py - Function 4: Collects and structures soil moisture intervention data from crop calendar areas
+
+5. create_intervention_data() (lines 115-124)
+   Original: # Economic.py - Function 5: Combines supply-side, demand-side, and soil moisture intervention data into unified dataset
+   → /shared/economics.py (lines 118-127)
+   Restructured: # Economic.py - Function 5: Combines supply-side, demand-side, and soil moisture intervention data into unified dataset
+
+6. calc_cost() (lines 125-129)
+   Original: # Economic.py - Function 6: Calculates total cost by multiplying volume and unit cost
+   → /shared/economics.py (lines 128-132)
+   Restructured: # Economic.py - Function 6: Calculates total cost by multiplying volume and unit cost
+
+7. calculate_eac() (lines 130-139)
+   Original: # Economic.py - Function 7: Calculates Equalized Annual Cost using capital recovery factor
+   → /shared/economics.py (lines 133-142)
+   Restructured: # Economic.py - Function 7: Calculates Equalized Annual Cost using capital recovery factor
+
+8. calculate_maintenance_cost() (lines 140-149)
+   Original: # Economic.py - Function 8: Calculates annual maintenance costs based on percentage of equalized annual cost
+   → /shared/economics.py (lines 143-152)
+   Restructured: # Economic.py - Function 8: Calculates annual maintenance costs based on percentage of equalized annual cost
+
+9. calc_npv() (lines 150-152)
+   Original: # Economic.py - Function 9: Calculates Net Present Value of intervention costs over project lifetime
+   → /shared/economics.py (lines 153-158)
+   Restructured: # Economic.py - Function 9: Calculates Net Present Value of intervention costs over project lifetime
+

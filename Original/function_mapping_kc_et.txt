@@ -1,0 +1,353 @@
+FUNCTION MAPPING: kc_et.py
+==========================
+
+1. calculate_kc_ini() (lines 18-19)
+   Original: # kc_et.py - Function 1: Calculates initial crop coefficient (Kc) for initial growth stage
+   → /soil_storage_bucket/processing/crop_coefficients.py (lines 12-13)
+   Restructured: # kc_et.py - Function 1: Calculates initial crop coefficient (Kc) for initial growth stage
+
+2. local_find_start_date() (lines 20-56)
+   Original: # kc_et.py - Function 1: Calculates initial crop coefficient (Kc) for initial growth stage
+   → /soil_storage_bucket/processing/crop_coefficients.py (lines 14-50)
+   Restructured: # kc_et.py - Function 1: Calculates initial crop coefficient (Kc) for initial growth stage
+
+3. calculate_kc_dev() (lines 57-88)
+   Original: # kc_et.py - Function 2: Calculates crop coefficient (Kc) for development growth stage
+   → /soil_storage_bucket/processing/crop_coefficients.py (lines 51-81)
+   Restructured: # kc_et.py - Function 2: Calculates crop coefficient (Kc) for development growth stage
+
+4. calculate_kc_mid() (lines 89-120)
+   Original: # kc_et.py - Function 3: Calculates crop coefficient (Kc) for mid-season growth stage
+   → /soil_storage_bucket/processing/crop_coefficients.py (lines 82-113)
+   Restructured: # kc_et.py - Function 3: Calculates crop coefficient (Kc) for mid-season growth stage
+
+5. calculate_kc_late() (lines 121-154)
+   Original: # kc_et.py - Function 4: Calculates crop coefficient (Kc) for late season growth stage
+   → /soil_storage_bucket/processing/crop_coefficients.py (lines 114-146)
+   Restructured: # kc_et.py - Function 4: Calculates crop coefficient (Kc) for late season growth stage
+
+6. process_crops() (lines 155-176)
+   Original: # kc_et.py - Function 5: Processes all crop coefficients through all growth stages for multiple crops
+   → /soil_storage_bucket/processing/crop_coefficients.py (lines 147-168)
+   Restructured: # kc_et.py - Function 5: Processes all crop coefficients through all growth stages for multiple crops
+
+7. calc_crop_kc() (lines 177-192)
+   Original: # kc_et.py - Function 6: Calculates total crop coefficient by summing all growth stage coefficients
+   → /soil_storage_bucket/processing/crop_coefficients.py (lines 169-183)
+   Restructured: # kc_et.py - Function 6: Calculates total crop coefficient by summing all growth stage coefficients
+
+8. calc_kci_by_plot() (lines 193-217)
+   Original: # kc_et.py - Function 7: Calculates irrigation crop coefficient (Kci) aggregated by plot
+   → /soil_storage_bucket/processing/crop_coefficients.py (lines 184-208)
+   Restructured: # kc_et.py - Function 7: Calculates irrigation crop coefficient (Kci) aggregated by plot
+
+9. calc_etci() (lines 218-247)
+   Original: # kc_et.py - Function 8: Calculates crop evapotranspiration with special rice preparation handling
+   → /soil_storage_bucket/outflux/evapotranspiration.py (lines 76-105)
+   Restructured: # kc_et.py - Function 8: Calculates crop evapotranspiration with special rice preparation handling
+
+10. calculate_stage_1() (lines 248-270)
+   Original: # kc_et.py - Function 9: Calculates Stage 1 crop coefficients aggregated by plot
+   → /soil_storage_bucket/processing/crop_coefficients.py (lines 209-228)
+   Restructured: # kc_et.py - Function 9: Calculates Stage 1 crop coefficients aggregated by plot
+
+11. calc_kei() (lines 271-279)
+   Original: # kc_et.py - Function 10: Calculates soil evaporation coefficient (Kei) for all plots
+   → /soil_storage_bucket/outflux/evapotranspiration.py (lines 106-114)
+   Restructured: # kc_et.py - Function 10: Calculates soil evaporation coefficient (Kei) for all plots
+
+12. calculate_daily_esi() (lines 280-286)
+   Original: # kc_et.py - Function 11: Calculates daily soil evaporation (ESi) for all plots
+   → /soil_storage_bucket/outflux/evapotranspiration.py (lines 115-121)
+   Restructured: # kc_et.py - Function 11: Calculates daily soil evaporation (ESi) for all plots
+
+13. get_total_growth_days() (lines 287-297)
+   Original: # kc_et.py - Function 12: Retrieves total growth days for a specific crop from crop database
+   → /shared/crop_processing.py (lines 250-260)
+   Restructured: # kc_et.py - Function 12: Retrieves total growth days for a specific crop from crop database
+
+14. find_start_date() (lines 298-303)
+   Original: # kc_et.py - Function 13: Calculates crop sowing start date based on year, month, and week
+   → /shared/crop_processing.py (lines 261-266)
+   Restructured: # kc_et.py - Function 13: Calculates crop sowing start date based on year, month, and week
+
+15. calc_rg_days_ini() (lines 304-324)
+   Original: # kc_et.py - Function 14: Calculates remaining growth days for initial year of crop cycle
+   → /shared/crop_processing.py (lines 267-287)
+   Restructured: # kc_et.py - Function 14: Calculates remaining growth days for initial year of crop cycle
+
+16. calc_remaining_days() (lines 325-329)
+   Original: # kc_et.py - Function 15: Calculates remaining growth days for subsequent years of crop cycle
+   → /shared/crop_processing.py (lines 288-313)
+   Restructured: # kc_et.py - Function 15: Calculates remaining growth days for subsequent years of crop cycle
+
+17. find_start_date_row() (lines 330-342)
+   Original: # No comment found
+   → /shared/crop_processing.py (lines 471-474)
+   Restructured: # No comment found
+
+18. process_yearly_rg_days() (lines 343-366)
+   Original: # kc_et.py - Function 16: Processes remaining growth days for all years in dataset
+   → /shared/crop_processing.py (lines 314-335)
+   Restructured: # kc_et.py - Function 16: Processes remaining growth days for all years in dataset
+
+19. calc_monthly_remaining_growth_days() (lines 367-399)
+   Original: # kc_et.py - Function 17: Calculates monthly remaining growth days and updates monthly dataframe
+   → /shared/crop_processing.py (lines 336-368)
+   Restructured: # kc_et.py - Function 17: Calculates monthly remaining growth days and updates monthly dataframe
+
+20. root_dep() (lines 400-412)
+   Original: # kc_et.py - Function 18: Calculates crop root depth based on growth stage and crop parameters
+   → /soil_storage_bucket/processing/root_depth.py (lines 9-21)
+   Restructured: # kc_et.py - Function 18: Calculates crop root depth based on growth stage and crop parameters
+
+21. calculate_crop_rd() (lines 413-437)
+   Original: # kc_et.py - Function 19: Calculates root depth for a specific crop throughout growing season
+   → /soil_storage_bucket/processing/root_depth.py (lines 22-46)
+   Restructured: # kc_et.py - Function 19: Calculates root depth for a specific crop throughout growing season
+
+22. calc_final_crop_rd() (lines 438-463)
+   Original: # kc_et.py - Function 20: Calculates final aggregated root depth by plot for all crops
+   → /soil_storage_bucket/processing/root_depth.py (lines 47-69)
+   Restructured: # kc_et.py - Function 20: Calculates final aggregated root depth by plot for all crops
+
+23. calculate_depletion_factor() (lines 464-482)
+   Original: # kc_et.py - Function 21: Calculates depletion factor for water stress threshold of specific crop
+   → /soil_storage_bucket/processing/water_stress.py (lines 10-28)
+   Restructured: # kc_et.py - Function 21: Calculates depletion factor for water stress threshold of specific crop
+
+24. calc_final_depletion_factor() (lines 483-508)
+   Original: # kc_et.py - Function 22: Calculates final aggregated depletion factor by plot for all crops
+   → /soil_storage_bucket/processing/water_stress.py (lines 29-53)
+   Restructured: # kc_et.py - Function 22: Calculates final aggregated depletion factor by plot for all crops
+
+25. calculate_awc() (lines 509-524)
+   Original: # Function to calculate AWC based on soil type
+   → /soil_storage_bucket/input_data/soil_properties.py (lines 31-46)
+   Restructured: # kc_et.py - Function 23: Returns available water content based on soil type classification
+
+26. get_soil_type() (lines 525-542)
+   Original: # kc_et.py - Function 24: Extracts and validates soil type from input data structure
+   → /soil_storage_bucket/input_data/soil_properties.py (lines 47-63)
+   Restructured: # kc_et.py - Function 24: Extracts and validates soil type from input data structure
+
+27. calculate_awc_capacity() (lines 543-561)
+   Original: # Function to calculate depth, AWC, and AWC capacity
+   → /soil_storage_bucket/input_data/soil_properties.py (lines 64-78)
+   Restructured: # kc_et.py - Function 25: Calculates weighted average water content capacity for mixed soil layers
+
+28. calculate_soil_moisture_sums() (lines 562-569)
+   Original: # Function to calculate the overall sum of soil moisture areas
+   → /soil_storage_bucket/processing/conservation_practices.py (lines 18-24)
+   Restructured: # kc_et.py - Function 26: Calculates total area under soil moisture conservation practices
+
+29. calculate_awc_soil() (lines 570-603)
+   Original: # Function to calculate AWC for soil based on practices
+   → /soil_storage_bucket/processing/conservation_practices.py (lines 25-58)
+   Restructured: # kc_et.py - Function 27: Calculates soil water content with conservation practice adjustments
+
+30. calculate_capacity() (lines 604-616)
+   Original: # kc_et.py - Function 28: Calculates final field capacity considering conservation and non-conservation areas
+   → /soil_storage_bucket/processing/conservation_practices.py (lines 59-71)
+   Restructured: # kc_et.py - Function 28: Calculates final field capacity considering conservation and non-conservation areas
+
+31. calc_taw() (lines 617-623)
+   Original: # kc_et.py - Function 29: Calculates total available water (TAW) for each plot based on root depth
+   → /soil_storage_bucket/processing/water_capacity.py (lines 15-21)
+   Restructured: # kc_et.py - Function 29: Calculates total available water (TAW) for each plot based on root depth
+
+32. calc_raw() (lines 624-630)
+   Original: # kc_et.py - Function 30: Calculates readily available water (RAW) based on depletion factors
+   → /soil_storage_bucket/processing/water_capacity.py (lines 22-28)
+   Restructured: # kc_et.py - Function 30: Calculates readily available water (RAW) based on depletion factors
+
+33. calc_tew() (lines 631-637)
+   Original: # kc_et.py - Function 31: Calculates total evaporable water (TEW) from soil surface layer
+   → /soil_storage_bucket/processing/water_capacity.py (lines 29-35)
+   Restructured: # kc_et.py - Function 31: Calculates total evaporable water (TEW) from soil surface layer
+
+34. calc_rew() (lines 638-644)
+   Original: # kc_et.py - Function 32: Calculates readily evaporable water (REW) from soil surface
+   → /soil_storage_bucket/processing/water_capacity.py (lines 36-39)
+   Restructured: # kc_et.py - Function 32: Calculates readily evaporable water (REW) from soil surface
+
+35. calc_sown_area() (lines 645-649)
+   Original: # kc_et.py - Function 33: Determines sown area based on remaining growth days
+   → /shared/crop_processing.py (lines 369-373)
+   Restructured: # kc_et.py - Function 33: Determines sown area based on remaining growth days
+
+36. process_sown_area() (lines 650-665)
+   Original: # kc_et.py - Function 34: Processes sown area calculations for all crops in crop pattern
+   → /shared/crop_processing.py (lines 374-397)
+   Restructured: # kc_et.py - Function 34: Processes sown area calculations for all crops in crop pattern
+
+37. calculate_net_sown_area_by_plot() (lines 666-681)
+   Original: # kc_et.py - Function 35: Calculates net sown area aggregated by plot from crop calendar
+   → /shared/crop_processing.py (lines 398-422)
+   Restructured: # kc_et.py - Function 35: Calculates net sown area aggregated by plot from crop calendar
+
+38. calc_soil_ke() (lines 682-709)
+   Original: # kc_et.py - Function 36: Calculates soil evaporation reduction factors for conservation practices
+   → /soil_storage_bucket/processing/conservation_practices.py (lines 72-100)
+   Restructured: # kc_et.py - Function 36: Calculates soil evaporation reduction factors for conservation practices
+
+39. calc_final_evap_red() (lines 710-733)
+   Original: # kc_et.py - Function 37: Calculates final evaporation reduction factors for each crop
+   → /soil_storage_bucket/processing/conservation_practices.py (lines 101-124)
+   Restructured: # kc_et.py - Function 37: Calculates final evaporation reduction factors for each crop
+
+40. calc_final_evap_red_plot_wise() (lines 734-759)
+   Original: # kc_et.py - Function 38: Calculates weighted evaporation reduction factors aggregated by plot
+   → /soil_storage_bucket/processing/conservation_practices.py (lines 125-147)
+   Restructured: # kc_et.py - Function 38: Calculates weighted evaporation reduction factors aggregated by plot
+
+41. get_cover_type() (lines 760-774)
+   Original: # kc_et.py - Function 39: Retrieves cover type and treatment type for crops from database
+   → /shared/data_readers.py (lines 120-134)
+   Restructured: # kc_et.py - Function 39: Retrieves cover type and treatment type for crops from database
+
+42. get_cn() (lines 775-827)
+   Original: # kc_et.py - Function 40: Retrieves curve number (CN) values with multiple fallback strategies
+   → /surface_water_bucket/input_data/curve_number_data.py (lines 14-65)
+   Restructured: # kc_et.py - Function 40: Retrieves curve number (CN) values with multiple fallback strategies
+
+43. calculate_cn_values() (lines 828-867)
+   Original: # kc_et.py - Function 41: Calculates curve number values for all crops considering two soil layers
+   → /surface_water_bucket/processing/curve_numbers.py (lines 91-129)
+   Restructured: # kc_et.py - Function 41: Calculates curve number values for all crops considering two soil layers
+
+44. calc_act_cn2() (lines 868-881)
+   Original: # Function to calculate Actual CN2
+   → /surface_water_bucket/processing/curve_numbers.py (lines 130-143)
+   Restructured: # kc_et.py - Function 42: Calculates weighted actual CN2 value from two soil layer contributions
+
+45. calculate_actual_cn() (lines 882-902)
+   Original: # kc_et.py - Function 43: Calculates actual curve numbers for all crops using input distributions
+   → /surface_water_bucket/processing/curve_numbers.py (lines 144-164)
+   Restructured: # kc_et.py - Function 43: Calculates actual curve numbers for all crops using input distributions
+
+46. calc_red_cn_area() (lines 903-942)
+   Original: # kc_et.py - Function 44: Calculates reduced curve numbers considering conservation interventions
+   → /surface_water_bucket/processing/curve_numbers.py (lines 165-204)
+   Restructured: # kc_et.py - Function 44: Calculates reduced curve numbers considering conservation interventions
+
+47. get_fallow_cn_soil_type() (lines 943-962)
+   Original: # kc_et.py - Function 45: Retrieves curve number for fallow land based on soil type
+   → /surface_water_bucket/input_data/curve_number_data.py (lines 66-81)
+   Restructured: # kc_et.py - Function 45: Retrieves curve number for fallow land based on soil type
+
+48. calc_act_fallow_cn2() (lines 963-983)
+   Original: # kc_et.py - Function 46: Calculates actual fallow curve number from two soil layer contributions
+   → /surface_water_bucket/processing/curve_numbers.py (lines 205-224)
+   Restructured: # kc_et.py - Function 46: Calculates actual fallow curve number from two soil layer contributions
+
+49. calc_crop_cn2() (lines 984-988)
+   Original: # kc_et.py - Function 47: Returns curve number for crop based on sown area status
+   → /surface_water_bucket/processing/curve_numbers.py (lines 225-229)
+   Restructured: # kc_et.py - Function 47: Returns curve number for crop based on sown area status
+
+50. update_cn2() (lines 989-1010)
+   Original: # kc_et.py - Function 48: Updates crop curve numbers in dataframe for all crops
+   → /surface_water_bucket/processing/curve_numbers.py (lines 230-251)
+   Restructured: # kc_et.py - Function 48: Updates crop curve numbers in dataframe for all crops
+
+51. calculate_total_sown_area() (lines 1011-1033)
+   Original: # kc_et.py - Function 49: Calculates total sown area across all crops with area limit enforcement
+   → /shared/crop_processing.py (lines 423-438)
+   Restructured: # kc_et.py - Function 49: Calculates total sown area across all crops with area limit enforcement
+
+52. calculate_consolidated_crop_cn2() (lines 1034-1035)
+   Original: # kc_et.py - Function 50: Calculates area-weighted consolidated curve number for all crops
+   → /surface_water_bucket/processing/curve_numbers.py (lines 252-253)
+   Restructured: # kc_et.py - Function 50: Calculates area-weighted consolidated curve number for all crops
+
+53. consolidated_crop_cn2() (lines 1036-1060)
+   Original: # kc_et.py - Function 50: Calculates area-weighted consolidated curve number for all crops
+   → /surface_water_bucket/processing/curve_numbers.py (lines 254-278)
+   Restructured: # kc_et.py - Function 50: Calculates area-weighted consolidated curve number for all crops
+
+54. calc_fallow_area() (lines 1061-1068)
+   Original: # kc_et.py - Function 51: Calculates fallow area from net sown area and actual crop areas
+   → /shared/crop_processing.py (lines 439-446)
+   Restructured: # kc_et.py - Function 51: Calculates fallow area from net sown area and actual crop areas
+
+55. calc_lulc() (lines 1069-1079)
+   Original: # kc_et.py - Function 52: Calculates land use fraction from area and total area
+   → /shared/utilities.py (lines 184-193)
+   Restructured: # kc_et.py - Function 52: Calculates land use fraction from area and total area
+
+56. calc_fallowcn2() (lines 1080-1086)
+   Original: # kc_et.py - Function 53: Returns fallow curve number based on fallow area presence
+   → /surface_water_bucket/processing/curve_numbers.py (lines 279-285)
+   Restructured: # kc_et.py - Function 53: Returns fallow curve number based on fallow area presence
+
+57. calc_final_cn2() (lines 1087-1096)
+   Original: # kc_et.py - Function 54: Calculates area-weighted final curve number from all land uses
+   → /surface_water_bucket/processing/curve_numbers.py (lines 286-295)
+   Restructured: # kc_et.py - Function 54: Calculates area-weighted final curve number from all land uses
+
+58. calc_cn2_adjusted() (lines 1097-1103)
+   Original: # kc_et.py - Function 55: Adjusts curve number based on slope using Williams formula
+   → /surface_water_bucket/processing/curve_numbers.py (lines 296-302)
+   Restructured: # kc_et.py - Function 55: Adjusts curve number based on slope using Williams formula
+
+59. calc_cn1() (lines 1104-1109)
+   Original: # kc_et.py - Function 56: Calculates CN1 (dry conditions) from CN2 using standard formula
+   → /surface_water_bucket/processing/curve_numbers.py (lines 303-308)
+   Restructured: # kc_et.py - Function 56: Calculates CN1 (dry conditions) from CN2 using standard formula
+
+60. calc_cn3() (lines 1110-1115)
+   Original: # kc_et.py - Function 57: Calculates CN3 (wet conditions) from CN2 using standard formula
+   → /surface_water_bucket/processing/curve_numbers.py (lines 309-314)
+   Restructured: # kc_et.py - Function 57: Calculates CN3 (wet conditions) from CN2 using standard formula
+
+61. calc_dormant() (lines 1116-1120)
+   Original: # kc_et.py - Function 58: Determines crop dormancy status based on sown area
+   → /shared/crop_processing.py (lines 466-470)
+   Restructured: # kc_et.py - Function 58: Determines crop dormancy status based on sown area
+
+62. calc_amc_cond() (lines 1121-1136)
+   Original: # kc_et.py - Function 59: Calculates antecedent moisture condition based on rainfall and dormancy
+   → /surface_water_bucket/processing/moisture_conditions.py (lines 13-25)
+   Restructured: # kc_et.py - Function 59: Calculates antecedent moisture condition based on rainfall and dormancy
+
+63. calc_cn() (lines 1137-1147)
+   Original: # kc_et.py - Function 60: Selects appropriate curve number based on antecedent moisture condition
+   → /surface_water_bucket/processing/curve_numbers.py (lines 315-322)
+   Restructured: # kc_et.py - Function 60: Selects appropriate curve number based on antecedent moisture condition
+
+64. calc_abstraction() (lines 1148-1160)
+   Original: # kc_et.py - Function 61: Calculates water abstraction parameters for runoff calculation
+   → /surface_water_bucket/processing/runoff_calculations.py (lines 40-52)
+   Restructured: # kc_et.py - Function 61: Calculates water abstraction parameters for runoff calculation
+
+65. get_recharge() (lines 1161-1166)
+   Original: # kc_et.py - Function 62: Calculates groundwater recharge from precipitation
+   → /aquifer_storage_bucket/influx/recharge_calculations.py (lines 174-179)
+   Restructured: # kc_et.py - Function 62: Calculates groundwater recharge from precipitation
+
+66. get_rain_src_model() (lines 1167-1172)
+   Original: # kc_et.py - Function 63: Calculates net rainfall after removing groundwater recharge
+   → /surface_water_bucket/influx/precipitation_processing.py (lines 12-14)
+   Restructured: # kc_et.py - Function 63: Calculates net rainfall after removing groundwater recharge
+
+67. runoff_cn() (lines 1173-1178)
+   Original: # kc_et.py - Function 64: Calculates surface runoff using SCS curve number method
+   → /surface_water_bucket/processing/runoff_calculations.py (lines 53-58)
+   Restructured: # kc_et.py - Function 64: Calculates surface runoff using SCS curve number method
+
+68. calc_runoff_cn() (lines 1179-1183)
+   Original: # kc_et.py - Function 65: Applies runoff calculation only when rainfall exceeds initial abstraction
+   → /surface_water_bucket/processing/runoff_calculations.py (lines 59-63)
+   Restructured: # kc_et.py - Function 65: Applies runoff calculation only when rainfall exceeds initial abstraction
+
+69. get_eff_rain() (lines 1184-1189)
+   Original: # kc_et.py - Function 66: Calculates effective rainfall by subtracting runoff from net rainfall
+   → /surface_water_bucket/processing/runoff_calculations.py (lines 64-69)
+   Restructured: # kc_et.py - Function 66: Calculates effective rainfall by subtracting runoff from net rainfall
+
+70. calculate_monthly_qi() (lines 1190-1200)
+   Original: # kc_et.py - Function 67: Aggregates daily runoff to monthly totals and merges with monthly data
+   → /surface_water_bucket/processing/runoff_calculations.py (lines 70-80)
+   Restructured: # kc_et.py - Function 67: Aggregates daily runoff to monthly totals and merges with monthly data
+

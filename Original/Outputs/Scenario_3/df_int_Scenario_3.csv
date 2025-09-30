@@ -1,0 +1,20 @@
+Intervention,Volume (Cu.m)/Area,Depth (m),Infiltration Rate (mm/day),Cost (Rs/Cu.m),Life Span (years),Maintenance (%),Number of Units,Capital Cost,Total Capital Cost,Equalized Annual Cost,Maintenance Cost,NPV
+Farm Pond,168750,2.5,7,80,10,5,2,1.35e+07,2.7e+07,2.54861e+06,2.54861e+06,2.95486e+07
+Farm Pond Lined,0,2,3,120,10,6,2,0,0,0,0,0
+Check Dam,240000,2.5,7,120,15,3,2,2.88e+07,5.76e+07,5.43703e+06,3.26222e+06,6.08622e+07
+Infiltration Pond,0,1,50,85,7,4,3,0,0,0,0,0
+Injection Wells,864,0,0,20000,15,2,2,1.728e+07,3.456e+07,3.26222e+06,1.30489e+06,3.58649e+07
+Drip Irr,0,0,0,,,,0,,,,,
+Sprinkler Irr,0,0,0,,,,0,,,,,
+Land Levelling,0,0,0,,,,0,,,,,
+Direct Seeded Rice,0,0,0,,,0,0,,,,,
+Alternate Wetting And Dry,0,0,0,,,0,0,,,,,
+SRI,0,0,0,,,0,0,,,,,
+Ridge Furrow Irrigation,0,0,0,,,0,0,,,,,
+Deficit Irrigation,0,0,0,,,0,0,,,,,
+Cover Crops,0,0,0,,,0,0,,,,,
+Mulching,0,0,0,,,0,0,,,,,
+BBF,0,0,0,,,,0,,,,,
+Bund,0,0,0,,,,0,,,,,
+Tillage,0,0,0,,,0,0,,,,,
+Tank Desilting,0,0,0,,,0,0,,,,,

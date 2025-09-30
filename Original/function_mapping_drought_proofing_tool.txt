@@ -1,0 +1,23 @@
+FUNCTION MAPPING: drought_proofing_tool.py
+==========================================
+
+1. save_dataframes_scenario() (lines 23-25)
+   Original: # drought_proofing_tool.py - Function 1: Saves all output dataframes to CSV files in scenario-specific folders
+   → /orchestrator/main_controller.py (lines 21-23)
+   Restructured: # drought_proofing_tool.py - Function 1: Saves all output dataframes to CSV files in scenario-specific folders
+
+2. save_dictionaries_to_csv() (lines 26-109)
+   Original: # drought_proofing_tool.py - Function 1.1: Saves input and intervention variables to CSV files
+   → /orchestrator/main_controller.py (lines 24-105)
+   Restructured: # drought_proofing_tool.py - Function 1.1: Saves input and intervention variables to CSV files
+
+3. main() (lines 110-175)
+   Original: # drought_proofing_tool.py - Function 2: Processes command line arguments and runs the scenario
+   → /orchestrator/main_controller.py (lines 116-181)
+   Restructured: # drought_proofing_tool.py - Function 2: Processes command line arguments and runs the scenario
+
+4. copy_scenario_intervention_file() (lines 176-194)
+   Original: # drought_proofing_tool.py - Function 3: Copies scenario-specific intervention file to main interventions.csv
+   → /orchestrator/main_controller.py (lines 182-201)
+   Restructured: # drought_proofing_tool.py - Function 3: Copies scenario-specific intervention file to main interventions.csv
+

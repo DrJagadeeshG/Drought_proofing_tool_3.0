@@ -1,0 +1,106 @@
+ORIGINAL INTERVENTION FUNCTIONS IN THE DROUGHT PROOFING TOOL
+================================================================
+
+1. USER INPUT FUNCTIONS (Original/user_input.py)
+------------------------------------------------
+
+Core Intervention Value Getters:
+- get_supply_side_int_values(inp_source, master_path, var_name, index) - Line 257
+- get_demand_side_interv_area_values(inp_source, master_path, var_name, index) - Line 297
+- get_demand_side_interv_values(inp_source, master_path, var_name, index) - Line 338
+- get_soil_moisture_interv_area_values(inp_source, master_path, var_name, index) - Line 367
+- get_soil_moisture_interv_values(inp_source, master_path, var_name, index) - Line 393
+
+Data Collection Functions:
+- collect_inp_variables(inp_source, master_path) - Line 434
+- collect_int_variables(inp_source, master_path) - Line 514
+
+Utility Functions:
+- get_file_paths(inp_source, master_path) - Line 24
+- handle_value_retrieval(inp_data_source, variables, master_path, var_name, index, is_crops=False, is_area=False) - Line 93
+- to_float(value, default_value=float("nan")) - Line 62
+
+2. ECONOMIC FUNCTIONS (Original/Economic.py)
+-------------------------------------------
+
+Intervention Data Processing:
+- get_supplyside_int_data(economic_list, inp_source, master_path) - Line 27
+- get_demandside_int_data(df_cc, economic_list, inp_source, master_path) - Line 51
+- get_soil_moistureside_int_data(df_cc, economic_list, inp_source, master_path) - Line 85
+- create_intervention_data(supply_side_int, demand_side_int, soil_moisture_int) - Line 115
+
+Economic Calculations:
+- calculate_number_of_units(current_economic_life, inp_life_spans) - Line 14
+- calc_cost(v, c) - Line 125
+- calculate_eac(total_capital_cost, interest_rate, time_period) - Line 130
+- calculate_maintenance_cost(df, time_period) - Line 140
+- calc_npv(maintenance_cost, equalized_annual_cost, interest_rate, time_period) - Line 150
+
+3. MAIN PROCESSING FUNCTIONS (Original/drpf_functions.py)
+--------------------------------------------------------
+
+Intervention Economics:
+- calc_int_economics(combined_intervention_data, economic_list) - Line 406
+- calculate_intervention_economics(economic_list, df_cc, inp_source, master_path) - Line 435
+
+4. SCENARIO MANAGEMENT (Original/drought_proofing_tool.py)
+---------------------------------------------------------
+
+File Management:
+- copy_scenario_intervention_file(scenario_no, base_path) - Line 176
+
+5. WATER ANALYSIS (Original/wa.py)
+----------------------------------
+
+Supply Calculations:
+- calc_canal_supply(df_ir, df_mm) - Line 106
+- get_canal_supply(row) - Line 107 (nested function)
+
+6. SOIL MOISTURE FUNCTIONS (Original/kc_et.py)
+---------------------------------------------
+
+Soil Processing:
+- calculate_soil_moisture_sums(df) - Line 562
+
+INTERVENTION TYPES HANDLED:
+==========================
+
+Supply-Side Interventions:
+- Farm Pond (Unlined)
+- Farm Pond (Lined)
+- Check Dam
+- Infiltration Pond
+- Injection Wells
+
+Demand-Side Interventions:
+- Drip Irrigation
+- Sprinkler Irrigation
+- Land Levelling
+- Direct Seeded Rice (DSR)
+- Alternate Wetting & Drying (AWD)
+- System of Rice Intensification (SRI)
+- Ridge & Furrow Irrigation
+- Deficit Irrigation
+
+Soil Moisture Interventions:
+- Cover Crops
+- Mulching
+- Broad Bed and Furrow (BBF)
+- Contour/Vegetative Bunds
+- Conservation Tillage
+- Tank Desilting
+
+VARIABLE STRUCTURE:
+==================
+
+Each intervention type has parameters like:
+- Volume/Area
+- Cost
+- Life Span
+- Maintenance Cost
+- Efficiency
+- Depth (for structures)
+- Infiltration Rate (for structures)
+
+The original system uses direct variable assignments from manual_input.py
+All interventions are defined as Python lists with values or empty lists for no intervention.

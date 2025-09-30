@@ -1,0 +1,123 @@
+FUNCTION MAPPING: drpf_functions.py
+===================================
+
+1. get_season_data() (lines 27-59)
+   Original: # drpf_functions.py - Function 1: Retrieves and caches season-wise crop data including areas and sowing details
+   → /shared/data_readers.py (lines 405-438)
+   Restructured: # drpf_functions.py - Function 1: Retrieves and caches season-wise crop data including areas and sowing details
+
+2. get_land_use_types() (lines 60-85)
+   Original: # drpf_functions.py - Function 2: Retrieves land use type areas including crop, fallow, built-up areas
+   → /shared/data_readers.py (lines 68-83)
+   Restructured: # drpf_functions.py - Function 2: Retrieves land use type areas including crop, fallow, built-up areas
+
+3. process_monthly_qi() (lines 86-93)
+   Original: # drpf_functions.py - Function 3: Processes monthly runoff and converts to cubic meters
+   → /surface_water_bucket/processing/runoff_calculations.py (lines 17-25)
+   Restructured: # drpf_functions.py - Function 3: Processes monthly runoff and converts to cubic meters
+
+4. soil_calculation() (lines 94-111)
+   Original: # drpf_functions.py - Function 4: Calculates soil properties including AWC and depths
+   → /soil_storage_bucket/input_data/soil_properties.py (lines 12-30)
+   Restructured: # drpf_functions.py - Function 4: Calculates soil properties including AWC and depths
+
+5. get_seasons_val() (lines 112-124)
+   Original: # drpf_functions.py - Function 5: Retrieves season values with crop types and sowing details
+   → /shared/data_readers.py (lines 84-98)
+   Restructured: # drpf_functions.py - Function 5: Retrieves season values with crop types and sowing details
+
+6. get_seasons_data() (lines 125-134)
+   Original: # drpf_functions.py - Function 6: Retrieves season data for crop type processing
+   → /shared/data_readers.py (lines 99-109)
+   Restructured: # drpf_functions.py - Function 6: Retrieves season data for crop type processing
+
+7. calc_crop_consolidated_cn() (lines 135-179)
+   Original: # drpf_functions.py - Function 7: Calculates consolidated curve numbers for crops and land use
+   → /surface_water_bucket/processing/curve_numbers.py (lines 17-61)
+   Restructured: # drpf_functions.py - Function 7: Calculates consolidated curve numbers for crops and land use
+
+8. crop_details() (lines 180-217)
+   Original: # drpf_functions.py - Function 8: Processes crop details including efficiency and return flow values
+   → /shared/crop_processing.py (lines 204-241)
+   Restructured: # drpf_functions.py - Function 8: Processes crop details including efficiency and return flow values
+
+9. calc_discharge() (lines 218-231)
+   Original: # drpf_functions.py - Function 9: Calculates runoff discharge using curve number method
+   → /surface_water_bucket/processing/runoff_calculations.py (lines 26-39)
+   Restructured: # drpf_functions.py - Function 9: Calculates runoff discharge using curve number method
+
+10. calc_crop_int() (lines 232-250)
+   Original: # drpf_functions.py - Function 10: Calculates crop water storage and evaporation parameters
+   → /soil_storage_bucket/processing/water_storage.py (lines 13-28)
+   Restructured: # drpf_functions.py - Function 10: Calculates crop water storage and evaporation parameters
+
+11. calc_smdi_plot() (lines 251-326)
+   Original: # drpf_functions.py - Function 11: Calculates soil moisture deficit index for each plot
+   → /soil_storage_bucket/processing/soil_moisture_deficit.py (lines 17-92)
+   Restructured: # drpf_functions.py - Function 11: Calculates soil moisture deficit index for each plot
+
+12. calc_gwnr_fallow_plot() (lines 327-405)
+   Original: # drpf_functions.py - Function 12: Calculates groundwater recharge for fallow and crop plots
+   → /aquifer_storage_bucket/influx/recharge_calculations.py (lines 15-85)
+   Restructured: # drpf_functions.py - Function 12: Calculates groundwater recharge for fallow and crop plots
+
+13. calc_int_economics() (lines 406-434)
+   Original: # drpf_functions.py - Function 13: Calculates economic parameters for interventions
+   → /shared/economics.py (lines 159-187)
+   Restructured: # drpf_functions.py - Function 13: Calculates economic parameters for interventions
+
+14. calculate_intervention_economics() (lines 435-445)
+   Original: # drpf_functions.py - Function 14: Calculates comprehensive intervention economics
+   → /shared/economics.py (lines 188-198)
+   Restructured: # drpf_functions.py - Function 14: Calculates comprehensive intervention economics
+
+15. get_all_cn_values() (lines 446-459)
+   Original: # drpf_functions.py - Function 15: Retrieves all curve number values for seasons
+   → /surface_water_bucket/processing/curve_numbers.py (lines 62-75)
+   Restructured: # drpf_functions.py - Function 15: Retrieves all curve number values for seasons
+
+16. calc_etci_plot() (lines 460-512)
+   Original: # drpf_functions.py - Function 16: Calculates crop evapotranspiration for each plot
+   → /soil_storage_bucket/outflux/evapotranspiration.py (lines 198-250)
+   Restructured: # drpf_functions.py - Function 16: Calculates crop evapotranspiration for each plot
+
+17. process_water_management() (lines 513-561)
+   Original: # drpf_functions.py - Function 17: Processes water management including storage and irrigation
+   → /orchestrator/water_balance_coordinator.py (lines 14-52)
+   Restructured: # drpf_functions.py - Function 17: Processes water management including storage and irrigation
+
+18. process_seasonal_crops() (lines 562-569)
+   Original: # drpf_functions.py - Function 18: Processes seasonal crop data and growth parameters
+   → /shared/crop_processing.py (lines 242-249)
+   Restructured: # drpf_functions.py - Function 18: Processes seasonal crop data and growth parameters
+
+19. process_cn_values() (lines 570-584)
+   Original: # drpf_functions.py - Function 19: Processes and calculates actual curve number values
+   → /surface_water_bucket/processing/curve_numbers.py (lines 76-90)
+   Restructured: # drpf_functions.py - Function 19: Processes and calculates actual curve number values
+
+20. process_final_wb() (lines 585-601)
+   Original: # drpf_functions.py - Function 20: Processes final water balance calculations
+   → /orchestrator/water_balance_coordinator.py (lines 53-69)
+   Restructured: # drpf_functions.py - Function 20: Processes final water balance calculations
+
+21. process_yearly_df() (lines 602-611)
+   Original: # drpf_functions.py - Function 21: Processes yearly data and calculates weighted averages
+   → /orchestrator/main_controller.py (lines 106-115)
+   Restructured: # drpf_functions.py - Function 21: Processes yearly data and calculates weighted averages
+
+22. process_monthly_data() (lines 612-622)
+   Original: # drpf_functions.py - Function 22: Processes monthly climate and precipitation data
+   → /shared/data_readers.py (lines 110-119)
+   Restructured: # drpf_functions.py - Function 22: Processes monthly climate and precipitation data
+
+23. dr_prf_all_processes() (lines 623-734)
+   Original: # drpf_functions.py - Function 23: Main orchestrator running all drought proofing processes
+   → /orchestrator/main_controller.py (lines 202-308)
+   Restructured: # drpf_functions.py - Function 23: Main orchestrator running all drought proofing processes
+
+24. run_dr_pf_routines() (lines 735-740)
+   Original: # drpf_functions.py - Function 24: Entry point for drought proofing routines
+   → /orchestrator/main_controller.py (lines 309-313)
+   Restructured: # drpf_functions.py - Function 24: Entry point for drought proofing routines
+

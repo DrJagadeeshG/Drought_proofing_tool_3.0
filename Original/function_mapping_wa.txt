@@ -1,0 +1,223 @@
+FUNCTION MAPPING: wa.py
+=======================
+
+1. irrigation_data_input() (lines 16-24)
+   Original: # wa.py - Function 1: Reads irrigation data and merges with monthly dataframe
+   → /shared/data_readers.py (lines 439-445)
+   Restructured: # wa.py - Function 1: Reads irrigation data and merges with monthly dataframe
+
+2. calculate_storage_limit() (lines 25-33)
+   Original: # wa.py - Function 2: Calculates aquifer storage limit based on parameters
+   → /aquifer_storage_bucket/processing/storage_capacity.py (lines 10-15)
+   Restructured: # wa.py - Function 2: Calculates aquifer storage limit based on parameters
+
+3. calc_storage_residualgw() (lines 34-42)
+   Original: # wa.py - Function 3: Calculates residual groundwater storage
+   → /aquifer_storage_bucket/processing/storage_tracking.py (lines 10-16)
+   Restructured: # wa.py - Function 3: Calculates residual groundwater storage
+
+4. calc_surface_area() (lines 43-55)
+   Original: # wa.py - Function 4: Calculates surface area from volume and depth
+   → /aquifer_storage_bucket/influx/recharge_capacity.py (lines 41-53)
+   Restructured: # No comment found
+
+5. calc_added_monthly_recharge() (lines 56-61)
+   Original: # wa.py - Function 5: Calculates added monthly recharge from infiltration
+   → /aquifer_storage_bucket/influx/recharge_calculations.py (lines 186-191)
+   Restructured: # wa.py - Function 5: Calculates added monthly recharge from infiltration
+
+6. calc_recharge_capacity() (lines 62-98)
+   Original: # wa.py - Function 6: Calculates recharge capacity for water harvesting structures
+   → /aquifer_storage_bucket/influx/recharge_capacity.py (lines 10-40)
+   Restructured: # wa.py - Function 6: Calculates recharge capacity for water harvesting structures
+
+7. calc_potential_et() (lines 99-105)
+   Original: # wa.py - Function 7: Calculates potential evapotranspiration from surface water
+   → /surface_water_bucket/outflux/evaporation.py (lines 12-16)
+   Restructured: # wa.py - Function 7: Calculates potential evapotranspiration from surface water
+
+8. calc_canal_supply() (lines 106-106)
+   Original: # wa.py - Function 8: Calculates canal water supply availability
+   → /surface_water_bucket/influx/water_supply.py (lines 13-13)
+   Restructured: # wa.py - Function 8: Calculates canal water supply availability
+
+9. get_canal_supply() (lines 107-115)
+   Original: # wa.py - Function 8: Calculates canal water supply availability
+   → /surface_water_bucket/influx/water_supply.py (lines 14-20)
+   Restructured: # wa.py - Function 8: Calculates canal water supply availability
+
+10. get_iwr_after_canal() (lines 116-121)
+   Original: # wa.py - Function 9: Calculates irrigation water requirement after canal supply
+   → /soil_storage_bucket/outflux/irrigation_demand.py (lines 32-34)
+   Restructured: # wa.py - Function 9: Calculates irrigation water requirement after canal supply
+
+11. calc_potential_recharge() (lines 122-127)
+   Original: # wa.py - Function 10: Calculates potential groundwater recharge from structures
+   → /aquifer_storage_bucket/influx/recharge_calculations.py (lines 192-198)
+   Restructured: # wa.py - Function 10: Calculates potential groundwater recharge from structures
+
+12. calc_domestic_need() (lines 128-135)
+   Original: # wa.py - Function 11: Calculates domestic water requirements
+   → /aquifer_storage_bucket/outflux/domestic_demand.py (lines 10-18)
+   Restructured: # wa.py - Function 11: Calculates domestic water requirements
+
+13. calc_other_need() (lines 136-143)
+   Original: # wa.py - Function 12: Calculates non-domestic water requirements
+   → /aquifer_storage_bucket/outflux/domestic_demand.py (lines 19-27)
+   Restructured: # wa.py - Function 12: Calculates non-domestic water requirements
+
+14. calc_gw_need() (lines 144-148)
+   Original: # wa.py - Function 13: Calculates groundwater needs for domestic use
+   → /aquifer_storage_bucket/outflux/domestic_demand.py (lines 28-30)
+   Restructured: # wa.py - Function 13: Calculates groundwater needs for domestic use
+
+15. calc_sw_need() (lines 149-153)
+   Original: # wa.py - Function 14: Calculates surface water needs
+   → /surface_water_bucket/outflux/water_demand.py (lines 12-14)
+   Restructured: # wa.py - Function 14: Calculates surface water needs
+
+16. calc_sw_abstracted() (lines 154-165)
+   Original: # wa.py - Function 15: Calculates abstracted surface water
+   → /surface_water_bucket/outflux/water_abstraction.py (lines 13-22)
+   Restructured: # wa.py - Function 15: Calculates abstracted surface water
+
+17. calc_value_after_subtracting_domestic_sw_use() (lines 166-172)
+   Original: # wa.py - Function 16: Calculates remaining water after domestic surface water use
+   → /surface_water_bucket/processing/water_balance.py (lines 13-18)
+   Restructured: # wa.py - Function 16: Calculates remaining water after domestic surface water use
+
+18. calc_storage() (lines 173-311)
+   Original: # wa.py - Function 17: Calculates complex water storage dynamics and abstractions
+   → /orchestrator/water_balance_coordinator.py (lines 70-204)
+   Restructured: # wa.py - Function 17: Calculates complex water storage dynamics and abstractions
+
+19. calc_per_irr_water_req_fulfilled() (lines 312-325)
+   Original: # wa.py - Function 18: Calculates percentage of irrigation water requirement fulfilled
+   → /outputs/water_metrics.py (lines 17-30)
+   Restructured: # wa.py - Function 18: Calculates percentage of irrigation water requirement fulfilled
+
+20. calc_cwr_met() (lines 326-343)
+   Original: # wa.py - Function 19: Calculates crop water requirement met for each crop
+   → /outputs/water_metrics.py (lines 31-50)
+   Restructured: # wa.py - Function 19: Calculates crop water requirement met for each crop
+
+21. get_resample_yr_optimized() (lines 344-358)
+   Original: # wa.py - Function 20: Resamples monthly data to yearly aggregates
+   → /outputs/output_aggregator.py (lines 19-33)
+   Restructured: # wa.py - Function 20: Resamples monthly data to yearly aggregates
+
+22. calculate_yields() (lines 359-454)
+   Original: # wa.py - Function 21: Calculates crop yields for irrigated and rainfed areas
+   → /outputs/yield_calculations.py (lines 16-111)
+   Restructured: # wa.py - Function 21: Calculates crop yields for irrigated and rainfed areas
+
+23. calc_yield() (lines 455-467)
+   Original: # wa.py - Function 22: Calculates yields for all crops
+   → /outputs/yield_calculations.py (lines 112-124)
+   Restructured: # wa.py - Function 22: Calculates yields for all crops
+
+24. calculate_weighted_averages() (lines 468-511)
+   Original: # wa.py - Function 23: Calculates weighted averages for yield and water metrics
+   → /outputs/output_aggregator.py (lines 34-77)
+   Restructured: # wa.py - Function 23: Calculates weighted averages for yield and water metrics
+
+25. add_runoff_to_recharge() (lines 512-518)
+   Original: # wa.py - Function 24: Adds runoff to recharge calculations
+   → /aquifer_storage_bucket/influx/recharge_calculations.py (lines 199-206)
+   Restructured: # wa.py - Function 24: Adds runoff to recharge calculations
+
+26. calc_final_ro() (lines 519-524)
+   Original: # wa.py - Function 25: Calculates final runoff after storage
+   → /surface_water_bucket/outflux/runoff_disposal.py (lines 12-14)
+   Restructured: # wa.py - Function 25: Calculates final runoff after storage
+
+27. calc_final_runoff() (lines 525-530)
+   Original: # wa.py - Function 26: Calculates final runoff including rejected recharge
+   → /surface_water_bucket/processing/water_balance.py (lines 19-21)
+   Restructured: # wa.py - Function 26: Calculates final runoff including rejected recharge
+
+28. calc_final_recharge() (lines 531-537)
+   Original: # wa.py - Function 27: Calculates final groundwater recharge
+   → /aquifer_storage_bucket/influx/recharge_calculations.py (lines 207-210)
+   Restructured: # wa.py - Function 27: Calculates final groundwater recharge
+
+29. calc_final_et() (lines 538-543)
+   Original: # wa.py - Function 28: Calculates final evapotranspiration from water balance
+   → /soil_storage_bucket/outflux/evapotranspiration.py (lines 251-256)
+   Restructured: # wa.py - Function 28: Calculates final evapotranspiration from water balance
+
+30. calc_final_et_biological() (lines 544-570)
+   Original: # wa.py - Function 29: Calculates biological evapotranspiration from crop and soil
+   → /soil_storage_bucket/outflux/evapotranspiration.py (lines 257-280)
+   Restructured: # wa.py - Function 29: Calculates biological evapotranspiration from crop and soil
+
+31. get_cwr_mm() (lines 571-579)
+   Original: # wa.py - Function 30: Gets crop water requirement in mm for all crops
+   → /outputs/water_metrics.py (lines 51-59)
+   Restructured: # wa.py - Function 30: Gets crop water requirement in mm for all crops
+
+32. get_cwr_met() (lines 580-588)
+   Original: # wa.py - Function 31: Gets percentage of crop water requirement met
+   → /outputs/water_metrics.py (lines 60-68)
+   Restructured: # wa.py - Function 31: Gets percentage of crop water requirement met
+
+33. get_yield_per() (lines 589-598)
+   Original: # wa.py - Function 32: Gets yield percentages for all crops
+   → /outputs/yield_calculations.py (lines 125-134)
+   Restructured: # wa.py - Function 32: Gets yield percentages for all crops
+
+34. get_drought_proofness() (lines 599-604)
+   Original: # wa.py - Function 33: Gets drought proofing index
+   → /outputs/drought_metrics.py (lines 14-20)
+   Restructured: # wa.py - Function 33: Gets drought proofing index
+
+35. get_cwr_mm_cyr() (lines 605-612)
+   Original: # wa.py - Function 34: Gets crop water requirement for crop year
+   → /outputs/water_metrics.py (lines 69-77)
+   Restructured: # wa.py - Function 34: Gets crop water requirement for crop year
+
+36. get_cwr_met_cyr() (lines 613-620)
+   Original: # wa.py - Function 35: Gets crop water requirement met for crop year
+   → /outputs/water_metrics.py (lines 78-83)
+   Restructured: # wa.py - Function 35: Gets crop water requirement met for crop year
+
+37. get_yield_per_cyr() (lines 621-629)
+   Original: # wa.py - Function 36: Gets yield percentages for crop year
+   → /outputs/yield_calculations.py (lines 135-144)
+   Restructured: # wa.py - Function 36: Gets yield percentages for crop year
+
+38. get_drought_proofness_cyr() (lines 630-636)
+   Original: # wa.py - Function 37: Gets drought proofing index for crop year
+   → /outputs/drought_metrics.py (lines 21-24)
+   Restructured: # wa.py - Function 37: Gets drought proofing index for crop year
+
+39. process_year_data() (lines 637-660)
+   Original: # wa.py - Function 38: Processes year data based on calendar or crop year
+   → /outputs/output_aggregator.py (lines 78-101)
+   Restructured: # wa.py - Function 38: Processes year data based on calendar or crop year
+
+40. get_sowing_month() (lines 661-678)
+   Original: # wa.py - Function 39: Gets earliest sowing month from crop plan
+   → /outputs/output_aggregator.py (lines 182-196)
+   Restructured: # wa.py - Function 39: Gets earliest sowing month from crop plan
+
+41. process_water_year_data() (lines 679-716)
+   Original: # wa.py - Function 40: Processes water year data for crop or calendar year
+   → /outputs/output_aggregator.py (lines 102-139)
+   Restructured: # wa.py - Function 40: Processes water year data for crop or calendar year
+
+42. calc_yields() (lines 717-757)
+   Original: # wa.py - Function 41: Calculates yields for water year analysis
+   → /outputs/yield_calculations.py (lines 145-185)
+   Restructured: # wa.py - Function 41: Calculates yields for water year analysis
+
+43. calculate_yield_wyr() (lines 758-770)
+   Original: # wa.py - Function 42: Calculates yields for water year for all crops
+   → /outputs/yield_calculations.py (lines 186-195)
+   Restructured: # wa.py - Function 42: Calculates yields for water year for all crops
+
+44. calc_weighted_avg() (lines 771-809)
+   Original: # wa.py - Function 43: Calculates weighted averages for water year metrics
+   → /outputs/output_aggregator.py (lines 140-181)
+   Restructured: # wa.py - Function 43: Calculates weighted averages for water year metrics
+

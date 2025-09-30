@@ -1,0 +1,858 @@
+DROUGHT PROOFING TOOL - FUNCTION COMPARISON REPORT
+============================================================
+
+SUMMARY:
+Original codebase: 8 files, 219 functions
+Restructured codebase: 51 files, 460 functions
+
+ORIGINAL CODEBASE FUNCTIONS:
+----------------------------------------
+
+File: Economic.py
+  Line  14: calculate_number_of_units(current_economic_life, inp_life_spans)
+  Line  27: get_supplyside_int_data(economic_list, inp_source, master_path)
+  Line  51: get_demandside_int_data(df_cc, economic_list, inp_source, master_path)
+  Line  85: get_soil_moistureside_int_data(df_cc, economic_list, inp_source, master_path)
+  Line 115: create_intervention_data(supply_side_int, demand_side_int, soil_moisture_int)
+  Line 125: calc_cost(v, c)
+  Line 130: calculate_eac(total_capital_cost, interest_rate, time_period)
+  Line 140: calculate_maintenance_cost(df, time_period)
+  Line 150: calc_npv(maintenance_cost, equalized_annual_cost, interest_rate, time_period)
+
+File: crop_pattern.py
+  Line  77: resample(df1, df2_path, date_col, resample_col, freq, agg_func)
+  Line 108: mm_to_m3(x, y)
+  Line 117: m3_to_mm(x, y)
+  Line 126: get_percentage(x, y)
+  Line 133: safe_divide(numerator, denominator)
+  Line 138: safe_subtract(x, y)
+  Line 148: convert_dtypes(df)
+  Line 159: get_crop_data(crop_db)
+  Line 168: get_radiation_db(radiation_db, latitude)
+  Line 185: safe_float_conversion(area_list)
+  Line 190: safe_crop_conversion(crop_list)
+  Line 195: process_season_data(season_name, crops, sowing_month, sowing_week, irr_area, rainfed_area)
+  Line 207: assign_plots_to_crops(var_season_data)
+  Line 232: get_pcp_value(daily_data)
+  Line 241: calc_days_in_month(year, month)
+  Line 246: calc_etom(df_mm, file_paths, inp_source, master_path)
+  Line 265: calculate_daily_etoi(df_mm, df_dd)
+  Line 274: select_valid_crops(df_cp)
+  Line 283: combine_attributes(attribute_name, inp_source, master_path)
+  Line 295: calculate_total_area(inp_lulc_val_list)
+  Line 338: convert_season_data_to_df(var_season_data)
+  Line 362: combine_and_normalize_attributes(var_attribute_names, inp_source, master_path)
+  Line 389: apply_eva_red(row, default_val_eva_red, inp_source, master_path)
+  Line 416: apply_efficiency(row, default_eff_val, inp_source, master_path)
+  Line 454: calc_red_soil_evap(row)
+  Line 461: get_ky_value(all_crops, crop_df, df_cc)
+  Line 487: get_return_flow(crop)
+  Line 499: apply_return_flow(row, inp_source, master_path)
+  Line 517: convert_columns_to_numeric(df, columns)
+
+File: drought_proofing_tool.py
+  Line  23: save_dataframes_scenario(val_scenario, master_path, output_dictionary, inp_source)
+  Line 110: main(argument)
+  Line 176: copy_scenario_intervention_file(scenario_no, base_path)
+  Line  26: save_dictionaries_to_csv(val_scenario, inp_source, scenario_folder)
+
+File: drpf_functions.py
+  Line  27: get_season_data(inp_source, master_path)
+  Line  60: get_land_use_types(inp_source, master_path)
+  Line  86: process_monthly_qi(df_dd, df_mm, inp_aquifer_para)
+  Line  94: soil_calculation(inp_source, master_path)
+  Line 112: get_seasons_val(inp_source, master_path)
+  Line 125: get_seasons_data(inp_source, master_path)
+  Line 135: calc_crop_consolidated_cn(df_dd, df_crop, actual_cn2, df_cc, all_crops, inp_lulc_val_list, cn_values_list)
+  Line 180: crop_details(attribute_names, all_crops, crop_df, inp_source, master_path)
+  Line 218: calc_discharge(df_dd, df_crop, fixed_values_list)
+  Line 232: calc_crop_int(df_crop, df_cc, df_cp, valid_crops_df, all_plots, all_crops, soil_prop_list)
+  Line 251: calc_smdi_plot(df_crop, df_dd, valid_crops_df, all_plots, smdi_1)
+  Line 327: calc_gwnr_fallow_plot(df_crop, df_mm, df_dd, all_plots, all_crops, inp_lulc_val_list, df_cc)
+  Line 406: calc_int_economics(combined_intervention_data, economic_list)
+  Line 435: calculate_intervention_economics(economic_list, df_cc, inp_source, master_path)
+  Line 446: get_all_cn_values(seasons, df_cc, crop_df, soil_output_list)
+  Line 460: calc_etci_plot(df_crop, df_cc, df_cp, df_dd, df_mm, all_plots, all_crops, num_plots, counter, kei, valid_crops_df, crop_df)
+  Line 513: process_water_management(df_mm, all_crops, surface_areas, added_recharges, water_resource_list, inp_aquifer_para, irrigation)
+  Line 562: process_seasonal_crops(df_crop, crop_df, df_cp, season)
+  Line 570: process_cn_values(seasons, df_cc, crop_df, soil_output_list, all_crops, inp_source, master_path)
+  Line 585: process_final_wb(df, all_crops)
+  Line 602: process_yearly_df(df_mm, df_cc, all_crops, yield_columns, other_columns)
+  Line 612: process_monthly_data(df_dd, file_paths, inp_source, master_path)
+  Line 623: dr_prf_all_processes(inp_source, master_path, file_paths, year_type, counter)
+  Line 735: run_dr_pf_routines(inp_source, master_path, year_type, counter)
+
+File: kc_et.py
+  Line  18: calculate_kc_ini(df, crop_df, sowing_week, sowing_month, stage_column, kc_column, selected_crop)
+  Line  57: calculate_kc_dev(df, crop_df, stage_column, kc_column, selected_crop, l_ini_days)
+  Line  89: calculate_kc_mid(df, crop_df, stage_column, kc_column, selected_crop, l_ini_days, l_dev_days)
+  Line 121: calculate_kc_late(df, crop_df, stage_column, kc_column, selected_crop, l_ini_days, l_dev_days, l_mid_days)
+  Line 155: process_crops(df, crop_df, crops, sowing_months, sowing_weeks, df_cp)
+  Line 177: calc_crop_kc(row, selected_crop)
+  Line 193: calc_kci_by_plot(df_crop, df_cp, crops, num_plots)
+  Line 218: calc_etci(df_cc, etoi, kci, local_crop, counter)
+  Line 248: calculate_stage_1(df, crops, df_cp)
+  Line 271: calc_kei(df_crop, kei, all_plots)
+  Line 280: calculate_daily_esi(df_dd, df_crop, all_plots)
+  Line 287: get_total_growth_days(crop_df, selected_crop)
+  Line 298: find_start_date(year, sowing_month_num, sowing_week)
+  Line 304: calc_rg_days_ini(df, crop_df, selected_crop, sowing_month, sowing_week)
+  Line 325: calc_remaining_days(df, crop_df, selected_crop, sowing_month, sowing_week)
+  Line 343: process_yearly_rg_days(df, crop_df, crops, months, weeks)
+  Line 367: calc_monthly_remaining_growth_days(df, crops, df_mm, df_cc)
+  Line 400: root_dep(row, min_root_depth, max_root_depth, total_growth_days, selected_crop)
+  Line 413: calculate_crop_rd(df_crop, crop_df, selected_crop)
+  Line 438: calc_final_crop_rd(df_crop, crop_df, all_crops, valid_crops_df)
+  Line 464: calculate_depletion_factor(df_crop, crop_df, selected_crop)
+  Line 483: calc_final_depletion_factor(df_crop, crop_df, all_crops, valid_crops_df)
+  Line 509: calculate_awc(soil_type)
+  Line 525: get_soil_type(soil)
+  Line 543: calculate_awc_capacity(dist1, dist2, soil_type1_dep, soil_type2_dep, local_awc_1, local_awc_2)
+  Line 562: calculate_soil_moisture_sums(df)
+  Line 570: calculate_awc_soil(df, cover_crops_practice, mulching_practice, bbf_practice, bund_practice, tillage_practice, awc_capacity)
+  Line 604: calculate_capacity(awc_capacity, with_out_soil_con, total_area, overall_sum, awc_soil_con)
+  Line 617: calc_taw(df_crop, capacity, all_plots)
+  Line 624: calc_raw(df_crop, all_plots)
+  Line 631: calc_tew(df_crop, theta_fc, theta_wp, all_plots)
+  Line 638: calc_rew(df_crop, all_plots)
+  Line 645: calc_sown_area(remaining_growth_day, area)
+  Line 650: process_sown_area(df, df_cp)
+  Line 666: calculate_net_sown_area_by_plot(df_crop, valid_crops_df, df_cc)
+  Line 682: calc_soil_ke(df_crop, df_cc, all_crops)
+  Line 710: calc_final_evap_red(df_crop, all_crops)
+  Line 734: calc_final_evap_red_plot_wise(df_crop, all_crops, all_plots)
+  Line 760: get_cover_type(df_cc, crop_df)
+  Line 775: get_cn(crop_df, crop_type, crop_sown_type, hsc, soil_type, default_cn_value)
+  Line 828: calculate_cn_values(crop_list, crop_type_list, crop_sown_type_list, df_cc, crop_df, soil_type1, soil_type2, hsc1, hsc2)
+  Line 868: calc_act_cn2(cn1, cn2, dist1, dist2)
+  Line 882: calculate_actual_cn(all_cn_values, inp_source, master_path)
+  Line 903: calc_red_cn_area(df_cc, all_crops, dict_actual_cn2, inp_source, master_path)
+  Line 943: get_fallow_cn_soil_type(crop_df, soil_type)
+  Line 963: calc_act_fallow_cn2(cn_f1, cn_f2, inp_source, master_path)
+  Line 984: calc_crop_cn2(sown_area, actual_cn2)
+  Line 989: update_cn2(df_crop, actual_cn2, df_cc, all_crops)
+  Line 1011: calculate_total_sown_area(df, crops, net_crop_sown_area)
+  Line 1034: calculate_consolidated_crop_cn2(df_crop, all_crops)
+  Line 1061: calc_fallow_area(net_crop_sown_area, sown_area, fallow)
+  Line 1069: calc_lulc(x, total_area)
+  Line 1080: calc_fallowcn2(fallow_area, actual_fallow_cn2)
+  Line 1087: calc_final_cn2(x1, y1, x2, y2, x3, y3, x4, y4, x5, y5, x6, y6)
+  Line 1097: calc_cn2_adjusted(final_cn2, inp_slope)
+  Line 1104: calc_cn1(final_cn2)
+  Line 1110: calc_cn3(final_cn2)
+  Line 1116: calc_dormant(sown_area)
+  Line 1121: calc_amc_cond(df_dd, df_crop)
+  Line 1137: calc_cn(df_crop)
+  Line 1148: calc_abstraction(df_dd, df_crop, ia_amc1, ia_amc2, ia_amc3)
+  Line 1161: get_recharge(pi, soil_gwrecharge_coefficient)
+  Line 1167: get_rain_src_model(pi, recharge_src)
+  Line 1173: runoff_cn(pi, iai, si)
+  Line 1179: calc_runoff_cn(rain_src, iai, runoff)
+  Line 1184: get_eff_rain(rain_src, runoff)
+  Line 1190: calculate_monthly_qi(df_dd, df_mm)
+  Line  20: local_find_start_date(year)
+  Line 330: find_start_date_row(row)
+  Line 1036: consolidated_crop_cn2(sown_area, actual_crop_sown_area, crop_cn2)
+
+File: smd.py
+  Line  16: calc_ks_soil_cond(kei, smdi, rewi, tewi)
+  Line  28: calc_ks_soil(ks_soil_cond, tewi, smdi, rewi)
+  Line  38: calc_ae_soil(esi, pei, ks_soil_cond, ks_soil, x)
+  Line  50: calc_ks_crop_cond(kci, smdi, rawi, tawi)
+  Line  62: calc_ks_crop(ks_crop_cond, tawi, smdi, rawi)
+  Line  72: calc_ae_crop(etci, pei, ks_crop_cond, ks_crop)
+  Line  84: calc_smd(smdi, ae_soil, ae_crop, pei)
+  Line  92: calc_ae_per_crop(df_crop, valid_crops_df, ae_type)
+  Line 121: calc_gwnr(smdi, smdi_shifted, ae_crop, ae_soil, pei)
+  Line 126: update_gwnr(df_crop, df_dd, all_plots)
+  Line 158: calc_monthly_gwnrm_crop(df_crop, df_mm, all_plots)
+  Line 174: calc_ke(kc_fallow)
+  Line 179: calc_esi_fallow(row)
+  Line 185: calc_smd_fallow(smdi, ae_soil, pei)
+  Line 193: calc_ae_soil_fallow(esi, pei, ks_soil_cond, ks_soil)
+  Line 205: calc_gwnr_fallow(smdi_fallow, smdi_shifted_fallow, ae_soil_fallow, pei)
+  Line 210: calc_monthly_gwnrm_fallow(df_crop, df_mm)
+  Line 221: calc_fallow_area1(df_crop, fallow, builtup, water_bodies, pasture, forest)
+  Line 232: calc_recharge(row, all_plots, total_crop_areas)
+  Line 242: calc_monthly_recharge(df_crop, df_mm)
+  Line 250: calculate_iwr(df_dd, df_crop, crops)
+  Line 258: calculate_monthly_iwr(df_dd, df_mm, df_crop, crops)
+  Line 273: calc_irr_eff(area_eff_list, inp_lulc_val_list)
+  Line 291: calc_overall_eff(df_mm, df_cc, crops, irr_eff)
+
+File: user_input.py
+  Line  17: clear_file_paths_cache()
+            Clear the file paths cache - useful for testing or changing configurations
+  Line  24: get_file_paths(inp_source, master_path)
+  Line  62: to_float(value, default_value)
+  Line  86: _read_cached_csv(file_path)
+            Cache CSV reading to avoid repeated disk I/O
+  Line  93: handle_value_retrieval(inp_data_source, variables, master_path, var_name, index, is_crops, is_area)
+  Line 168: get_kei_value(inp_climate)
+  Line 183: get_variable_value(inp_source, master_path, var_name, index)
+  Line 222: get_crops_variable_values(inp_source, master_path, var_name, index)
+  Line 257: get_supply_side_int_values(inp_source, master_path, var_name, index)
+  Line 297: get_demand_side_interv_area_values(inp_source, master_path, var_name, index)
+  Line 338: get_demand_side_interv_values(inp_source, master_path, var_name, index)
+  Line 367: get_soil_moisture_interv_area_values(inp_source, master_path, var_name, index)
+  Line 393: get_soil_moisture_interv_values(inp_source, master_path, var_name, index)
+  Line 434: collect_inp_variables(inp_source, master_path)
+  Line 514: collect_int_variables(inp_source, master_path)
+
+File: wa.py
+  Line  16: irrigation_data_input(df_ir_path, df_mm)
+  Line  25: calculate_storage_limit(aquifer_para_list)
+  Line  34: calc_storage_residualgw(df_mm, aquifer_para_list)
+  Line  43: calc_surface_area(vol, depth)
+  Line  56: calc_added_monthly_recharge(surface_area, inf_rate)
+  Line  62: calc_recharge_capacity(farm_pond_vol, farm_pond_depth, farm_pond_inf_rate, farm_pond_lined_vol, farm_pond_lined_depth, farm_pond_lined_inf_rate, check_dam_vol, check_dam_depth, check_dam_inf_rate, inf_pond_vol, inf_pond_depth, inf_pond_inf_rate, injection_wells_vol, injection_wells_nos)
+  Line  99: calc_potential_et(total_surface_area_farm, df_mm)
+  Line 106: calc_canal_supply(df_ir, df_mm)
+  Line 116: get_iwr_after_canal(df_mm)
+  Line 122: calc_potential_recharge(farm, farm_lined, check_dam, df_mm)
+  Line 128: calc_domestic_need(population, domestic_water_use, df_mm)
+  Line 136: calc_other_need(other, other_water_use, df_mm)
+  Line 144: calc_gw_need(df_mm, groundwater_dependent)
+  Line 149: calc_sw_need(df_mm)
+  Line 154: calc_sw_abstracted(df_mm)
+  Line 166: calc_value_after_subtracting_domestic_sw_use(df_mm)
+  Line 173: calc_storage(df_mm, sw_storage_capacity_created, added_recharge_capacity, storage_limit)
+  Line 312: calc_per_irr_water_req_fulfilled(df_mm)
+  Line 326: calc_cwr_met(df_mm, crops)
+  Line 344: get_resample_yr_optimized(df_mm, crops)
+  Line 359: calculate_yields(df_yr, df_cc, crop, irr_area, rainfed_area, ky_value, total_area, final_eff)
+  Line 455: calc_yield(df_cc, df_yr, all_crops)
+  Line 468: calculate_weighted_averages(df_cc, df_yr, all_crops, yield_columns, other_columns)
+  Line 512: add_runoff_to_recharge(df_mm)
+  Line 519: calc_final_ro(df_mm)
+  Line 525: calc_final_runoff(df_mm)
+  Line 531: calc_final_recharge(df_mm)
+  Line 538: calc_final_et(df_mm)
+  Line 544: calc_final_et_biological(df_mm, crops)
+            Calculate Final_ET from actual biological evapotranspiration instead of water balance residual.
+  Line 571: get_cwr_mm(df_yr, all_crops)
+  Line 580: get_cwr_met(df_yr, all_crops)
+  Line 589: get_yield_per(df_yr, all_crops)
+  Line 599: get_drought_proofness(df_yr)
+  Line 605: get_cwr_mm_cyr(df_crop_yr, all_crops)
+  Line 613: get_cwr_met_cyr(df_crop_yr, all_crops)
+  Line 621: get_yield_per_cyr(df_crop_yr, all_crops)
+  Line 630: get_drought_proofness_cyr(df_crop_yr)
+  Line 637: process_year_data(df_yr, df_crop_yr, all_crops, year_type)
+  Line 661: get_sowing_month(df_cp)
+  Line 679: process_water_year_data(df_mm, df_cp, crops, year_type)
+  Line 717: calc_yields(df_crop_yr, crop, irr_area, rainfed_area, ky_value, total_area)
+  Line 758: calculate_yield_wyr(df_cc, df_crop_yr, all_crops)
+  Line 771: calc_weighted_avg(df_cc, df_crop_yr, all_crops, yield_columns, other_columns)
+  Line 107: get_canal_supply(row)
+
+============================================================
+RESTRUCTURED CODEBASE FUNCTIONS:
+----------------------------------------
+
+File: Original/Economic.py
+  Line  14: calculate_number_of_units(current_economic_life, inp_life_spans)
+  Line  27: get_supplyside_int_data(economic_list, inp_source, master_path)
+  Line  51: get_demandside_int_data(df_cc, economic_list, inp_source, master_path)
+  Line  85: get_soil_moistureside_int_data(df_cc, economic_list, inp_source, master_path)
+  Line 115: create_intervention_data(supply_side_int, demand_side_int, soil_moisture_int)
+  Line 125: calc_cost(v, c)
+  Line 130: calculate_eac(total_capital_cost, interest_rate, time_period)
+  Line 140: calculate_maintenance_cost(df, time_period)
+  Line 150: calc_npv(maintenance_cost, equalized_annual_cost, interest_rate, time_period)
+
+File: Original/crop_pattern.py
+  Line  77: resample(df1, df2_path, date_col, resample_col, freq, agg_func)
+  Line 108: mm_to_m3(x, y)
+  Line 117: m3_to_mm(x, y)
+  Line 126: get_percentage(x, y)
+  Line 133: safe_divide(numerator, denominator)
+  Line 138: safe_subtract(x, y)
+  Line 148: convert_dtypes(df)
+  Line 159: get_crop_data(crop_db)
+  Line 168: get_radiation_db(radiation_db, latitude)
+  Line 185: safe_float_conversion(area_list)
+  Line 190: safe_crop_conversion(crop_list)
+  Line 195: process_season_data(season_name, crops, sowing_month, sowing_week, irr_area, rainfed_area)
+  Line 207: assign_plots_to_crops(var_season_data)
+  Line 232: get_pcp_value(daily_data)
+  Line 241: calc_days_in_month(year, month)
+  Line 246: calc_etom(df_mm, file_paths, inp_source, master_path)
+  Line 265: calculate_daily_etoi(df_mm, df_dd)
+  Line 274: select_valid_crops(df_cp)
+  Line 283: combine_attributes(attribute_name, inp_source, master_path)
+  Line 295: calculate_total_area(inp_lulc_val_list)
+  Line 338: convert_season_data_to_df(var_season_data)
+  Line 362: combine_and_normalize_attributes(var_attribute_names, inp_source, master_path)
+  Line 389: apply_eva_red(row, default_val_eva_red, inp_source, master_path)
+  Line 416: apply_efficiency(row, default_eff_val, inp_source, master_path)
+  Line 454: calc_red_soil_evap(row)
+  Line 461: get_ky_value(all_crops, crop_df, df_cc)
+  Line 487: get_return_flow(crop)
+  Line 499: apply_return_flow(row, inp_source, master_path)
+  Line 517: convert_columns_to_numeric(df, columns)
+
+File: Original/drought_proofing_tool.py
+  Line  23: save_dataframes_scenario(val_scenario, master_path, output_dictionary, inp_source)
+  Line 110: main(argument)
+  Line 176: copy_scenario_intervention_file(scenario_no, base_path)
+  Line  26: save_dictionaries_to_csv(val_scenario, inp_source, scenario_folder)
+
+File: Original/drpf_functions.py
+  Line  27: get_season_data(inp_source, master_path)
+  Line  60: get_land_use_types(inp_source, master_path)
+  Line  86: process_monthly_qi(df_dd, df_mm, inp_aquifer_para)
+  Line  94: soil_calculation(inp_source, master_path)
+  Line 112: get_seasons_val(inp_source, master_path)
+  Line 125: get_seasons_data(inp_source, master_path)
+  Line 135: calc_crop_consolidated_cn(df_dd, df_crop, actual_cn2, df_cc, all_crops, inp_lulc_val_list, cn_values_list)
+  Line 180: crop_details(attribute_names, all_crops, crop_df, inp_source, master_path)
+  Line 218: calc_discharge(df_dd, df_crop, fixed_values_list)
+  Line 232: calc_crop_int(df_crop, df_cc, df_cp, valid_crops_df, all_plots, all_crops, soil_prop_list)
+  Line 251: calc_smdi_plot(df_crop, df_dd, valid_crops_df, all_plots, smdi_1)
+  Line 327: calc_gwnr_fallow_plot(df_crop, df_mm, df_dd, all_plots, all_crops, inp_lulc_val_list, df_cc)
+  Line 406: calc_int_economics(combined_intervention_data, economic_list)
+  Line 435: calculate_intervention_economics(economic_list, df_cc, inp_source, master_path)
+  Line 446: get_all_cn_values(seasons, df_cc, crop_df, soil_output_list)
+  Line 460: calc_etci_plot(df_crop, df_cc, df_cp, df_dd, df_mm, all_plots, all_crops, num_plots, counter, kei, valid_crops_df, crop_df)
+  Line 513: process_water_management(df_mm, all_crops, surface_areas, added_recharges, water_resource_list, inp_aquifer_para, irrigation)
+  Line 562: process_seasonal_crops(df_crop, crop_df, df_cp, season)
+  Line 570: process_cn_values(seasons, df_cc, crop_df, soil_output_list, all_crops, inp_source, master_path)
+  Line 585: process_final_wb(df, all_crops)
+  Line 602: process_yearly_df(df_mm, df_cc, all_crops, yield_columns, other_columns)
+  Line 612: process_monthly_data(df_dd, file_paths, inp_source, master_path)
+  Line 623: dr_prf_all_processes(inp_source, master_path, file_paths, year_type, counter)
+  Line 735: run_dr_pf_routines(inp_source, master_path, year_type, counter)
+
+File: Original/kc_et.py
+  Line  18: calculate_kc_ini(df, crop_df, sowing_week, sowing_month, stage_column, kc_column, selected_crop)
+  Line  57: calculate_kc_dev(df, crop_df, stage_column, kc_column, selected_crop, l_ini_days)
+  Line  89: calculate_kc_mid(df, crop_df, stage_column, kc_column, selected_crop, l_ini_days, l_dev_days)
+  Line 121: calculate_kc_late(df, crop_df, stage_column, kc_column, selected_crop, l_ini_days, l_dev_days, l_mid_days)
+  Line 155: process_crops(df, crop_df, crops, sowing_months, sowing_weeks, df_cp)
+  Line 177: calc_crop_kc(row, selected_crop)
+  Line 193: calc_kci_by_plot(df_crop, df_cp, crops, num_plots)
+  Line 218: calc_etci(df_cc, etoi, kci, local_crop, counter)
+  Line 248: calculate_stage_1(df, crops, df_cp)
+  Line 271: calc_kei(df_crop, kei, all_plots)
+  Line 280: calculate_daily_esi(df_dd, df_crop, all_plots)
+  Line 287: get_total_growth_days(crop_df, selected_crop)
+  Line 298: find_start_date(year, sowing_month_num, sowing_week)
+  Line 304: calc_rg_days_ini(df, crop_df, selected_crop, sowing_month, sowing_week)
+  Line 325: calc_remaining_days(df, crop_df, selected_crop, sowing_month, sowing_week)
+  Line 343: process_yearly_rg_days(df, crop_df, crops, months, weeks)
+  Line 367: calc_monthly_remaining_growth_days(df, crops, df_mm, df_cc)
+  Line 400: root_dep(row, min_root_depth, max_root_depth, total_growth_days, selected_crop)
+  Line 413: calculate_crop_rd(df_crop, crop_df, selected_crop)
+  Line 438: calc_final_crop_rd(df_crop, crop_df, all_crops, valid_crops_df)
+  Line 464: calculate_depletion_factor(df_crop, crop_df, selected_crop)
+  Line 483: calc_final_depletion_factor(df_crop, crop_df, all_crops, valid_crops_df)
+  Line 509: calculate_awc(soil_type)
+  Line 525: get_soil_type(soil)
+  Line 543: calculate_awc_capacity(dist1, dist2, soil_type1_dep, soil_type2_dep, local_awc_1, local_awc_2)
+  Line 562: calculate_soil_moisture_sums(df)
+  Line 570: calculate_awc_soil(df, cover_crops_practice, mulching_practice, bbf_practice, bund_practice, tillage_practice, awc_capacity)
+  Line 604: calculate_capacity(awc_capacity, with_out_soil_con, total_area, overall_sum, awc_soil_con)
+  Line 617: calc_taw(df_crop, capacity, all_plots)
+  Line 624: calc_raw(df_crop, all_plots)
+  Line 631: calc_tew(df_crop, theta_fc, theta_wp, all_plots)
+  Line 638: calc_rew(df_crop, all_plots)
+  Line 645: calc_sown_area(remaining_growth_day, area)
+  Line 650: process_sown_area(df, df_cp)
+  Line 666: calculate_net_sown_area_by_plot(df_crop, valid_crops_df, df_cc)
+  Line 682: calc_soil_ke(df_crop, df_cc, all_crops)
+  Line 710: calc_final_evap_red(df_crop, all_crops)
+  Line 734: calc_final_evap_red_plot_wise(df_crop, all_crops, all_plots)
+  Line 760: get_cover_type(df_cc, crop_df)
+  Line 775: get_cn(crop_df, crop_type, crop_sown_type, hsc, soil_type, default_cn_value)
+  Line 828: calculate_cn_values(crop_list, crop_type_list, crop_sown_type_list, df_cc, crop_df, soil_type1, soil_type2, hsc1, hsc2)
+  Line 868: calc_act_cn2(cn1, cn2, dist1, dist2)
+  Line 882: calculate_actual_cn(all_cn_values, inp_source, master_path)
+  Line 903: calc_red_cn_area(df_cc, all_crops, dict_actual_cn2, inp_source, master_path)
+  Line 943: get_fallow_cn_soil_type(crop_df, soil_type)
+  Line 963: calc_act_fallow_cn2(cn_f1, cn_f2, inp_source, master_path)
+  Line 984: calc_crop_cn2(sown_area, actual_cn2)
+  Line 989: update_cn2(df_crop, actual_cn2, df_cc, all_crops)
+  Line 1011: calculate_total_sown_area(df, crops, net_crop_sown_area)
+  Line 1034: calculate_consolidated_crop_cn2(df_crop, all_crops)
+  Line 1061: calc_fallow_area(net_crop_sown_area, sown_area, fallow)
+  Line 1069: calc_lulc(x, total_area)
+  Line 1080: calc_fallowcn2(fallow_area, actual_fallow_cn2)
+  Line 1087: calc_final_cn2(x1, y1, x2, y2, x3, y3, x4, y4, x5, y5, x6, y6)
+  Line 1097: calc_cn2_adjusted(final_cn2, inp_slope)
+  Line 1104: calc_cn1(final_cn2)
+  Line 1110: calc_cn3(final_cn2)
+  Line 1116: calc_dormant(sown_area)
+  Line 1121: calc_amc_cond(df_dd, df_crop)
+  Line 1137: calc_cn(df_crop)
+  Line 1148: calc_abstraction(df_dd, df_crop, ia_amc1, ia_amc2, ia_amc3)
+  Line 1161: get_recharge(pi, soil_gwrecharge_coefficient)
+  Line 1167: get_rain_src_model(pi, recharge_src)
+  Line 1173: runoff_cn(pi, iai, si)
+  Line 1179: calc_runoff_cn(rain_src, iai, runoff)
+  Line 1184: get_eff_rain(rain_src, runoff)
+  Line 1190: calculate_monthly_qi(df_dd, df_mm)
+  Line  20: local_find_start_date(year)
+  Line 330: find_start_date_row(row)
+  Line 1036: consolidated_crop_cn2(sown_area, actual_crop_sown_area, crop_cn2)
+
+File: Original/smd.py
+  Line  16: calc_ks_soil_cond(kei, smdi, rewi, tewi)
+  Line  28: calc_ks_soil(ks_soil_cond, tewi, smdi, rewi)
+  Line  38: calc_ae_soil(esi, pei, ks_soil_cond, ks_soil, x)
+  Line  50: calc_ks_crop_cond(kci, smdi, rawi, tawi)
+  Line  62: calc_ks_crop(ks_crop_cond, tawi, smdi, rawi)
+  Line  72: calc_ae_crop(etci, pei, ks_crop_cond, ks_crop)
+  Line  84: calc_smd(smdi, ae_soil, ae_crop, pei)
+  Line  92: calc_ae_per_crop(df_crop, valid_crops_df, ae_type)
+  Line 121: calc_gwnr(smdi, smdi_shifted, ae_crop, ae_soil, pei)
+  Line 126: update_gwnr(df_crop, df_dd, all_plots)
+  Line 158: calc_monthly_gwnrm_crop(df_crop, df_mm, all_plots)
+  Line 174: calc_ke(kc_fallow)
+  Line 179: calc_esi_fallow(row)
+  Line 185: calc_smd_fallow(smdi, ae_soil, pei)
+  Line 193: calc_ae_soil_fallow(esi, pei, ks_soil_cond, ks_soil)
+  Line 205: calc_gwnr_fallow(smdi_fallow, smdi_shifted_fallow, ae_soil_fallow, pei)
+  Line 210: calc_monthly_gwnrm_fallow(df_crop, df_mm)
+  Line 221: calc_fallow_area1(df_crop, fallow, builtup, water_bodies, pasture, forest)
+  Line 232: calc_recharge(row, all_plots, total_crop_areas)
+  Line 242: calc_monthly_recharge(df_crop, df_mm)
+  Line 250: calculate_iwr(df_dd, df_crop, crops)
+  Line 258: calculate_monthly_iwr(df_dd, df_mm, df_crop, crops)
+  Line 273: calc_irr_eff(area_eff_list, inp_lulc_val_list)
+  Line 291: calc_overall_eff(df_mm, df_cc, crops, irr_eff)
+
+File: Original/user_input.py
+  Line  17: clear_file_paths_cache()
+            Clear the file paths cache - useful for testing or changing configurations
+  Line  24: get_file_paths(inp_source, master_path)
+  Line  62: to_float(value, default_value)
+  Line  86: _read_cached_csv(file_path)
+            Cache CSV reading to avoid repeated disk I/O
+  Line  93: handle_value_retrieval(inp_data_source, variables, master_path, var_name, index, is_crops, is_area)
+  Line 168: get_kei_value(inp_climate)
+  Line 183: get_variable_value(inp_source, master_path, var_name, index)
+  Line 222: get_crops_variable_values(inp_source, master_path, var_name, index)
+  Line 257: get_supply_side_int_values(inp_source, master_path, var_name, index)
+  Line 297: get_demand_side_interv_area_values(inp_source, master_path, var_name, index)
+  Line 338: get_demand_side_interv_values(inp_source, master_path, var_name, index)
+  Line 367: get_soil_moisture_interv_area_values(inp_source, master_path, var_name, index)
+  Line 393: get_soil_moisture_interv_values(inp_source, master_path, var_name, index)
+  Line 434: collect_inp_variables(inp_source, master_path)
+  Line 514: collect_int_variables(inp_source, master_path)
+
+File: Original/wa.py
+  Line  16: irrigation_data_input(df_ir_path, df_mm)
+  Line  25: calculate_storage_limit(aquifer_para_list)
+  Line  34: calc_storage_residualgw(df_mm, aquifer_para_list)
+  Line  43: calc_surface_area(vol, depth)
+  Line  56: calc_added_monthly_recharge(surface_area, inf_rate)
+  Line  62: calc_recharge_capacity(farm_pond_vol, farm_pond_depth, farm_pond_inf_rate, farm_pond_lined_vol, farm_pond_lined_depth, farm_pond_lined_inf_rate, check_dam_vol, check_dam_depth, check_dam_inf_rate, inf_pond_vol, inf_pond_depth, inf_pond_inf_rate, injection_wells_vol, injection_wells_nos)
+  Line  99: calc_potential_et(total_surface_area_farm, df_mm)
+  Line 106: calc_canal_supply(df_ir, df_mm)
+  Line 116: get_iwr_after_canal(df_mm)
+  Line 122: calc_potential_recharge(farm, farm_lined, check_dam, df_mm)
+  Line 128: calc_domestic_need(population, domestic_water_use, df_mm)
+  Line 136: calc_other_need(other, other_water_use, df_mm)
+  Line 144: calc_gw_need(df_mm, groundwater_dependent)
+  Line 149: calc_sw_need(df_mm)
+  Line 154: calc_sw_abstracted(df_mm)
+  Line 166: calc_value_after_subtracting_domestic_sw_use(df_mm)
+  Line 173: calc_storage(df_mm, sw_storage_capacity_created, added_recharge_capacity, storage_limit)
+  Line 312: calc_per_irr_water_req_fulfilled(df_mm)
+  Line 326: calc_cwr_met(df_mm, crops)
+  Line 344: get_resample_yr_optimized(df_mm, crops)
+  Line 359: calculate_yields(df_yr, df_cc, crop, irr_area, rainfed_area, ky_value, total_area, final_eff)
+  Line 455: calc_yield(df_cc, df_yr, all_crops)
+  Line 468: calculate_weighted_averages(df_cc, df_yr, all_crops, yield_columns, other_columns)
+  Line 512: add_runoff_to_recharge(df_mm)
+  Line 519: calc_final_ro(df_mm)
+  Line 525: calc_final_runoff(df_mm)
+  Line 531: calc_final_recharge(df_mm)
+  Line 538: calc_final_et(df_mm)
+  Line 544: calc_final_et_biological(df_mm, crops)
+            Calculate Final_ET from actual biological evapotranspiration instead of water balance residual.
+  Line 571: get_cwr_mm(df_yr, all_crops)
+  Line 580: get_cwr_met(df_yr, all_crops)
+  Line 589: get_yield_per(df_yr, all_crops)
+  Line 599: get_drought_proofness(df_yr)
+  Line 605: get_cwr_mm_cyr(df_crop_yr, all_crops)
+  Line 613: get_cwr_met_cyr(df_crop_yr, all_crops)
+  Line 621: get_yield_per_cyr(df_crop_yr, all_crops)
+  Line 630: get_drought_proofness_cyr(df_crop_yr)
+  Line 637: process_year_data(df_yr, df_crop_yr, all_crops, year_type)
+  Line 661: get_sowing_month(df_cp)
+  Line 679: process_water_year_data(df_mm, df_cp, crops, year_type)
+  Line 717: calc_yields(df_crop_yr, crop, irr_area, rainfed_area, ky_value, total_area)
+  Line 758: calculate_yield_wyr(df_cc, df_crop_yr, all_crops)
+  Line 771: calc_weighted_avg(df_cc, df_crop_yr, all_crops, yield_columns, other_columns)
+  Line 107: get_canal_supply(row)
+
+File: aquifer_storage_bucket/influx/recharge_calculations.py
+  Line  24: calc_gwnr_fallow_plot(df_crop, df_mm, df_dd, all_plots, all_crops, inp_lulc_val_list, df_cc)
+  Line  96: calc_gwnr(smdi, smdi_shifted, ae_crop, ae_soil, pei)
+  Line 102: update_gwnr(df_crop, df_dd, all_plots)
+  Line 133: calc_monthly_gwnrm_crop(df_crop, df_mm, all_plots)
+  Line 147: calc_gwnr_fallow(smdi_fallow, smdi_shifted_fallow, ae_soil_fallow, pei)
+  Line 153: calc_monthly_gwnrm_fallow(df_crop, df_mm)
+  Line 165: calc_fallow_area1(df_crop, fallow, builtup, water_bodies, pasture, forest)
+  Line 177: calc_recharge(row, all_plots, total_crop_areas)
+  Line 188: calc_monthly_recharge(df_crop, df_mm)
+  Line 197: get_recharge(pi, soil_gwrecharge_coefficient)
+  Line 205: calc_added_monthly_recharge(surface_area, inf_rate)
+  Line 212: calc_potential_recharge(farm, farm_lined, check_dam, df_mm)
+  Line 220: add_runoff_to_recharge(df_mm)
+  Line 229: calc_final_recharge(df_mm)
+  Line 237: calc_smd_fallow(smdi, ae_soil, pei)
+
+File: aquifer_storage_bucket/influx/recharge_capacity.py
+  Line  15: calc_recharge_capacity(farm_pond_vol, farm_pond_depth, farm_pond_inf_rate, farm_pond_lined_vol, farm_pond_lined_depth, farm_pond_lined_inf_rate, check_dam_vol, check_dam_depth, check_dam_inf_rate, inf_pond_vol, inf_pond_depth, inf_pond_inf_rate, injection_wells_vol, injection_wells_nos)
+  Line  48: calc_surface_area(vol, depth)
+  Line  62: calc_added_monthly_recharge(surface_area, inf_rate)
+
+File: aquifer_storage_bucket/outflux/domestic_demand.py
+  Line  15: calc_domestic_need(population, domestic_water_use, df_mm)
+  Line  25: calc_other_need(other, other_water_use, df_mm)
+  Line  35: calc_gw_need(df_mm, groundwater_dependent)
+
+File: aquifer_storage_bucket/processing/storage_capacity.py
+  Line  15: calculate_storage_limit(aquifer_para_list)
+
+File: aquifer_storage_bucket/processing/storage_tracking.py
+  Line  15: calc_storage_residualgw(df_mm, aquifer_para_list)
+
+File: function_comparison.py
+  Line  11: extract_functions_from_file(file_path)
+            Extract function names and their definitions from a Python file
+  Line  45: find_python_files(root_dir)
+            Find all Python files in directory and subdirectories
+  Line  54: analyze_codebase(base_dir, label)
+            Analyze all Python files in a codebase
+  Line  77: write_function_report(output_file)
+            Generate comprehensive function comparison report
+
+File: orchestrator/input_collector.py
+  Line  21: collect_inp_variables(inp_source, master_path)
+  Line  99: collect_int_variables(inp_source, master_path)
+
+File: orchestrator/main_controller.py
+  Line  41: save_dataframes_scenario(val_scenario, master_path, output_dictionary, inp_source)
+  Line 128: process_yearly_df(df_mm, df_cc, all_crops, yield_columns, other_columns)
+  Line 139: main(argument)
+  Line 206: copy_scenario_intervention_file(scenario_no, base_path)
+  Line 227: dr_prf_all_processes(inp_source, master_path, file_paths, year_type, counter)
+  Line 341: run_dr_pf_routines(inp_source, master_path, year_type, counter)
+  Line  45: save_dictionaries_to_csv(val_scenario, inp_source, scenario_folder)
+
+File: orchestrator/water_balance_coordinator.py
+  Line  32: process_water_management(df_mm, all_crops, surface_areas, added_recharges, water_resource_list, inp_aquifer_para, irrigation)
+  Line  72: process_final_wb(df, all_crops)
+  Line  90: calc_storage(df_mm, sw_storage_capacity_created, added_recharge_capacity, storage_limit)
+
+File: outputs/drought_metrics.py
+  Line  19: get_drought_proofness(df_yr)
+  Line  27: get_drought_proofness_cyr(df_crop_yr)
+
+File: outputs/output_aggregator.py
+  Line  25: get_resample_yr_optimized(df_mm, crops)
+  Line  41: calculate_weighted_averages(df_cc, df_yr, all_crops, yield_columns, other_columns)
+  Line  86: process_year_data(df_yr, df_crop_yr, all_crops, year_type)
+  Line 111: process_water_year_data(df_mm, df_cp, crops, year_type)
+  Line 150: calc_weighted_avg(df_cc, df_crop_yr, all_crops, yield_columns, other_columns)
+  Line 193: get_sowing_month(df_cp)
+
+File: outputs/water_metrics.py
+  Line  22: calc_per_irr_water_req_fulfilled(df_mm)
+  Line  37: calc_cwr_met(df_mm, crops)
+  Line  58: get_cwr_mm(df_yr, all_crops)
+  Line  68: get_cwr_met(df_yr, all_crops)
+  Line  78: get_cwr_mm_cyr(df_crop_yr, all_crops)
+  Line  88: get_cwr_met_cyr(df_crop_yr, all_crops)
+
+File: outputs/yield_calculations.py
+  Line  21: calculate_yields(df_yr, df_cc, crop, irr_area, rainfed_area, ky_value, total_area, final_eff)
+  Line 118: calc_yield(df_cc, df_yr, all_crops)
+  Line 132: get_yield_per(df_yr, all_crops)
+  Line 143: get_yield_per_cyr(df_crop_yr, all_crops)
+  Line 154: calc_yields(df_crop_yr, crop, irr_area, rainfed_area, ky_value, total_area)
+  Line 196: calculate_yield_wyr(df_cc, df_crop_yr, all_crops)
+
+File: shared/crop_processing.py
+  Line  85: assign_plots_to_crops(var_season_data)
+  Line 111: select_valid_crops(df_cp)
+  Line 121: combine_attributes(attribute_name, inp_source, master_path)
+  Line 134: combine_and_normalize_attributes(var_attribute_names, inp_source, master_path)
+  Line 162: apply_efficiency(row, default_eff_val, inp_source, master_path)
+  Line 200: get_ky_value(all_crops, crop_df, df_cc)
+  Line 227: get_return_flow(crop)
+  Line 240: apply_return_flow(row, inp_source, master_path)
+  Line 259: crop_details(attribute_names, all_crops, crop_df, inp_source, master_path)
+  Line 298: process_seasonal_crops(df_crop, crop_df, df_cp, season)
+  Line 307: get_total_growth_days(crop_df, selected_crop)
+  Line 319: find_start_date(year, sowing_month_num, sowing_week)
+  Line 326: calc_rg_days_ini(df, crop_df, selected_crop, sowing_month, sowing_week)
+  Line 348: calc_remaining_days(df, crop_df, selected_crop, sowing_month, sowing_week)
+  Line 374: process_yearly_rg_days(df, crop_df, crops, months, weeks)
+  Line 408: calc_sown_area(remaining_growth_day, area)
+  Line 414: process_sown_area(df, df_cp)
+  Line 431: calculate_net_sown_area_by_plot(df_crop, valid_crops_df, df_cc)
+  Line 450: calculate_total_sown_area(df, crops, net_crop_sown_area)
+  Line 475: calc_fallow_area(net_crop_sown_area, sown_area, fallow)
+  Line 484: get_sowing_month(df_cp)
+  Line 504: calc_dormant(sown_area)
+  Line 509: find_start_date_row(row, sowing_month_num, sowing_week)
+
+File: shared/data_readers.py
+  Line  31: get_crop_data(crop_db)
+  Line  41: get_radiation_db(radiation_db, latitude)
+  Line  58: get_pcp_value(daily_data)
+  Line  68: get_season_crop_data(inp_source, master_path)
+  Line  79: get_land_use_types(inp_source, master_path)
+  Line  98: get_seasons_val(inp_source, master_path)
+  Line 116: get_seasons_data(inp_source, master_path)
+  Line 130: process_monthly_data(df_dd, file_paths, inp_source, master_path)
+  Line 143: get_cover_type(df_cc, crop_df)
+  Line 159: clear_file_paths_cache()
+            Clear the file paths cache - useful for testing or changing configurations
+  Line 168: get_file_paths(inp_source, master_path)
+  Line 204: _read_cached_csv(file_path)
+            Cache CSV reading to avoid repeated disk I/O
+  Line 213: handle_value_retrieval(inp_data_source, variables, master_path, var_name, index, is_crops, is_area)
+  Line 278: get_kei_value(inp_climate)
+  Line 293: get_variable_value(inp_source, master_path, var_name, index)
+  Line 333: get_crops_variable_values(inp_source, master_path, var_name, index)
+  Line 369: get_supply_side_int_values(inp_source, master_path, var_name, index)
+  Line 387: get_demand_side_interv_area_values(inp_source, master_path, var_name, index)
+  Line 399: get_demand_side_interv_values(inp_source, master_path, var_name, index)
+  Line 410: get_soil_moisture_interv_area_values(inp_source, master_path, var_name, index)
+  Line 425: get_soil_moisture_interv_values(inp_source, master_path, var_name, index)
+  Line 441: get_season_data(inp_source, master_path)
+  Line 478: irrigation_data_input(df_ir_path, df_mm)
+
+File: shared/economics.py
+  Line  24: calculate_number_of_units(current_economic_life, inp_life_spans)
+  Line  39: get_supplyside_int_data(economic_list, inp_source, master_path)
+  Line  63: get_demandside_int_data(df_cc, economic_list, inp_source, master_path)
+  Line  98: get_soil_moistureside_int_data(df_cc, economic_list, inp_source, master_path)
+  Line 129: create_intervention_data(supply_side_int, demand_side_int, soil_moisture_int)
+  Line 140: calc_cost(v, c)
+  Line 146: calculate_eac(total_capital_cost, interest_rate, time_period)
+  Line 157: calculate_maintenance_cost(df, time_period)
+  Line 168: calc_npv(maintenance_cost, equalized_annual_cost, interest_rate, time_period)
+  Line 175: calc_int_economics(combined_intervention_data, economic_list)
+  Line 205: calculate_intervention_economics(economic_list, df_cc, inp_source, master_path)
+
+File: shared/input_utilities.py
+  Line  30: get_file_paths(inp_source, master_path)
+  Line  66: _read_cached_csv(file_path)
+            Cache CSV reading to avoid repeated disk I/O
+  Line  75: handle_value_retrieval(inp_data_source, variables, master_path, var_name, index, is_crops, is_area)
+  Line 331: get_kei_value(inp_climate)
+  Line 347: get_variable_value(inp_source, master_path, var_name, index)
+  Line 387: get_crops_variable_values(inp_source, master_path, var_name, index)
+  Line 423: get_supply_side_int_values(inp_source, master_path, var_name, index)
+  Line 464: get_demand_side_interv_area_values(inp_source, master_path, var_name, index)
+  Line 506: get_demand_side_interv_values(inp_source, master_path, var_name, index)
+  Line 536: get_soil_moisture_interv_area_values(inp_source, master_path, var_name, index)
+  Line 563: get_soil_moisture_interv_values(inp_source, master_path, var_name, index)
+
+File: shared/irrigation_efficiency.py
+  Line  21: calc_irr_eff(area_eff_list, inp_lulc_val_list)
+  Line  40: calc_overall_eff(df_mm, df_cc, crops, irr_eff)
+
+File: shared/land_use.py
+  Line  18: calculate_total_area(inp_lulc_val_list)
+
+File: shared/utilities.py
+  Line  22: resample(df1, df2_path, date_col, resample_col, freq, agg_func)
+  Line  47: mm_to_m3(x, y)
+  Line  57: m3_to_mm(x, y)
+  Line  67: get_percentage(x, y)
+  Line  76: safe_subtract(x, y)
+  Line  87: convert_dtypes(df)
+  Line  99: safe_float_conversion(area_list)
+  Line 105: safe_crop_conversion(crop_list)
+  Line 111: calc_days_in_month(year, month)
+  Line 117: calculate_total_area(inp_lulc_val_list)
+  Line 145: convert_season_data_to_df(var_season_data)
+  Line 171: convert_columns_to_numeric(df, columns)
+  Line 179: to_float(value, default_value)
+  Line 203: calc_lulc(x, total_area)
+  Line 214: process_season_data(season, crops, sowing_months, sowing_weeks, irrigated_areas, rainfed_areas)
+  Line 237: safe_divide(numerator, denominator)
+  Line 243: calc_monthly_remaining_growth_days(df, crops, df_mm, df_cc)
+
+File: soil_storage_bucket/input_data/soil_properties.py
+  Line  16: soil_calculation(inp_source, master_path)
+  Line  36: calculate_awc(soil_type)
+  Line  53: get_soil_type(soil)
+  Line  71: calculate_awc_capacity(dist1, dist2, soil_type1_dep, soil_type2_dep, local_awc_1, local_awc_2)
+
+File: soil_storage_bucket/outflux/evapotranspiration.py
+  Line  22: calc_etom(df_mm, file_paths, inp_source, master_path)
+  Line  42: calculate_daily_etoi(df_mm, df_dd)
+  Line  52: apply_eva_red(row, default_val_eva_red, inp_source, master_path)
+  Line  80: calc_red_soil_evap(row)
+  Line  88: calc_etci(df_cc, etoi, kci, local_crop, counter)
+  Line 119: calc_kei(df_crop, kei, all_plots)
+  Line 129: calculate_daily_esi(df_dd, df_crop, all_plots)
+  Line 137: calc_ae_soil(esi, pei, ks_soil_cond, ks_soil, x)
+  Line 150: calc_ae_crop(etci, pei, ks_crop_cond, ks_crop)
+  Line 163: calc_ae_per_crop(df_crop, valid_crops_df, ae_type)
+  Line 193: calc_ke(kc_fallow)
+  Line 199: calc_esi_fallow(row)
+  Line 206: calc_ae_soil_fallow(esi, pei, ks_soil_cond, ks_soil)
+  Line 219: calc_etci_plot(df_crop, df_cc, df_cp, df_dd, df_mm, all_plots, all_crops, num_plots, counter, kei, valid_crops_df, crop_df)
+  Line 273: calc_final_et(df_mm)
+  Line 280: calc_final_et_biological(df_mm, crops)
+            Calculate Final_ET from actual biological evapotranspiration instead of water balance residual.
+
+File: soil_storage_bucket/outflux/irrigation_demand.py
+  Line  14: calculate_iwr(df_dd, df_crop, crops)
+  Line  23: calculate_monthly_iwr(df_dd, df_mm, df_crop, crops)
+  Line  39: get_iwr_after_canal(df_mm)
+
+File: soil_storage_bucket/processing/conservation_practices.py
+  Line  23: calculate_soil_moisture_sums(df)
+  Line  31: calculate_awc_soil(df, cover_crops_practice, mulching_practice, bbf_practice, bund_practice, tillage_practice, awc_capacity)
+  Line  66: calculate_capacity(awc_capacity, with_out_soil_con, total_area, overall_sum, awc_soil_con)
+  Line  80: calc_soil_ke(df_crop, df_cc, all_crops)
+  Line 110: calc_final_evap_red(df_crop, all_crops)
+  Line 135: calc_final_evap_red_plot_wise(df_crop, all_crops, all_plots)
+
+File: soil_storage_bucket/processing/crop_coefficients.py
+  Line  18: calculate_kc_ini(df, crop_df, sowing_week, sowing_month, stage_column, kc_column, selected_crop)
+  Line  58: calculate_kc_dev(df, crop_df, stage_column, kc_column, selected_crop, l_ini_days)
+  Line  90: calculate_kc_mid(df, crop_df, stage_column, kc_column, selected_crop, l_ini_days, l_dev_days)
+  Line 123: calculate_kc_late(df, crop_df, stage_column, kc_column, selected_crop, l_ini_days, l_dev_days, l_mid_days)
+  Line 157: process_crops(df, crop_df, crops, sowing_months, sowing_weeks, df_cp)
+  Line 180: calc_crop_kc(row, selected_crop)
+  Line 196: calc_kci_by_plot(df_crop, df_cp, crops, num_plots)
+  Line 222: calculate_stage_1(df, crops, df_cp)
+  Line  20: local_find_start_date(year)
+
+File: soil_storage_bucket/processing/root_depth.py
+  Line  16: root_dep(row, min_root_depth, max_root_depth, total_growth_days, selected_crop)
+  Line  32: calculate_crop_rd(df_crop, crop_df, selected_crop)
+  Line  58: calc_final_crop_rd(df_crop, crop_df, all_crops, valid_crops_df)
+
+File: soil_storage_bucket/processing/soil_moisture_deficit.py
+  Line  25: calc_smdi_plot(df_crop, df_dd, valid_crops_df, all_plots, smdi_1)
+  Line 102: calc_smd(smdi, ae_soil, ae_crop, pei)
+
+File: soil_storage_bucket/processing/water_capacity.py
+  Line  20: calc_taw(df_crop, capacity, all_plots)
+  Line  28: calc_raw(df_crop, all_plots)
+  Line  36: calc_tew(df_crop, theta_fc, theta_wp, all_plots)
+  Line  44: calc_rew(df_crop, all_plots)
+
+File: soil_storage_bucket/processing/water_demand.py
+  Line  18: calculate_iwr(df_dd, df_crop, crops)
+  Line  27: calculate_monthly_iwr(df_dd, df_mm, df_crop, crops)
+
+File: soil_storage_bucket/processing/water_storage.py
+  Line  20: calc_crop_int(df_crop, df_cc, df_cp, valid_crops_df, all_plots, all_crops, soil_prop_list)
+
+File: soil_storage_bucket/processing/water_stress.py
+  Line  15: calculate_depletion_factor(df_crop, crop_df, selected_crop)
+  Line  35: calc_final_depletion_factor(df_crop, crop_df, all_crops, valid_crops_df)
+  Line  61: calc_ks_soil_cond(kei, smdi, rewi, tewi)
+  Line  74: calc_ks_soil(ks_soil_cond, tewi, smdi, rewi)
+  Line  85: calc_ks_crop_cond(kci, smdi, rawi, tawi)
+  Line  98: calc_ks_crop(ks_crop_cond, tawi, smdi, rawi)
+
+File: surface_water_bucket/influx/precipitation_processing.py
+  Line  17: get_rain_src_model(pi, recharge_src)
+
+File: surface_water_bucket/influx/water_supply.py
+  Line  18: calc_canal_supply(df_ir, df_mm)
+  Line  19: get_canal_supply(row)
+
+File: surface_water_bucket/input_data/curve_number_data.py
+  Line  19: get_cn(crop_df, crop_type, crop_sown_type, hsc, soil_type, default_cn_value)
+  Line  72: get_fallow_cn_soil_type(crop_df, soil_type)
+
+File: surface_water_bucket/outflux/evaporation.py
+  Line  17: calc_potential_et(total_surface_area_farm, df_mm)
+
+File: surface_water_bucket/outflux/runoff_disposal.py
+  Line  17: calc_final_ro(df_mm)
+
+File: surface_water_bucket/outflux/water_abstraction.py
+  Line  18: calc_sw_abstracted(df_mm)
+
+File: surface_water_bucket/outflux/water_demand.py
+  Line  17: calc_sw_need(df_mm)
+
+File: surface_water_bucket/processing/curve_numbers.py
+  Line  26: calc_crop_consolidated_cn(df_dd, df_crop, actual_cn2, df_cc, all_crops, inp_lulc_val_list, cn_values_list)
+  Line  72: get_all_cn_values(seasons, df_cc, crop_df, soil_output_list)
+  Line  87: process_cn_values(seasons, df_cc, crop_df, soil_output_list, all_crops, inp_source, master_path)
+  Line 103: calculate_cn_values(crop_list, crop_type_list, crop_sown_type_list, df_cc, crop_df, soil_type1, soil_type2, hsc1, hsc2)
+  Line 143: calc_act_cn2(cn1, cn2, dist1, dist2)
+  Line 158: calculate_actual_cn(all_cn_values, inp_source, master_path)
+  Line 180: calc_red_cn_area(df_cc, all_crops, dict_actual_cn2, inp_source, master_path)
+  Line 221: calc_act_fallow_cn2(cn_f1, cn_f2, inp_source, master_path)
+  Line 242: calc_crop_cn2(sown_area, actual_cn2)
+  Line 248: update_cn2(df_crop, actual_cn2, df_cc, all_crops)
+  Line 271: calculate_consolidated_crop_cn2(df_crop, all_crops)
+  Line 299: calc_fallowcn2(fallow_area, actual_fallow_cn2)
+  Line 307: calc_final_cn2(x1, y1, x2, y2, x3, y3, x4, y4, x5, y5, x6, y6)
+  Line 318: calc_cn2_adjusted(final_cn2, inp_slope)
+  Line 326: calc_cn1(final_cn2)
+  Line 333: calc_cn3(final_cn2)
+  Line 340: calc_cn(df_crop)
+  Line 273: consolidated_crop_cn2(sown_area, actual_crop_sown_area, crop_cn2)
+
+File: surface_water_bucket/processing/moisture_conditions.py
+  Line  18: calc_amc_cond(df_dd, df_crop)
+
+File: surface_water_bucket/processing/runoff_calculations.py
+  Line  24: process_monthly_qi(df_dd, df_mm, inp_aquifer_para)
+  Line  34: calc_discharge(df_dd, df_crop, fixed_values_list)
+  Line  49: calc_abstraction(df_dd, df_crop, ia_amc1, ia_amc2, ia_amc3)
+  Line  63: runoff_cn(pi, iai, si)
+  Line  70: calc_runoff_cn(rain_src, iai, runoff)
+  Line  76: get_eff_rain(rain_src, runoff)
+  Line  83: calculate_monthly_qi(df_dd, df_mm)
+
+File: surface_water_bucket/processing/surface_calculations.py
+  Line  18: calc_surface_area(vol, depth)
+
+File: surface_water_bucket/processing/water_balance.py
+  Line  18: calc_value_after_subtracting_domestic_sw_use(df_mm)
+  Line  25: calc_final_runoff(df_mm)
+
+============================================================
+FUNCTION COMPARISON ANALYSIS:
+----------------------------------------
+
+Functions only in RESTRUCTURED (5):
+  - analyze_codebase
+  - extract_functions_from_file
+  - find_python_files
+  - get_season_crop_data
+  - write_function_report
+
+Common functions (219):
+  - calc_ae_crop
+  - calc_ae_soil
+  - calc_cn1
+  - calc_crop_int
+  - calc_cwr_met
+  - calc_fallow_area
+  - calc_final_crop_rd
+  - calc_final_depletion_factor
+  - calc_final_et_biological
+  - calc_final_runoff
+  - calc_per_irr_water_req_fulfilled
+  - calculate_capacity
+  - calculate_daily_esi
+  - calculate_kc_dev
+  - calculate_monthly_qi
+  - get_soil_type
+  - get_total_growth_days
+  - local_find_start_date
+  - runoff_cn
+  - safe_divide
+  ... and 199 more

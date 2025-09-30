@@ -1,0 +1,123 @@
+FUNCTION MAPPING: smd.py
+========================
+
+1. calc_ks_soil_cond() (lines 16-27)
+   Original: # smd.py - Function 1: Determines soil evaporation stress condition based on water deficits
+   → /soil_storage_bucket/processing/water_stress.py (lines 54-65)
+   Restructured: # smd.py - Function 1: Determines soil evaporation stress condition based on water deficits
+
+2. calc_ks_soil() (lines 28-37)
+   Original: # smd.py - Function 2: Calculates soil evaporation stress coefficient based on moisture conditions
+   → /soil_storage_bucket/processing/water_stress.py (lines 66-75)
+   Restructured: # smd.py - Function 2: Calculates soil evaporation stress coefficient based on moisture conditions
+
+3. calc_ae_soil() (lines 38-49)
+   Original: # smd.py - Function 3: Calculates actual soil evaporation considering water stress and reduction factors
+   → /soil_storage_bucket/outflux/evapotranspiration.py (lines 122-133)
+   Restructured: # smd.py - Function 3: Calculates actual soil evaporation considering water stress and reduction factors
+
+4. calc_ks_crop_cond() (lines 50-61)
+   Original: # smd.py - Function 4: Determines crop transpiration stress condition based on water availability
+   → /soil_storage_bucket/processing/water_stress.py (lines 76-87)
+   Restructured: # smd.py - Function 4: Determines crop transpiration stress condition based on water availability
+
+5. calc_ks_crop() (lines 62-71)
+   Original: # smd.py - Function 5: Calculates crop transpiration stress coefficient based on soil moisture
+   → /soil_storage_bucket/processing/water_stress.py (lines 88-94)
+   Restructured: # smd.py - Function 5: Calculates crop transpiration stress coefficient based on soil moisture
+
+6. calc_ae_crop() (lines 72-83)
+   Original: # smd.py - Function 6: Calculates actual crop evapotranspiration considering water stress
+   → /soil_storage_bucket/outflux/evapotranspiration.py (lines 134-145)
+   Restructured: # smd.py - Function 6: Calculates actual crop evapotranspiration considering water stress
+
+7. calc_smd() (lines 84-91)
+   Original: # smd.py - Function 7: Calculates soil moisture deficit using water balance approach
+   → /soil_storage_bucket/processing/soil_moisture_deficit.py (lines 93-100)
+   Restructured: # smd.py - Function 7: Calculates soil moisture deficit using water balance approach
+
+8. calc_ae_per_crop() (lines 92-120)
+   Original: # smd.py - Function 8: Distributes plot-level actual evapotranspiration to individual crops
+   → /soil_storage_bucket/outflux/evapotranspiration.py (lines 146-174)
+   Restructured: # smd.py - Function 8: Distributes plot-level actual evapotranspiration to individual crops
+
+9. calc_gwnr() (lines 121-125)
+   Original: # smd.py - Function 9: Calculates groundwater natural recharge when soil is at field capacity
+   → /aquifer_storage_bucket/influx/recharge_calculations.py (lines 86-90)
+   Restructured: # smd.py - Function 9: Calculates groundwater natural recharge when soil is at field capacity
+
+10. update_gwnr() (lines 126-157)
+   Original: # smd.py - Function 10: Updates groundwater natural recharge for all plots in dataset
+   → /aquifer_storage_bucket/influx/recharge_calculations.py (lines 91-115)
+   Restructured: # smd.py - Function 10: Updates groundwater natural recharge for all plots in dataset
+
+11. calc_monthly_gwnrm_crop() (lines 158-173)
+   Original: # smd.py - Function 11: Aggregates daily groundwater recharge to monthly values for crops
+   → /aquifer_storage_bucket/influx/recharge_calculations.py (lines 116-128)
+   Restructured: # smd.py - Function 11: Aggregates daily groundwater recharge to monthly values for crops
+
+12. calc_ke() (lines 174-178)
+   Original: # smd.py - Function 12: Calculates soil evaporation coefficient for fallow land
+   → /soil_storage_bucket/outflux/evapotranspiration.py (lines 175-179)
+   Restructured: # smd.py - Function 12: Calculates soil evaporation coefficient for fallow land
+
+13. calc_esi_fallow() (lines 179-184)
+   Original: # smd.py - Function 13: Calculates potential soil evaporation for fallow areas
+   → /soil_storage_bucket/outflux/evapotranspiration.py (lines 180-185)
+   Restructured: # smd.py - Function 13: Calculates potential soil evaporation for fallow areas
+
+14. calc_smd_fallow() (lines 185-192)
+   Original: # smd.py - Function 14: Calculates soil moisture deficit for fallow land areas
+   → /soil_storage_bucket/processing/soil_moisture_deficit.py (lines 101-105)
+   Restructured: # smd.py - Function 14: Calculates soil moisture deficit for fallow land areas
+
+15. calc_ae_soil_fallow() (lines 193-204)
+   Original: # smd.py - Function 15: Calculates actual soil evaporation for fallow areas without crops
+   → /soil_storage_bucket/outflux/evapotranspiration.py (lines 186-197)
+   Restructured: # smd.py - Function 15: Calculates actual soil evaporation for fallow areas without crops
+
+16. calc_gwnr_fallow() (lines 205-209)
+   Original: # smd.py - Function 16: Calculates groundwater natural recharge from fallow land areas
+   → /aquifer_storage_bucket/influx/recharge_calculations.py (lines 129-133)
+   Restructured: # smd.py - Function 16: Calculates groundwater natural recharge from fallow land areas
+
+17. calc_monthly_gwnrm_fallow() (lines 210-220)
+   Original: # smd.py - Function 17: Aggregates daily groundwater recharge from fallow areas to monthly totals
+   → /aquifer_storage_bucket/influx/recharge_calculations.py (lines 134-144)
+   Restructured: # smd.py - Function 17: Aggregates daily groundwater recharge from fallow areas to monthly totals
+
+18. calc_fallow_area1() (lines 221-231)
+   Original: # smd.py - Function 18: Calculates total fallow area including non-crop land uses for recharge
+   → /aquifer_storage_bucket/influx/recharge_calculations.py (lines 145-155)
+   Restructured: # smd.py - Function 18: Calculates total fallow area including non-crop land uses for recharge
+
+19. calc_recharge() (lines 232-241)
+   Original: # smd.py - Function 19: Calculates area-weighted average groundwater recharge across all land uses
+   → /aquifer_storage_bucket/influx/recharge_calculations.py (lines 156-165)
+   Restructured: # smd.py - Function 19: Calculates area-weighted average groundwater recharge across all land uses
+
+20. calc_monthly_recharge() (lines 242-249)
+   Original: # smd.py - Function 20: Aggregates daily recharge values to monthly totals for water balance
+   → /aquifer_storage_bucket/influx/recharge_calculations.py (lines 166-173)
+   Restructured: # smd.py - Function 20: Aggregates daily recharge values to monthly totals for water balance
+
+21. calculate_iwr() (lines 250-257)
+   Original: # smd.py - Function 21: Calculates irrigation water requirements as difference between ET and actual ET
+   → /soil_storage_bucket/outflux/irrigation_demand.py (lines 9-16)
+   Restructured: # smd.py - Function 21: Calculates irrigation water requirements as difference between ET and actual ET
+
+22. calculate_monthly_iwr() (lines 258-272)
+   Original: # smd.py - Function 22: Aggregates daily irrigation water requirements to monthly values
+   → /soil_storage_bucket/outflux/irrigation_demand.py (lines 17-31)
+   Restructured: # smd.py - Function 22: Aggregates daily irrigation water requirements to monthly values
+
+23. calc_irr_eff() (lines 273-290)
+   Original: # smd.py - Function 23: Calculates weighted irrigation efficiency from surface and groundwater sources
+   → /shared/irrigation_efficiency.py (lines 16-33)
+   Restructured: # smd.py - Function 23: Calculates weighted irrigation efficiency from surface and groundwater sources
+
+24. calc_overall_eff() (lines 291-415)
+   Original: # smd.py - Function 24: Calculates overall irrigation efficiency considering all intervention types
+   → /shared/irrigation_efficiency.py (lines 34-159)
+   Restructured: # smd.py - Function 24: Calculates overall irrigation efficiency considering all intervention types
+

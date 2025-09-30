@@ -1,0 +1,78 @@
+FUNCTION MAPPING: user_input.py
+===============================
+
+1. clear_file_paths_cache() (lines 17-23)
+   Original: # user_input.py - Function 1: Clears the file paths cache for testing or configuration changes
+   → /shared/data_readers.py (lines 135-142)
+   Restructured: # user_input.py - Function 1: Clears the file paths cache for testing or configuration changes
+
+2. get_file_paths() (lines 24-61)
+   Original: # user_input.py - Function 2: Returns cached file paths for datasets based on input source and master path
+   → /shared/data_readers.py (lines 143-177)
+   Restructured: # user_input.py - Function 2: Returns cached file paths for datasets based on input source and master path
+
+3. to_float() (lines 62-85)
+   Original: # user_input.py - Function 3: Converts various input types to float with fallback to default value
+   → /shared/utilities.py (lines 161-183)
+   Restructured: # user_input.py - Function 3: Converts various input types to float with fallback to default value
+
+4. _read_cached_csv() (lines 86-92)
+   Original: # user_input.py - Function 4: Cached CSV reader to avoid repeated disk I/O operations
+   → /shared/data_readers.py (lines 178-185)
+   Restructured: # user_input.py - Function 4: Cached CSV reader to avoid repeated disk I/O operations
+
+5. handle_value_retrieval() (lines 93-167)
+   Original: # user_input.py - Function 5: Handles value retrieval from CSV or manual sources for variables
+   → /shared/data_readers.py (lines 186-249)
+   Restructured: # user_input.py - Function 5: Handles value retrieval from CSV or manual sources for variables
+
+6. get_kei_value() (lines 168-182)
+   Original: # user_input.py - Function 6: Returns kei coefficient value based on climate type
+   → /shared/data_readers.py (lines 250-263)
+   Restructured: # user_input.py - Function 6: Returns kei coefficient value based on climate type
+
+7. get_variable_value() (lines 183-221)
+   Original: # user_input.py - Function 7: Retrieves general input variables using handle_value_retrieval
+   → /shared/data_readers.py (lines 264-302)
+   Restructured: # user_input.py - Function 7: Retrieves general input variables using handle_value_retrieval
+
+8. get_crops_variable_values() (lines 222-256)
+   Original: # user_input.py - Function 8: Retrieves crop-related variables for Kharif, Rabi, and Summer seasons
+   → /shared/data_readers.py (lines 303-337)
+   Restructured: # user_input.py - Function 8: Retrieves crop-related variables for Kharif, Rabi, and Summer seasons
+
+9. get_supply_side_int_values() (lines 257-296)
+   Original: # user_input.py - Function 9: Retrieves supply-side intervention parameters and converts to float
+   → /shared/data_readers.py (lines 338-354)
+   Restructured: # user_input.py - Function 9: Retrieves supply-side intervention parameters and converts to float
+
+10. get_demand_side_interv_area_values() (lines 297-337)
+   Original: # user_input.py - Function 10: Retrieves demand-side intervention area values from crop calendar
+   → /shared/data_readers.py (lines 355-365)
+   Restructured: # user_input.py - Function 10: Retrieves demand-side intervention area values from crop calendar
+
+11. get_demand_side_interv_values() (lines 338-366)
+   Original: # user_input.py - Function 11: Retrieves demand-side intervention cost and lifespan parameters
+   → /shared/data_readers.py (lines 366-375)
+   Restructured: # user_input.py - Function 11: Retrieves demand-side intervention cost and lifespan parameters
+
+12. get_soil_moisture_interv_area_values() (lines 367-392)
+   Original: # user_input.py - Function 12: Retrieves soil moisture intervention area values from crop calendar
+   → /shared/data_readers.py (lines 376-389)
+   Restructured: # user_input.py - Function 12: Retrieves soil moisture intervention area values from crop calendar
+
+13. get_soil_moisture_interv_values() (lines 393-433)
+   Original: # user_input.py - Function 13: Retrieves soil moisture intervention parameters including CN reduction values
+   → /shared/data_readers.py (lines 390-404)
+   Restructured: # user_input.py - Function 13: Retrieves soil moisture intervention parameters including CN reduction values
+
+14. collect_inp_variables() (lines 434-513)
+   Original: # user_input.py - Function 14: Collects and organizes all input variables into ordered dictionary
+   → /orchestrator/input_collector.py (lines 15-91)
+   Restructured: # user_input.py - Function 14: Collects and organizes all input variables into ordered dictionary
+
+15. collect_int_variables() (lines 514-690)
+   Original: # user_input.py - Function 15: Collects and organizes all intervention variables into ordered dictionary
+   → /orchestrator/input_collector.py (lines 92-266)
+   Restructured: # user_input.py - Function 15: Collects and organizes all intervention variables into ordered dictionary
+

@@ -1,0 +1,436 @@
+DROUGHT PROOFING TOOL - MODULAR FOLDER STRUCTURE
+===============================================
+Generated: 2025-09-11
+Location: drought_proofing_tool/Original/
+Author: Dr. Jagadeesh, IWMI consultant
+
+This file defines the complete folder structure for the modular drought proofing tool architecture.
+
+drought_proofing_tool/
+├── Original/                                    # Original core files (backup)
+│   ├── Economic.py
+│   ├── crop_pattern.py
+│   ├── drought_proofing_tool.py
+│   ├── drpf_functions.py
+│   ├── kc_et.py
+│   ├── manual_input.py
+│   ├── smd.py
+│   ├── user_input.py
+│   ├── wa.py
+│   ├── function_index.txt
+│   ├── function_folder_assignment.txt
+│   └── modular_folder_structure.txt
+│
+├── Datasets/                                    # Input and output data
+│   ├── Data Input Sheet.csv                     # Master data input sheet
+│   ├── Inputs/                                 # Input data files
+│   │   ├── csv_inputs/                         # CSV input configurations
+│   │   │   ├── input.csv                       # Main input parameters
+│   │   │   ├── interventions.csv               # Main intervention configurations
+│   │   │   ├── interventions_baseline.csv      # Baseline intervention scenario
+│   │   │   ├── interventions_scenario_1.csv    # Scenario 1 interventions
+│   │   │   ├── interventions_scenario_2.csv    # Scenario 2 interventions
+│   │   │   └── interventions_scenario_3.csv    # Scenario 3 interventions
+│   │   ├── mandatory_inputs/                   # Required input data
+│   │   │   ├── pcp.csv                         # Processed precipitation data
+│   │   │   ├── temp.csv                        # Processed temperature data
+│   │   │   └── irrigation.csv                  # Irrigation data
+│   │   └── static_inputs/                      # Static reference data
+│   │       ├── crop_db.csv                     # Crop database
+│   │       └── radiation_db.csv                # Solar radiation database
+│   └── Outputs/                                # Scenario-based outputs
+│       ├── Baseline_Scenario/                  # Baseline scenario results
+│       ├── Scenario_1/                         # Scenario 1 results
+│       ├── Scenario_2/                         # Scenario 2 results
+│       └── Scenario_3/                         # Scenario 3 results
+│
+├── orchestrator/                                # Main coordination and control
+│   ├── __init__.py
+│   ├── main_controller.py                       # Main workflow coordination functions
+│   │   # Functions: 
+│   │   # - drought_proofing_tool.py - Function 2: Processes command line arguments and runs the scenario
+│   │   # - drought_proofing_tool.py - Function 3: Copies scenario-specific intervention file to main interventions.csv
+│   │   # - drpf_functions.py - Function 23: Main orchestrator running all drought proofing processes
+│   │   # - drpf_functions.py - Function 24: Entry point for drought proofing routines
+│   ├── water_balance_coordinator.py             # Water balance orchestration functions
+│   │   # Functions:
+│   │   # - drpf_functions.py - Function 17: Processes water management including storage and irrigation
+│   │   # - drpf_functions.py - Function 20: Processes final water balance calculations
+│   │   # - wa.py - Function 17: Calculates complex water storage dynamics and abstractions
+│   └── input_collector.py                       # Input data collection and organization
+│       # Functions:
+│       # - user_input.py - Function 14: Collects and organizes all input variables into ordered dictionary
+│       # - user_input.py - Function 15: Collects and organizes all intervention variables into ordered dictionary
+│
+├── aquifer_storage_bucket/                      # Groundwater storage management
+│   ├── __init__.py
+│   ├── influx/                                  # Water flowing into aquifer
+│   │   ├── __init__.py
+│   │   ├── recharge_calculations.py             # Groundwater recharge calculations
+│   │   │   # Functions (17 functions):
+│   │   │   # - drpf_functions.py - Function 12: Calculates groundwater recharge for fallow and crop plots
+│   │   │   # - smd.py - Function 9: Calculates groundwater natural recharge when soil is at field capacity
+│   │   │   # - smd.py - Function 10: Updates groundwater natural recharge for all plots in dataset
+│   │   │   # - smd.py - Function 11: Aggregates daily groundwater recharge to monthly values for crops
+│   │   │   # - smd.py - Function 16: Calculates groundwater natural recharge from fallow land areas
+│   │   │   # - smd.py - Function 17: Aggregates daily groundwater recharge from fallow areas to monthly totals
+│   │   │   # - smd.py - Function 18: Calculates total fallow area including non-crop land uses for recharge
+│   │   │   # - smd.py - Function 19: Calculates area-weighted average groundwater recharge across all land uses
+│   │   │   # - smd.py - Function 20: Aggregates daily recharge values to monthly totals for water balance
+│   │   │   # - kc_et.py - Function 62: Calculates groundwater recharge from precipitation
+│   │   │   # - wa.py - Function 5: Calculates added monthly recharge from infiltration
+│   │   │   # - wa.py - Function 10: Calculates potential groundwater recharge from structures
+│   │   │   # - wa.py - Function 24: Adds runoff to recharge calculations
+│   │   │   # - wa.py - Function 27: Calculates final groundwater recharge
+│   │   └── recharge_capacity.py                 # Recharge capacity calculations
+│   │       # Functions (1 function):
+│   │       # - wa.py - Function 6: Calculates recharge capacity for water harvesting structures
+│   ├── input_data/                              # Aquifer input parameters
+│   │   └── __init__.py
+│   ├── outflux/                                 # Water flowing out of aquifer
+│   │   ├── __init__.py
+│   │   └── domestic_demand.py                   # Domestic and non-domestic water demands
+│   │       # Functions (3 functions):
+│   │       # - wa.py - Function 11: Calculates domestic water requirements
+│   │       # - wa.py - Function 12: Calculates non-domestic water requirements
+│   │       # - wa.py - Function 13: Calculates groundwater needs for domestic use
+│   └── processing/                              # Aquifer calculations
+│       ├── __init__.py
+│       ├── storage_capacity.py                  # Aquifer storage capacity calculations
+│       │   # Functions (1 function):
+│       │   # - wa.py - Function 2: Calculates aquifer storage limit based on parameters
+│       └── storage_tracking.py                  # Groundwater storage tracking
+│           # Functions (1 function):
+│           # - wa.py - Function 3: Calculates residual groundwater storage
+│
+├── soil_storage_bucket/                         # Soil moisture and crop water management
+│   ├── __init__.py
+│   ├── input_data/                              # Soil input parameters
+│   │   ├── __init__.py
+│   │   └── soil_properties.py                   # Soil properties and AWC calculations
+│   │       # Functions (4 functions):
+│   │       # - drpf_functions.py - Function 4: Calculates soil properties including AWC and depths
+│   │       # - kc_et.py - Function 23: Returns available water content based on soil type classification
+│   │       # - kc_et.py - Function 24: Extracts and validates soil type from input data structure
+│   │       # - kc_et.py - Function 25: Calculates weighted average water content capacity for mixed soil layers
+│   ├── influx/                                  # Water entering soil
+│   │   └── __init__.py
+│   ├── outflux/                                 # Water leaving soil
+│   │   ├── __init__.py
+│   │   ├── evapotranspiration.py                # ET and evaporation calculations
+│   │   │   # Functions (13 functions):
+│   │   │   # - crop_pattern.py - Function 16: Calculates monthly reference evapotranspiration using Hargreaves method
+│   │   │   # - crop_pattern.py - Function 17: Distributes monthly reference ET to daily values
+│   │   │   # - crop_pattern.py - Function 23: Applies evaporation reduction factors based on conservation practices
+│   │   │   # - crop_pattern.py - Function 25: Calculates average soil evaporation reduction from conservation practices
+│   │   │   # - kc_et.py - Function 8: Calculates crop evapotranspiration with special rice preparation handling
+│   │   │   # - kc_et.py - Function 10: Calculates soil evaporation coefficient (Kei) for all plots
+│   │   │   # - kc_et.py - Function 11: Calculates daily soil evaporation (ESi) for all plots
+│   │   │   # - smd.py - Function 3: Calculates actual soil evaporation considering water stress and reduction factors
+│   │   │   # - smd.py - Function 6: Calculates actual crop evapotranspiration considering water stress
+│   │   │   # - smd.py - Function 8: Distributes plot-level actual evapotranspiration to individual crops
+│   │   │   # - smd.py - Function 12: Calculates soil evaporation coefficient for fallow land
+│   │   │   # - smd.py - Function 13: Calculates potential soil evaporation for fallow areas
+│   │   │   # - smd.py - Function 15: Calculates actual soil evaporation for fallow areas without crops
+│   │   │   # - drpf_functions.py - Function 16: Calculates crop evapotranspiration for each plot
+│   │   │   # - wa.py - Function 28: Calculates final evapotranspiration from water balance
+│   │   │   # - wa.py - Function 29: Calculates biological evapotranspiration from crop and soil
+│   │   └── irrigation_demand.py                 # Irrigation demand calculations
+│   │       # Functions (3 functions):
+│   │       # - smd.py - Function 21: Calculates irrigation water requirements as difference between ET and actual ET
+│   │       # - smd.py - Function 22: Aggregates daily irrigation water requirements to monthly values
+│   │       # - wa.py - Function 9: Calculates irrigation water requirement after canal supply
+│   └── processing/                              # Soil calculations
+│       ├── __init__.py
+│       ├── crop_coefficients.py                 # Crop coefficient calculations
+│       │   # Functions (8 functions):
+│       │   # - kc_et.py - Function 1: Calculates initial crop coefficient (Kc) for initial growth stage
+│       │   # - kc_et.py - Function 2: Calculates crop coefficient (Kc) for development growth stage
+│       │   # - kc_et.py - Function 3: Calculates crop coefficient (Kc) for mid-season growth stage
+│       │   # - kc_et.py - Function 4: Calculates crop coefficient (Kc) for late season growth stage
+│       │   # - kc_et.py - Function 5: Processes all crop coefficients through all growth stages for multiple crops
+│       │   # - kc_et.py - Function 6: Calculates total crop coefficient by summing all growth stage coefficients
+│       │   # - kc_et.py - Function 7: Calculates irrigation crop coefficient (Kci) aggregated by plot
+│       │   # - kc_et.py - Function 9: Calculates Stage 1 crop coefficients aggregated by plot
+│       ├── root_depth.py                        # Root depth calculations
+│       │   # Functions (3 functions):
+│       │   # - kc_et.py - Function 18: Calculates crop root depth based on growth stage and crop parameters
+│       │   # - kc_et.py - Function 19: Calculates root depth for a specific crop throughout growing season
+│       │   # - kc_et.py - Function 20: Calculates final aggregated root depth by plot for all crops
+│       ├── water_stress.py                      # Water stress calculations
+│       │   # Functions (4 functions):
+│       │   # - kc_et.py - Function 21: Calculates depletion factor for water stress threshold of specific crop
+│       │   # - kc_et.py - Function 22: Calculates final aggregated depletion factor by plot for all crops
+│       │   # - smd.py - Function 1: Determines soil evaporation stress condition based on water deficits
+│       │   # - smd.py - Function 2: Calculates soil evaporation stress coefficient based on moisture conditions
+│       │   # - smd.py - Function 4: Determines crop transpiration stress condition based on water availability
+│       │   # - smd.py - Function 5: Calculates crop transpiration stress coefficient based on soil moisture
+│       ├── water_capacity.py                    # Water capacity calculations
+│       │   # Functions (4 functions):
+│       │   # - kc_et.py - Function 29: Calculates total available water (TAW) for each plot based on root depth
+│       │   # - kc_et.py - Function 30: Calculates readily available water (RAW) based on depletion factors
+│       │   # - kc_et.py - Function 31: Calculates total evaporable water (TEW) from soil surface layer
+│       │   # - kc_et.py - Function 32: Calculates readily evaporable water (REW) from soil surface
+│       ├── conservation_practices.py            # Conservation practice effects
+│       │   # Functions (6 functions):
+│       │   # - kc_et.py - Function 26: Calculates total area under soil moisture conservation practices
+│       │   # - kc_et.py - Function 27: Calculates soil water content with conservation practice adjustments
+│       │   # - kc_et.py - Function 28: Calculates final field capacity considering conservation and non-conservation areas
+│       │   # - kc_et.py - Function 36: Calculates soil evaporation reduction factors for conservation practices
+│       │   # - kc_et.py - Function 37: Calculates final evaporation reduction factors for each crop
+│       │   # - kc_et.py - Function 38: Calculates weighted evaporation reduction factors aggregated by plot
+│       ├── soil_moisture_deficit.py             # SMD calculations
+│       │   # Functions (2 functions):
+│       │   # - drpf_functions.py - Function 11: Calculates soil moisture deficit index for each plot
+│       │   # - smd.py - Function 7: Calculates soil moisture deficit using water balance approach
+│       │   # - smd.py - Function 14: Calculates soil moisture deficit for fallow land areas
+│       └── water_storage.py                     # Soil water storage
+│           # Functions (1 function):
+│           # - drpf_functions.py - Function 10: Calculates crop water storage and evaporation parameters
+│
+├── surface_water_bucket/                        # Surface water and runoff management
+│   ├── __init__.py
+│   ├── input_data/                              # Surface water input parameters
+│   │   ├── __init__.py
+│   │   └── curve_number_data.py                 # Curve number data retrieval
+│   │       # Functions (2 functions):
+│   │       # - kc_et.py - Function 40: Retrieves curve number (CN) values with multiple fallback strategies
+│   │       # - kc_et.py - Function 45: Retrieves curve number for fallow land based on soil type
+│   ├── influx/                                  # Water entering surface storage
+│   │   ├── __init__.py
+│   │   ├── precipitation_processing.py          # Precipitation processing
+│   │   │   # Functions (1 function):
+│   │   │   # - kc_et.py - Function 63: Calculates net rainfall after removing groundwater recharge
+│   │   └── water_supply.py                      # Water supply availability
+│   │       # Functions (1 function):
+│   │       # - wa.py - Function 8: Calculates canal water supply availability
+│   ├── outflux/                                 # Water leaving surface storage
+│   │   ├── __init__.py
+│   │   ├── evaporation.py                       # Surface water evaporation
+│   │   │   # Functions (1 function):
+│   │   │   # - wa.py - Function 7: Calculates potential evapotranspiration from surface water
+│   │   ├── water_demand.py                      # Surface water demand
+│   │   │   # Functions (1 function):
+│   │   │   # - wa.py - Function 14: Calculates surface water needs
+│   │   ├── water_abstraction.py                 # Water abstraction
+│   │   │   # Functions (1 function):
+│   │   │   # - wa.py - Function 15: Calculates abstracted surface water
+│   │   └── runoff_disposal.py                   # Final runoff disposal
+│   │       # Functions (1 function):
+│   │       # - wa.py - Function 25: Calculates final runoff after storage
+│   └── processing/                              # Surface water calculations
+│       ├── __init__.py
+│       ├── curve_numbers.py                     # Curve number calculations
+│       │   # Functions (19 functions):
+│       │   # - drpf_functions.py - Function 7: Calculates consolidated curve numbers for crops and land use
+│       │   # - drpf_functions.py - Function 15: Retrieves all curve number values for seasons
+│       │   # - drpf_functions.py - Function 19: Processes and calculates actual curve number values
+│       │   # - kc_et.py - Function 41: Calculates curve number values for all crops considering two soil layers
+│       │   # - kc_et.py - Function 42: Calculates weighted actual CN2 value from two soil layer contributions
+│       │   # - kc_et.py - Function 43: Calculates actual curve numbers for all crops using input distributions
+│       │   # - kc_et.py - Function 44: Calculates reduced curve numbers considering conservation interventions
+│       │   # - kc_et.py - Function 46: Calculates actual fallow curve number from two soil layer contributions
+│       │   # - kc_et.py - Function 47: Returns curve number for crop based on sown area status
+│       │   # - kc_et.py - Function 48: Updates crop curve numbers in dataframe for all crops
+│       │   # - kc_et.py - Function 50: Calculates area-weighted consolidated curve number for all crops
+│       │   # - kc_et.py - Function 53: Returns fallow curve number based on fallow area presence
+│       │   # - kc_et.py - Function 54: Calculates area-weighted final curve number from all land uses
+│       │   # - kc_et.py - Function 55: Adjusts curve number based on slope using Williams formula
+│       │   # - kc_et.py - Function 56: Calculates CN1 (dry conditions) from CN2 using standard formula
+│       │   # - kc_et.py - Function 57: Calculates CN3 (wet conditions) from CN2 using standard formula
+│       │   # - kc_et.py - Function 60: Selects appropriate curve number based on antecedent moisture condition
+│       ├── runoff_calculations.py               # Runoff calculations
+│       │   # Functions (8 functions):
+│       │   # - drpf_functions.py - Function 3: Processes monthly runoff and converts to cubic meters
+│       │   # - drpf_functions.py - Function 9: Calculates runoff discharge using curve number method
+│       │   # - kc_et.py - Function 61: Calculates water abstraction parameters for runoff calculation
+│       │   # - kc_et.py - Function 64: Calculates surface runoff using SCS curve number method
+│       │   # - kc_et.py - Function 65: Applies runoff calculation only when rainfall exceeds initial abstraction
+│       │   # - kc_et.py - Function 66: Calculates effective rainfall by subtracting runoff from net rainfall
+│       │   # - kc_et.py - Function 67: Aggregates daily runoff to monthly totals and merges with monthly data
+│       ├── moisture_conditions.py               # Antecedent moisture conditions
+│       │   # Functions (1 function):
+│       │   # - kc_et.py - Function 59: Calculates antecedent moisture condition based on rainfall and dormancy
+│       ├── surface_calculations.py              # Surface area calculations
+│       │   # Functions (1 function):
+│       │   # - wa.py - Function 4: Calculates surface area from volume and depth
+│       └── water_balance.py                     # Surface water balance
+│           # Functions (2 functions):
+│           # - wa.py - Function 16: Calculates remaining water after domestic surface water use
+│           # - wa.py - Function 26: Calculates final runoff including rejected recharge
+│
+├── outputs/                                     # Results and metrics
+│   ├── __init__.py
+│   ├── output_manager.py                        # Output file management
+│   │   # Functions (1 function):
+│   │   # - drought_proofing_tool.py - Function 1: Saves all output dataframes to CSV files in scenario-specific folders
+│   ├── output_aggregator.py                     # Data aggregation and yearly processing
+│   │   # Functions (6 functions):
+│   │   # - drpf_functions.py - Function 21: Processes yearly data and calculates weighted averages
+│   │   # - wa.py - Function 20: Resamples monthly data to yearly aggregates
+│   │   # - wa.py - Function 23: Calculates weighted averages for yield and water metrics
+│   │   # - wa.py - Function 38: Processes year data based on calendar or crop year
+│   │   # - wa.py - Function 40: Processes water year data for crop or calendar year
+│   │   # - wa.py - Function 43: Calculates weighted averages for water year metrics
+│   ├── water_metrics.py                         # Water requirement metrics
+│   │   # Functions (6 functions):
+│   │   # - wa.py - Function 18: Calculates percentage of irrigation water requirement fulfilled
+│   │   # - wa.py - Function 19: Calculates crop water requirement met for each crop
+│   │   # - wa.py - Function 30: Gets crop water requirement in mm for all crops
+│   │   # - wa.py - Function 31: Gets percentage of crop water requirement met
+│   │   # - wa.py - Function 34: Gets crop water requirement for crop year
+│   │   # - wa.py - Function 35: Gets crop water requirement met for crop year
+│   ├── yield_calculations.py                    # Yield calculations
+│   │   # Functions (6 functions):
+│   │   # - wa.py - Function 21: Calculates crop yields for irrigated and rainfed areas
+│   │   # - wa.py - Function 22: Calculates yields for all crops
+│   │   # - wa.py - Function 32: Gets yield percentages for all crops
+│   │   # - wa.py - Function 36: Gets yield percentages for crop year
+│   │   # - wa.py - Function 41: Calculates yields for water year analysis
+│   │   # - wa.py - Function 42: Calculates yields for water year for all crops
+│   └── drought_metrics.py                       # Drought proofing metrics
+│       # Functions (2 functions):
+│       # - wa.py - Function 33: Gets drought proofing index
+│       # - wa.py - Function 37: Gets drought proofing index for crop year
+│
+└── shared/                                      # Common utilities and functions
+    ├── __init__.py
+    ├── utilities.py                             # General utility functions
+    │   # Functions (11 functions):
+    │   # - crop_pattern.py - Function 1: Resamples time series data from one dataframe and merges with another from CSV
+    │   # - crop_pattern.py - Function 2: Converts water depth in millimeters to volume in cubic meters
+    │   # - crop_pattern.py - Function 3: Converts water volume in cubic meters to depth in millimeters
+    │   # - crop_pattern.py - Function 4: Calculates percentage value from fraction and total
+    │   # - crop_pattern.py - Function 5: Performs division with zero-denominator protection
+    │   # - crop_pattern.py - Function 6: Performs subtraction with error handling for invalid inputs
+    │   # - crop_pattern.py - Function 7: Optimizes dataframe memory by converting to smaller data types
+    │   # - crop_pattern.py - Function 10: Safely converts area list values to float with zero fallback
+    │   # - crop_pattern.py - Function 11: Safely converts crop list preserving None values
+    │   # - crop_pattern.py - Function 15: Calculates number of days in a specific month and year
+    │   # - crop_pattern.py - Function 20: Calculates total area from land use and land cover components
+    │   # - crop_pattern.py - Function 21: Converts seasonal data dictionary to list of dataframes with error handling
+    │   # - crop_pattern.py - Function 29: Converts specified dataframe columns to numeric with error handling
+    │   # - user_input.py - Function 3: Converts various input types to float with fallback to default value
+    │   # - kc_et.py - Function 52: Calculates land use fraction from area and total area
+    ├── data_readers.py                          # Data reading and caching functions
+    │   # Functions (16 functions):
+    │   # - crop_pattern.py - Function 8: Reads and formats crop database from CSV file
+    │   # - crop_pattern.py - Function 9: Retrieves solar radiation data for specific latitude
+    │   # - crop_pattern.py - Function 14: Reads precipitation data and calculates 5-day rolling rainfall
+    │   # - drpf_functions.py - Function 1: Retrieves and caches season-wise crop data including areas and sowing details
+    │   # - drpf_functions.py - Function 2: Retrieves land use type areas including crop, fallow, built-up areas
+    │   # - drpf_functions.py - Function 5: Retrieves season values with crop types and sowing details
+    │   # - drpf_functions.py - Function 6: Retrieves season data for crop type processing
+    │   # - drpf_functions.py - Function 22: Processes monthly climate and precipitation data
+    │   # - kc_et.py - Function 39: Retrieves cover type and treatment type for crops from database
+    │   # - user_input.py - Function 1: Clears the file paths cache for testing or configuration changes
+    │   # - user_input.py - Function 2: Returns cached file paths for datasets based on input source and master path
+    │   # - user_input.py - Function 4: Cached CSV reader to avoid repeated disk I/O operations
+    │   # - user_input.py - Function 5: Handles value retrieval from CSV or manual sources for variables
+    │   # - user_input.py - Function 6: Returns kei coefficient value based on climate type
+    │   # - user_input.py - Function 7: Retrieves general input variables using handle_value_retrieval
+    │   # - user_input.py - Function 8: Retrieves crop-related variables for Kharif, Rabi, and Summer seasons
+    │   # - user_input.py - Function 9: Retrieves supply-side intervention parameters and converts to float
+    │   # - user_input.py - Function 10: Retrieves demand-side intervention area values from crop calendar
+    │   # - user_input.py - Function 11: Retrieves demand-side intervention cost and lifespan parameters
+    │   # - user_input.py - Function 12: Retrieves soil moisture intervention area values from crop calendar
+    │   # - user_input.py - Function 13: Retrieves soil moisture intervention parameters including CN reduction values
+    │   # - wa.py - Function 1: Reads irrigation data and merges with monthly dataframe
+    ├── crop_processing.py                       # Crop data processing functions
+    │   # Functions (18 functions):
+    │   # - crop_pattern.py - Function 12: Processes seasonal crop data into structured dictionary format
+    │   # - crop_pattern.py - Function 13: Assigns plot numbers to crops and calculates plot statistics
+    │   # - crop_pattern.py - Function 18: Filters crop pattern data to include only valid non-empty crops
+    │   # - crop_pattern.py - Function 19: Combines seasonal attributes from input and intervention variables
+    │   # - crop_pattern.py - Function 22: Combines and normalizes all crop attributes to consistent lengths
+    │   # - crop_pattern.py - Function 24: Applies irrigation efficiency values based on intervention areas
+    │   # - crop_pattern.py - Function 26: Retrieves yield response factor and economic data for crops
+    │   # - crop_pattern.py - Function 27: Returns irrigation return flow coefficients based on crop type
+    │   # - crop_pattern.py - Function 28: Calculates weighted return flow based on water source dependencies
+    │   # - drpf_functions.py - Function 8: Processes crop details including efficiency and return flow values
+    │   # - drpf_functions.py - Function 18: Processes seasonal crop data and growth parameters
+    │   # - kc_et.py - Function 12: Retrieves total growth days for a specific crop from crop database
+    │   # - kc_et.py - Function 13: Calculates crop sowing start date based on year, month, and week
+    │   # - kc_et.py - Function 14: Calculates remaining growth days for initial year of crop cycle
+    │   # - kc_et.py - Function 15: Calculates remaining growth days for subsequent years of crop cycle
+    │   # - kc_et.py - Function 16: Processes remaining growth days for all years in dataset
+    │   # - kc_et.py - Function 17: Calculates monthly remaining growth days and updates monthly dataframe
+    │   # - kc_et.py - Function 33: Determines sown area based on remaining growth days
+    │   # - kc_et.py - Function 34: Processes sown area calculations for all crops in crop pattern
+    │   # - kc_et.py - Function 35: Calculates net sown area aggregated by plot from crop calendar
+    │   # - kc_et.py - Function 49: Calculates total sown area across all crops with area limit enforcement
+    │   # - kc_et.py - Function 51: Calculates fallow area from net sown area and actual crop areas
+    │   # - kc_et.py - Function 58: Determines crop dormancy status based on sown area
+    │   # - wa.py - Function 39: Gets earliest sowing month from crop plan
+    ├── economics.py                             # Economic calculations
+    │   # Functions (11 functions):
+    │   # - Economic.py - Function 1: Calculates the number of intervention units needed based on economic life and lifespan
+    │   # - Economic.py - Function 2: Collects and structures supply-side intervention data including costs and specifications
+    │   # - Economic.py - Function 3: Collects and structures demand-side intervention data from crop calendar areas
+    │   # - Economic.py - Function 4: Collects and structures soil moisture intervention data from crop calendar areas
+    │   # - Economic.py - Function 5: Combines supply-side, demand-side, and soil moisture intervention data into unified dataset
+    │   # - Economic.py - Function 6: Calculates total cost by multiplying volume and unit cost
+    │   # - Economic.py - Function 7: Calculates Equalized Annual Cost using capital recovery factor
+    │   # - Economic.py - Function 8: Calculates annual maintenance costs based on percentage of equalized annual cost
+    │   # - Economic.py - Function 9: Calculates Net Present Value of intervention costs over project lifetime
+    │   # - drpf_functions.py - Function 13: Calculates economic parameters for interventions
+    │   # - drpf_functions.py - Function 14: Calculates comprehensive intervention economics
+    └── irrigation_efficiency.py                 # Irrigation efficiency calculations
+        # Functions (2 functions):
+        # - smd.py - Function 23: Calculates weighted irrigation efficiency from surface and groundwater sources
+        # - smd.py - Function 24: Calculates overall irrigation efficiency considering all intervention types
+
+DESIGN PRINCIPLES
+================
+1. **Bucket Architecture**: Each storage bucket (aquifer, soil, surface) has its own module
+2. **Flow-Based Organization**: 
+   - influx/ - Water entering the storage
+   - processing/ - Calculations within the storage
+   - outflux/ - Water leaving the storage
+   - input_data/ - Static parameters and data
+3. **Separation of Concerns**: 
+   - orchestrator/ - High-level coordination
+   - shared/ - Common utilities used across buckets
+   - outputs/ - Result generation and metrics
+4. **Modular Independence**: Each bucket can be developed and tested independently
+5. **Clear Dependencies**: orchestrator depends on buckets, buckets depend on shared
+
+FILE NAMING CONVENTIONS
+======================
+- Use snake_case for all file and folder names
+- Descriptive names indicating the primary function
+- Group related functions in the same file
+- __init__.py files for proper Python module structure
+
+TOTAL STRUCTURE
+==============
+- 6 main directories (Original + 5 functional)
+- 32 Python module files (excluding __init__.py files)
+- 218 functions distributed across the modular architecture
+- Clear separation between data flow, processing, and coordination
+
+FUNCTION DISTRIBUTION BY BUCKET:
+===============================
+- **orchestrator/**: 7 functions (workflow coordination and control)
+- **aquifer_storage_bucket/**: 23 functions (groundwater management)
+- **soil_storage_bucket/**: 59 functions (soil moisture and crop management) 
+- **surface_water_bucket/**: 37 functions (surface water and runoff)
+- **outputs/**: 21 functions (results and metrics generation)
+- **shared/**: 71 functions (common utilities and data processing)
+
+LARGEST MODULES BY FUNCTION COUNT:
+=================================
+1. shared/data_readers.py: 22 functions (data reading and caching)
+2. shared/crop_processing.py: 24 functions (crop data processing)
+3. surface_water_bucket/processing/curve_numbers.py: 17 functions
+4. aquifer_storage_bucket/influx/recharge_calculations.py: 14 functions
+5. soil_storage_bucket/outflux/evapotranspiration.py: 16 functions
+
+This structure enables:
+- Easier testing and debugging of individual components
+- Better code maintainability through logical separation
+- Clear understanding of water flow through the system
+- Independent development of different storage buckets
+- Scalable architecture for future enhancements
+- Shared utilities to avoid code duplication
+- Modular testing of specific functionality
